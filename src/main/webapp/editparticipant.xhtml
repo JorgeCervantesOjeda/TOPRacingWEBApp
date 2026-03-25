@@ -75,7 +75,7 @@
       <tr> <td align="right" class="field_label">Main Venue:</td>
         <td align="left">
           <h:outputText class="field_output"
-                        value="#{editParticipantBean.participant.venue.name}"
+                        value="#{editParticipantBean.participant != null && editParticipantBean.participant.venue != null ? editParticipantBean.participant.venue.name : 'Venue not set yet.'}"
                         style="white-space: pre-line; text-align: left;"
                         />
           <br/>
