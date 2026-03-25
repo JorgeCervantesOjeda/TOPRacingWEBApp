@@ -9,26 +9,26 @@
     <div style="padding: 0px; background-color: darkred; width: 100%; display: block; overflow: auto">
       <h:form style="padding: 0px; width: 90%; font-size: small; white-space: nowrap; position: sticky">
         <div style="float:left; display: inline-block; white-space: normal; overflow: auto !important; padding: 4px">
-          <p:button
+          <p:commandButton
             styleClass="mybutton"
             id="WelcomeButton"
-            href="#{facesContext.externalContext.requestContextPath}/faces/welcome.xhtml"
             title="#{viewBean.getWelcomeButtonTitle()}"
-            onclick="PF('dlgWait').show();"
+            onclick="PF('dlgWait').show(); window.location.href='#{facesContext.externalContext.requestContextPath}/faces/welcome.xhtml'; return false;"
             icon="fa fa-fw fa-home"
+            type="button"
             style="float: left">
-          </p:button>
+          </p:commandButton>
           <p:tooltip for="WelcomeButton" position="top" />
 
-          <p:button
+          <p:commandButton
             styleClass="mybutton"
             id="PointscountButton"
-            href="#{facesContext.externalContext.requestContextPath}/faces/listpointscounts.xhtml"
             title="#{viewBean.getPointscountButtonTitle()}"
-            onclick="PF('dlgWait').show();"
+            onclick="PF('dlgWait').show(); window.location.href='#{facesContext.externalContext.requestContextPath}/faces/listpointscounts.xhtml'; return false;"
             icon="fa fa-fw fa-trophy"
+            type="button"
             style="float: left">
-          </p:button>
+          </p:commandButton>
           <p:tooltip for="PointscountButton" position="top" />
 
           <!--
@@ -46,24 +46,24 @@
                     </p:commandButton>
                     <p:tooltip for="RegattaButton" position="top"/>
           -->
-          <p:button styleClass="mybutton"
-                    id="PenaltiesButton"
-                    href="#{facesContext.externalContext.requestContextPath}/faces/listpenalties.xhtml"
-                    title="#{viewBean.getPenaltiesButtonTitle()}"
-                    onclick="PF('dlgWait').show();"
-                    icon="fa fa-fw fa-balance-scale"
-                    style="float: left">
-          </p:button>
+          <p:commandButton styleClass="mybutton"
+                           id="PenaltiesButton"
+                           title="#{viewBean.getPenaltiesButtonTitle()}"
+                           onclick="PF('dlgWait').show(); window.location.href='#{facesContext.externalContext.requestContextPath}/faces/listpenalties.xhtml'; return false;"
+                           icon="fa fa-fw fa-balance-scale"
+                           type="button"
+                           style="float: left">
+          </p:commandButton>
           <p:tooltip for="PenaltiesButton" position="top" />
 
-          <p:button styleClass="mybutton"
-                    id="RegistrationButton"
-                    href="#{facesContext.externalContext.requestContextPath}/faces/listregistrations.xhtml"
-                    title="#{viewBean.getRegistrationButtonTitle()}"
-                    onclick="PF('dlgWait').show();"
-                    icon="fa fa-fw fa-book"
-                    style="float: left">
-          </p:button>
+          <p:commandButton styleClass="mybutton"
+                           id="RegistrationButton"
+                           title="#{viewBean.getRegistrationButtonTitle()}"
+                           onclick="PF('dlgWait').show(); window.location.href='#{facesContext.externalContext.requestContextPath}/faces/listregistrations.xhtml'; return false;"
+                           icon="fa fa-fw fa-book"
+                           type="button"
+                           style="float: left">
+          </p:commandButton>
           <p:tooltip for="RegistrationButton" position="top" />
 
         </div>
