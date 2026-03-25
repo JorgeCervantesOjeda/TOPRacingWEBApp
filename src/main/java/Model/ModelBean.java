@@ -154,7 +154,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Registration as r"
+          "from Tables.Registration as r"
           + " where r.regatta.id="
           + regatta.getId() );
     List<Registration> registrations = q.list();
@@ -269,22 +269,30 @@ public class ModelBean
 
   @Override
   public synchronized List<Pointscount> getPointscounts( int periodLevel,
-                                                         int tracksetLevel ) {
-    SessionFactory sf = U_HibernateUtil.getSessionFactory();
-    Session s = sf.openSession();
-    Transaction t = s.beginTransaction();
+                                                          int tracksetLevel ) {
+      SessionFactory sf = U_HibernateUtil.getSessionFactory();
+      Session s = sf.openSession();
+      Transaction t = null;
+      try {
+        t = s.beginTransaction();
 
-    Query q = s.createQuery(
-          "from Tables.Pointscount as pointscount"
-          + " where pointscount.id.levelPeriod=" + periodLevel
-          + " and pointscount.id.levelTrackset=" + tracksetLevel
-        );
-    List<Pointscount> pointscountList = q.list();
+        Query q = s.createQuery(
+              "from Tables.Pointscount as pointscount"
+              + " where pointscount.id.levelPeriod=" + periodLevel
+              + " and pointscount.id.levelTrackset=" + tracksetLevel
+            );
+        List<Pointscount> pointscountList = q.list();
 
-    t.commit();
-    s.close();
-
-    return pointscountList;
+        t.commit();
+        return pointscountList;
+      } catch( RuntimeException ex ) {
+        if( t != null && t.isActive() ) {
+          t.rollback();
+        }
+        throw ex;
+      } finally {
+        s.close();
+      }
   }
 
   @Override
@@ -416,34 +424,42 @@ public class ModelBean
   @Override
   public synchronized List<Registration> getRegistrations() {
 
-    SessionFactory sf = U_HibernateUtil.getSessionFactory();
-    Session s = sf.openSession();
-    Transaction t = s.beginTransaction();
+      SessionFactory sf = U_HibernateUtil.getSessionFactory();
+      Session s = sf.openSession();
+      Transaction t = null;
+      try {
+        t = s.beginTransaction();
 
-    Query q = s.createQuery(
-          "from Registration as r"
-          + " join fetch r.car"
-          + " join fetch r.participantByIdDriver"
-          + " join fetch r.participantByIdOwner"
-          + " join fetch r.participantByIdBuyer"
-          + " join fetch r.regatta as regatta"
-          + " join fetch regatta.participant"
-          + " join fetch regatta.variant as variant"
-          + " join fetch regatta.currency as currency"
-          + " join fetch variant.venue as venue"
-          + " join fetch venue.provinceregion as provinceregion"
-          + " join fetch provinceregion.province as province"
-          + " join fetch province.countryregion as countryregion"
-          + " join fetch countryregion.country as country"
-          + " join fetch country.planetregion"
-          + " where r.status=1"
-        );
-    List<Registration> registrationsList = q.list();
+        Query q = s.createQuery(
+              "from Tables.Registration as r"
+              + " join fetch r.car"
+              + " join fetch r.participantByIdDriver"
+              + " join fetch r.participantByIdOwner"
+              + " join fetch r.participantByIdBuyer"
+              + " join fetch r.regatta as regatta"
+              + " join fetch regatta.participant"
+              + " join fetch regatta.variant as variant"
+              + " join fetch regatta.currency as currency"
+              + " join fetch variant.venue as venue"
+              + " join fetch venue.provinceregion as provinceregion"
+              + " join fetch provinceregion.province as province"
+              + " join fetch province.countryregion as countryregion"
+              + " join fetch countryregion.country as country"
+              + " join fetch country.planetregion"
+              + " where r.status=1"
+            );
+        List<Registration> registrationsList = q.list();
 
-    t.commit();
-    s.close();
-
-    return registrationsList;
+        t.commit();
+        return registrationsList;
+      } catch( RuntimeException ex ) {
+        if( t != null && t.isActive() ) {
+          t.rollback();
+        }
+        throw ex;
+      } finally {
+        s.close();
+      }
   }
 
   @Override
@@ -454,7 +470,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Registration as r"
+          "from Tables.Registration as r"
           + " join fetch r.car"
           + " join fetch r.participantByIdDriver"
           + " join fetch r.participantByIdOwner"
@@ -774,7 +790,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Registration as r"
+          "from Tables.Registration as r"
           + " join fetch r.car as c"
           + " join fetch c.participant as ow"
           + " join fetch r.regatta"
@@ -905,7 +921,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Registration as r where r.regatta.id="
+          "from Tables.Registration as r where r.regatta.id="
           + regattaId );
     List<Registration> registrations = q.list();
 
@@ -947,7 +963,7 @@ public class ModelBean
     Regatta regatta = getRegattaById( regattaId );
 
     Query q = s.createQuery(
-          "from Registration as r where r.regatta.id="
+          "from Tables.Registration as r where r.regatta.id="
           + regattaId );
     List<Registration> registrations = q.list();
 
@@ -1092,7 +1108,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Registration as r where r.regatta.id="
+          "from Tables.Registration as r where r.regatta.id="
           + regatta.getId() );
     List<Registration> registrations = q.list();
 
@@ -1138,8 +1154,8 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Registration as r"
-          + " where id_regatta="
+          "from Tables.Registration as r"
+            + " where r.regatta.id="
           + regatta.getId() );
     List<Registration> registrations = q.list();
 
@@ -1194,13 +1210,13 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Registration as r"
+          "from Tables.Registration as r"
           + " join fetch r.car"
           + " join fetch r.participantByIdDriver"
           + " join fetch r.participantByIdOwner"
           + " join fetch r.participantByIdBuyer"
           + " join fetch r.regatta"
-          + " where id_regatta="
+            + " where r.regatta.id="
           + regatta.getId()
         );
     List<Registration> registrations = q.list();
@@ -1750,7 +1766,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "delete from Tables.Penaltiespl" );
+      Query q = s.createQuery( "delete from Tables.Penaltiespl" );
     q.executeUpdate();
 
     penaltiesplList.forEach( ( p )
@@ -2347,29 +2363,37 @@ public class ModelBean
   @Override
   public synchronized List<Penaltiespl> getPenaltiesplForPL( int periodLevel ) {
 
-    SessionFactory sf = U_HibernateUtil.getSessionFactory();
-    Session s = sf.openSession();
-    Transaction t = s.beginTransaction();
+      SessionFactory sf = U_HibernateUtil.getSessionFactory();
+      Session s = sf.openSession();
+      Transaction t = null;
+      try {
+        t = s.beginTransaction();
 
-    Query qp = s.createQuery( "from Tables.Penaltiespl as penaltiespl"
-                              + " join fetch penaltiespl.regatta as regatta"
-                              + " join fetch regatta.participant"
-                              + " join fetch regatta.variant as variant"
-                              + " join fetch regatta.currency as currency"
-                              + " join fetch variant.venue as venue"
-                              + " join fetch venue.provinceregion as provinceregion"
-                              + " join fetch provinceregion.province as province"
-                              + " join fetch province.countryregion as countryregion"
-                              + " join fetch countryregion.country as country"
-                              + " join fetch country.planetregion"
-                              + " where penaltiespl.id.levelPeriod=" + periodLevel
-        );
-    penaltiesplList = qp.list();
+        Query qp = s.createQuery( "from Tables.Penaltiespl as penaltiespl"
+                                  + " join fetch penaltiespl.regatta as regatta"
+                                  + " join fetch regatta.participant"
+                                  + " join fetch regatta.variant as variant"
+                                  + " join fetch regatta.currency as currency"
+                                  + " join fetch variant.venue as venue"
+                                  + " join fetch venue.provinceregion as provinceregion"
+                                  + " join fetch provinceregion.province as province"
+                                  + " join fetch province.countryregion as countryregion"
+                                  + " join fetch countryregion.country as country"
+                                  + " join fetch country.planetregion"
+                                  + " where penaltiespl.id.levelPeriod=" + periodLevel
+            );
+        penaltiesplList = qp.list();
 
-    t.commit();
-    s.close();
-
-    return penaltiesplList;
+        t.commit();
+        return penaltiesplList;
+      } catch( RuntimeException ex ) {
+        if( t != null && t.isActive() ) {
+          t.rollback();
+        }
+        throw ex;
+      } finally {
+        s.close();
+      }
   }
 
   public synchronized List<Penaltiespl> getPenaltiespl() {
@@ -2378,7 +2402,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query qp = s.createQuery( "from Tables.Penaltiespl as penaltiespl"
+      Query qp = s.createQuery( "from Tables.Penaltiespl as penaltiespl"
                               + " join fetch penaltiespl.regatta as regatta"
                               + " join fetch regatta.participant"
                               + " join fetch regatta.variant as variant"
@@ -2625,7 +2649,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "delete from Tables.Pointscount" );
+      Query q = s.createQuery( "delete from Tables.Pointscount" );
     q.executeUpdate();
 
     pointscount.forEach( ( p )
@@ -3701,7 +3725,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Tables.Penaltiespl as penaltiespl where"
+            "from Tables.Penaltiespl as penaltiespl where"
           + " penaltiespl.id.idRegatta = " + _regatta.getId()
         );
     List<Penaltiespl> lp = q.list();
@@ -3804,7 +3828,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Registration as r"
+          "from Tables.Registration as r"
           + " join fetch r.car"
           + " join fetch r.participantByIdDriver"
           + " join fetch r.participantByIdOwner"

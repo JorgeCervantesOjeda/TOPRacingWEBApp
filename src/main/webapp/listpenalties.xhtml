@@ -1,1 +1,285 @@
+<!DOCTYPE html>
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="jakarta.faces.facelets"
+  xmlns:h="jakarta.faces.html"
+  xmlns:f="jakarta.faces.core"
+  xmlns:p="http://primefaces.org/ui"
+  template="/TemplateNav.xhtml">
 
+  <ui:define name="content">
+
+    <table>
+      <tr>
+        <td>
+          <p:graphicImage library="images"
+                          name="gold-balance-small-nobg.png"
+                          height="30"
+                          alt="Gold cup"
+                          cache="true" />
+        </td>
+        <td>
+          <h2>#{listPenaltiesBean.penaltiesTitle}</h2>
+        </td>
+        <td>
+          <p:graphicImage library="images"
+                          name="gold-balance-small-nobg.png"
+                          height="30"
+                          alt="Gold cup"
+                          cache="true" />
+        </td>
+      </tr>
+    </table>
+
+    <p:remoteCommand name="onPeriodlevelChange_penalties"
+                     action="#{listPenaltiesBean.periodLevelChanged()}"
+                     update="contentForm" />
+    <p:remoteCommand name="onTracksetlevelChange_penalties"
+                     action="#{listPenaltiesBean.tracksetLevelChanged()}"
+                     update="contentForm" />
+
+    <p:dataTable id="penaltiesList"
+                 var="item"
+                 value="#{listPenaltiesBean.penaltiespl}"
+                 widgetVar="penaltiesTable"
+                 emptyMessage="#{viewBean.getListEmptyMsg()}"
+                 filteredValue="#{listPenaltiesBean.filteredPenaltiespl}"
+                 style="white-space: pre-line; font-stretch: condensed; width: 100%; height: 90%; padding: 0px"
+                 scrollable="true"
+                 scrollRows="100"
+                 scrollHeight="90%"
+                 scrollWidth="90%"
+                 liveScroll="false"
+                 resizableColumns="false"
+                 rowIndexVar="rowIndex"
+                 frozenColumns="0"
+                 selection="#{listPenaltiesBean.selectedPenaltiespl}"
+                 selectionMode="single"
+                 rowKey="#{item.id.idRegatta}">
+      <p:ajax event="rowSelect"
+              listener="#{listPenaltiesBean.rowSelectPenaltiespl}"
+              update="contentForm"
+              process="penaltiesList"
+              onstart="PF('dlgWait').show();" />
+
+      <f:facet name="header">
+        <p:outputPanel>
+          <h:outputText value="#{viewBean.getSearchAllFieldsLabel()}" />
+          <p:inputText id="globalFilter"
+                       onkeyup="PF('penaltiesTable').filter()"
+                       style="width:150px"
+                       placeholder="#{viewBean.getEnterKeywordPlaceholder()}" />
+
+          <p:commandButton styleClass="mybutton"
+                           actionListener="#{listPenaltiesBean.clickReturn()}"
+                           icon="fa fa-fw fa-arrow-left"
+                           title="#{viewBean.getReturnButtonTitle()}"
+                           onclick="PF('dlgWait').show();"
+                           ajax="true"
+                           style="float: left" />
+          <p:selectOneMenu value="#{listPenaltiesBean.tracksetLevelStr}"
+                           style="float: right">
+            <f:selectItems value="#{listPenaltiesBean.getTracksetLevelNames()}" />
+            <p:ajax event="change"
+                    oncomplete="onTracksetlevelChange_penalties()" />
+          </p:selectOneMenu>
+          <p:selectOneMenu value="#{listPenaltiesBean.periodLevelStr}"
+                           style="float: right">
+            <f:selectItems value="#{listPenaltiesBean.getPeriodLevelNames()}" />
+            <p:ajax event="change"
+                    oncomplete="onPeriodlevelChange_penalties()" />
+          </p:selectOneMenu>
+          <p:commandButton styleClass="mybutton"
+                           actionListener="#{listPenaltiesBean.clickCreateRegatta()}"
+                           icon="fa fa-fw fa-plus"
+                           value="#{listPenaltiesBean.getCreateRegattaButtonTitle()}"
+                           title="#{listPenaltiesBean.getCreateRegattaButtonTitle()}"
+                           onclick="PF('dlgWait').show();"
+                           ajax="true">
+            <p:confirm header="Are you sure?"
+                       message="Create new Event" />
+          </p:commandButton>
+        </p:outputPanel>
+      </f:facet>
+
+      <p:column headerText="#{listPenaltiesBean.getRegattaIdTxt()}"
+                footerText="#{listPenaltiesBean.getRegattaIdTxt()}"
+                filterBy="#{item.id.idRegatta}"
+                style="width:60px; white-space: pre-line; text-align: center; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};"
+                sortBy="#{item.id.idRegatta}">
+        <f:facet name="filter">
+          <p:inputText size="3"
+                       onkeyup="PF('penaltiesTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.id.idRegatta}"
+                      style="color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg}" />
+        <br />
+      </p:column>
+
+      <p:column filterBy="#{listPenaltiesBean.getPeriodName( item )}"
+                sortBy="#{listPenaltiesBean.getPeriodName( item )}"
+                headerText="#{listPenaltiesBean.getPeriodNameTxt()}"
+                footerText="#{listPenaltiesBean.getPeriodNameTxt()}"
+                filterMatchMode="contains"
+                width="100"
+                style="white-space: pre-line; text-align: center; color: black; background-color: ##{listPenaltiesBean.getPeriodColorBg(item)}; opacity: 0.6">
+        <h:outputText value="#{listPenaltiesBean.getPeriodName( item )}" />
+      </p:column>
+
+      <p:column filterBy="#{listPenaltiesBean.getTracksetName( item )}"
+                sortBy="#{listPenaltiesBean.getTracksetName( item )}"
+                headerText="#{listPenaltiesBean.getTracksetNameTxt()}"
+                footerText="#{listPenaltiesBean.getTracksetNameTxt()}"
+                filterMatchMode="contains"
+                width="200"
+                style="text-align: center; white-space: pre-line; padding: 2px; color: black; background-color: ##{listPenaltiesBean.getTracksetColorBg(item)}; opacity:0.6">
+        <h:outputText id="tracksetNameColumn"
+                      value="#{listPenaltiesBean.getTracksetName( item )}" />
+        <p:tooltip for="tracksetNameColumn"
+                   value="#{listPenaltiesBean.getTracksetName(item)}"
+                   position="left"
+                   style="white-space: pre-line; text-align: left; width: 200px" />
+      </p:column>
+
+      <p:column headerText="#{listPenaltiesBean.getStatusTxt()}"
+                footerText="#{listPenaltiesBean.getStatusTxt()}"
+                filterBy="#{listPenaltiesBean.getStatusName( item.regatta.status )}"
+                sortBy="#{listPenaltiesBean.getStatusName( item.regatta.status )}"
+                filterMatchMode="contains"
+                style="text-align: left; width: 100px; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText id="statusColumn"
+                      value="#{listPenaltiesBean.getStatusName( item.regatta.status )}" />
+        <p:tooltip for="statusColumn"
+                   value="#{listPenaltiesBean.getStatusName(item.regatta.status)}"
+                   position="top"
+                   style="white-space: pre-line; text-align: left; width: 150px" />
+      </p:column>
+
+      <p:column filterBy="#{listPenaltiesBean.getPercentage(item)}"
+                sortBy="#{listPenaltiesBean.getPercentage(item)}"
+                style="white-space: pre-line; text-align: center; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};"
+                headerText="#{listPenaltiesBean.getPenaltyTxt()}"
+                footerText="#{listPenaltiesBean.getPenaltyTxt()}"
+                width="80"
+                filterFunction="#{listPenaltiesBean.filterByPercent}">
+        <h:outputText value="#{listPenaltiesBean.getPercentage(item)}"
+                      style="float:right;">
+          <f:convertNumber type="percent"
+                           minFractionDigits="2" />
+        </h:outputText>
+      </p:column>
+
+      <p:column id="participantName"
+                filterBy="#{listPenaltiesBean.getParticipantName( item )}"
+                sortBy="#{listPenaltiesBean.getParticipantName( item )}"
+                footerText="#{listPenaltiesBean.getParticipantTxt()}"
+                filterMatchMode="contains"
+                width="120"
+                style="text-align: right; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <f:facet name="header">
+          <h:outputText value="#{listPenaltiesBean.getParticipantTxt()}" />
+        </f:facet>
+        <f:facet name="filter">
+          <p:inputText size="8"
+                       onkeyup="PF('penaltiesTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{listPenaltiesBean.getParticipantName( item )}" />
+      </p:column>
+
+      <p:column headerText="#{listPenaltiesBean.getDateTxt()}"
+                footerText="#{listPenaltiesBean.getDateTxt()}"
+                sortBy="#{item.regatta.datetime}"
+                style="white-space: pre-line; text-align: center; width: 90px; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText id="dateHour"
+                      value="#{item.regatta.datetime}">
+          <f:convertDateTime pattern="yyyy.MM.dd HH:mm"
+                             timeZone="#{listPenaltiesBean.timeZone}" />
+        </h:outputText>
+        <p:tooltip for="dateHour"
+                   value="#{item.regatta.datetime}"
+                   position="top" />
+      </p:column>
+
+      <p:column style="width:0px" />
+
+      <p:column headerText="#{listPenaltiesBean.getVariantTxt()}"
+                footerText="#{listPenaltiesBean.getVariantTxt()}"
+                sortBy="#{listPenaltiesBean.getVariantName(item.regatta.variant)}"
+                filterBy="#{listPenaltiesBean.getVariantName(item.regatta.variant)}"
+                filterMatchMode="contains"
+                style="width: 300px; text-align: right; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText id="fullVariant"
+                      value="#{listPenaltiesBean.getVariantName(item.regatta.variant)}" />
+        <p:tooltip for="fullVariant"
+                   value="#{listPenaltiesBean.getVariantName(item.regatta.variant)}"
+                   position="left"
+                   style="white-space: pre-line; text-align: left; width: 200px" />
+      </p:column>
+
+      <p:column headerText="#{listPenaltiesBean.getMaxWeightTxt()}"
+                footerText="#{listPenaltiesBean.getMaxWeightTxt()}"
+                sortBy="#{item.regatta.maxWeight}"
+                style="white-space: pre-line; text-align: right; width: 75px; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText value="#{item.regatta.maxWeight}" />
+      </p:column>
+
+      <p:column headerText="#{listPenaltiesBean.getMinLoadTxt()}"
+                footerText="#{listPenaltiesBean.getMinLoadTxt()}"
+                sortBy="#{item.regatta.minLoad}"
+                style="white-space: pre-line; text-align: right; width: 70px; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText value="#{item.regatta.minLoad}" />
+      </p:column>
+
+      <p:column headerText="#{listPenaltiesBean.getCurrencyTxt()}"
+                footerText="#{listPenaltiesBean.getCurrencyTxt()}"
+                sortBy="#{item.regatta.currency}"
+                style="white-space: pre-line; text-align: right; width: 70px; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText value="#{item.regatta.currency.code}" />
+      </p:column>
+
+      <p:column style="width:0px" />
+
+      <p:column headerText="#{listPenaltiesBean.getPriorityPointsTxt()}"
+                footerText="#{listPenaltiesBean.getPriorityPointsTxt()}"
+                sortBy="#{listPenaltiesBean.getPriorityPoints( item.regatta )}"
+                style="white-space: pre-line; text-align: right; width: 70px; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText value="#{listPenaltiesBean.getPriorityPoints( item.regatta )}">
+          <f:convertNumber maxFractionDigits="3" />
+        </h:outputText>
+      </p:column>
+
+      <p:column headerText="#{listPenaltiesBean.getRegistrationCostTxt()}"
+                footerText="#{listPenaltiesBean.getRegistrationCostTxt()}"
+                sortBy="#{item.regatta.entryfee}"
+                style="white-space: pre-line; text-align: right; width: 90px; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText value="#{item.regatta.entryfee}" />
+      </p:column>
+
+      <p:column headerText="#{listPenaltiesBean.getTrackRentalTxt()}"
+                footerText="#{listPenaltiesBean.getTrackRentalTxt()}"
+                sortBy="#{item.regatta.trackrental}"
+                style="white-space: pre-line; text-align: right; width: 90px; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText value="#{item.regatta.trackrental}" />
+      </p:column>
+
+      <p:column headerText="#{listPenaltiesBean.getFinishingPrizeTxt()}"
+                footerText="#{listPenaltiesBean.getFinishingPrizeTxt()}"
+                sortBy="#{item.regatta.prizeFinishing}"
+                style="white-space: pre-line; text-align: right; width: 90px; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText value="#{item.regatta.prizeFinishing}" />
+      </p:column>
+
+      <p:column headerText="#{listPenaltiesBean.getEfficiencyPrizeTxt()}"
+                footerText="#{listPenaltiesBean.getEfficiencyPrizeTxt()}"
+                sortBy="#{item.regatta.prizeEfficiency}"
+                style="white-space: pre-line; text-align: right; width: 80px; color: ##{item.regatta.colorFg}; background-color: ##{item.regatta.colorBg};">
+        <h:outputText value="#{item.regatta.prizeEfficiency}" />
+      </p:column>
+
+      <p:column style="width:0px" />
+    </p:dataTable>
+
+    <h1><br /></h1>
+  </ui:define>
+
+</ui:composition>
