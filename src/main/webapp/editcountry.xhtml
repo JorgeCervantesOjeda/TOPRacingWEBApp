@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./TemplateEdit.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="editTitle">
+    <h2>Edit Country</h2>
+    <p:commandButton styleClass="mybutton"   type="submit"
+                     actionListener="#{editCountryBean.clickEndEdit()}"
+                     onclick="PF('dlgWait').show();"
+                     ajax="true"
+                     icon="fa fa-fw fa-arrow-left"
+                     style="float: left"
+                     />
+  </ui:define>
+  <ui:define name="editForm">
+    <table>
+      <tr> <td align="right" class="field_label">Identity:</td>
+        <td align="left"> <h:outputText class="field_output"
+                                        value="#{editCountryBean.country.id}"/></td></tr>
+
+      <tr> <td align="right" class="field_label">Name:</td>
+        <td align="left">
+          <p:inputText value="#{editCountryBean.country.name}"
+                       disabled="#{editCountryBean.disableEditNameField}"
+                       required="true"/></td></tr>
+
+
+      <tr> <td align="right" class="field_label">Planet Region:</td>
+        <td align="left">
+          <h:outputText class="field_output"
+                        value="#{editCountryBean.getPlanetregionName()}"
+                        style="white-space: pre-line; text-align: left;"
+                        />
+          <br/>
+          <p:commandButton styleClass="mybutton"  actionListener="#{editCountryBean.clickViewPlanetregions()}"
+                           onclick="PF('dlgWait').show();"
+                           ajax="true"
+                           value="View Planet Regions"
+                           /></td></tr>
+
+    </table>
+    <br/>
+
+    <p:commandButton styleClass="mybutton"   type="submit"
+                     actionListener="#{editCountryBean.clickSave()}"
+                     onclick="PF('dlgWait').show();"
+                     ajax="true"
+                     disabled="#{editCountryBean.disableSaveButton}"
+                     value="Save data"
+                     />
+    <br/><br/>
+  </ui:define>
+
+</ui:composition>
+
+

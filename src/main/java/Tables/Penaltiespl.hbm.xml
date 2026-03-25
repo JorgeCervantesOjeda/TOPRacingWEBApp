@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 17-Jul-2024 12:43:51 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class entity-name="Penaltiespl" name="Tables.Penaltiespl" table="penaltiespl" catalog="topracing26" optimistic-lock="version">
+        <composite-id name="id" class="Tables.PenaltiesplId">
+            <key-property name="idRegatta" type="long">
+                <column name="id_regatta" />
+            </key-property>
+            <key-property name="levelPeriod" type="int">
+                <column name="level_period" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="regatta" class="Tables.Regatta" update="false" insert="false" fetch="select">
+            <column name="id_regatta" not-null="true" />
+        </many-to-one>
+        <property name="value0" type="int">
+            <column name="value0" not-null="true" />
+        </property>
+        <property name="value1" type="int">
+            <column name="value1" not-null="true" />
+        </property>
+        <property name="value2" type="int">
+            <column name="value2" not-null="true" />
+        </property>
+        <property name="value3" type="int">
+            <column name="value3" not-null="true" />
+        </property>
+        <property name="value4" type="int">
+            <column name="value4" not-null="true" />
+        </property>
+        <property name="value5" type="int">
+            <column name="value5" not-null="true" />
+        </property>
+        <property name="value6" type="int">
+            <column name="value6" not-null="true" />
+        </property>
+        <property name="value7" type="int">
+            <column name="value7" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

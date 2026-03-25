@@ -1,0 +1,267 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets"
+  template="./TemplateNav.xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+  xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+
+    <table>
+      <tr>
+        <td>
+        <p:graphicImage library="images" name="book.png" height="30" alt="Registrations book" cache="true" />
+        </td>
+        <td align="center">
+          <h2>#{listRegistrationsBean.getListRegistrationTitle()}</h2>
+          <div style="color: black">
+            #{listRegistrationsBean.getRegistrationAdviceTxt()}
+            <i class="fa fa-fw fa-balance-scale" />
+          </div>
+        </td>
+        <td>
+        <p:graphicImage library="images" name="book.png" height="30" alt="Registrations book" cache="true" />
+        </td>
+      </tr>
+    </table>
+
+    <p:dataTable id="registrationsList" var="item" value="#{listRegistrationsBean.registrations}"
+      widgetVar="registrationsTable" emptyMessage="#{viewBean.getListEmptyMsg()}"
+      filteredValue="#{listRegistrationsBean.filteredRegistration}"
+      style="white-space: pre-line; margin-bottom: 10px; font-stretch: condensed; width: 100%; height: 90%; padding: 0%"
+      scrollable="true" scrollRows="20" scrollHeight="90%" scrollWidth="90%" liveScroll="false" resizableColumns="true"
+      selection="#{listRegistrationsBean.selectedRegistration}" selectionMode="single" rowIndexVar="rowIndex"
+      rowKey="#{item.id}" sortBy="#{item.regatta.id}">
+      <p:ajax event="rowSelect" listener="#{listRegistrationsBean.rowSelectRegistration}" update="contentForm"
+        process="registrationsList" onstart="PF('dlgWait').show();" />
+
+      <f:facet name="header">
+        <p:outputPanel>
+          <h:outputText value="#{viewBean.getSearchAllFieldsLabel()}" />
+          <p:inputText id="globalFilter" onkeyup="PF('registrationsTable').filter()" style="width:150px"
+            placeholder="#{viewBean.getEnterKeywordPlaceholder()}" />
+
+          <p:commandButton styleClass="mybutton" actionListener="#{listRegistrationsBean.clickReturn()}"
+            icon="fa fa-fw fa-arrow-left" title="#{viewBean.getReturnButtonTitle()}" onclick="PF('dlgWait').show();"
+            ajax="true" style="float: left" />
+        </p:outputPanel>
+      </f:facet>
+
+      <p:column headerText="#{listRegistrationsBean.getIdTxt()}" footerText="#{listRegistrationsBean.getIdTxt()}"
+        filterBy="#{item.id}" sortBy="#{item.id}" filterMatchMode="contains"
+        style="white-space: pre-line; text-align: right; width: 90px;">
+        <f:facet name="filter">
+          <p:inputText size="4" onkeyup="PF('registrationsTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.id}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getStatusTxt()}"
+        footerText="#{listRegistrationsBean.getStatusTxt()}"
+        filterBy="#{listRegistrationsBean.getStatusName( item.status )}"
+        sortBy="#{listRegistrationsBean.getStatusName( item.status )}" filterMatchMode="contains"
+        style="white-space: pre-line; text-align: right; width: 90px;">
+        <f:facet name="filter">
+          <p:inputText size="4" onkeyup="PF('registrationsTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{listRegistrationsBean.getStatusName( item.status )}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getRegattaTxt()}"
+        footerText="#{listRegistrationsBean.getRegattaTxt()}" filterBy="#{item.regatta.id}" sortBy="#{item.regatta.id}"
+        filterMatchMode="exact"
+        style="white-space: pre-line; text-align: right; width: 90px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <f:facet name="filter">
+          <p:inputText style="width: 40px" size="3" onkeyup="PF('registrationsTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.regatta.id}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getVariantTxt()}"
+        footerText="#{listRegistrationsBean.getVariantTxt()}" filterBy="#{item.regatta.variant.name}"
+        sortBy="#{item.regatta.variant.name}" filterMatchMode="contains"
+        style="white-space: pre-line; text-align: left; width: 90px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <f:facet name="filter">
+          <p:inputText size="5" onkeyup="PF('registrationsTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.regatta.variant.name}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getVenueTxt()}" footerText="#{listRegistrationsBean.getVenueTxt()}"
+        filterBy="#{item.regatta.variant.venue.name}" sortBy="#{item.regatta.variant.venue.name}"
+        filterMatchMode="contains"
+        style="white-space: pre-line; text-align: left; width: 120px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <f:facet name="filter">
+          <p:inputText size="6" onkeyup="PF('registrationsTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.regatta.variant.venue.name}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getProvinceregionTxt()}"
+        footerText="#{listRegistrationsBean.getProvinceregionTxt()}"
+        filterBy="#{item.regatta.variant.venue.provinceregion.name}"
+        sortBy="#{item.regatta.variant.venue.provinceregion.name}" filterMatchMode="contains"
+        style="white-space: pre-line; text-align: left; width: 120px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <f:facet name="filter">
+          <p:inputText size="6" onkeyup="PF('registrationsTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.regatta.variant.venue.provinceregion.name}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getDateTxt()}" footerText="#{listRegistrationsBean.getDateTxt()}"
+        filterBy="#{item.regatta.datetime}" sortBy="#{item.regatta.datetime}"
+        style="white-space: pre-line; text-align: center; width: 90px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.regatta.datetime}">
+          <f:convertDateTime pattern="yyyy.MM.dd HH:mm" timeZone="#{listRegistrationsBean.getTimeZone()}" />
+        </h:outputText>
+      </p:column>
+
+      <p:column style="width:0px">
+
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getDriverTxt()}"
+        footerText="#{listRegistrationsBean.getDriverTxt()}"
+        filterBy="#{listRegistrationsBean.getParticipantName( item.participantByIdDriver )}"
+        sortBy="#{listRegistrationsBean.getParticipantName( item.participantByIdDriver )}" filterMatchMode="contains"
+        style="white-space: pre-line; text-align: left; width: 90px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{listRegistrationsBean.getParticipantName( item.participantByIdDriver )}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getCarTxt()}" footerText="#{listRegistrationsBean.getCarTxt()}"
+        filterBy="#{item.car.nickname}" sortBy="#{item.car.nickname}" filterMatchMode="contains"
+        style="white-space: pre-line; text-align: left; width: 100px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <f:facet name="filter">
+          <p:inputText size="5" onkeyup="PF('registrationsTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.car.nickname}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getCarOwnerTxt()}"
+        footerText="#{listRegistrationsBean.getCarOwnerTxt()}"
+        filterBy="#{listRegistrationsBean.getParticipantName( item.participantByIdOwner )}"
+        sortBy="#{listRegistrationsBean.getParticipantName( item.participantByIdOwner )}" filterMatchMode="contains"
+        style="white-space: pre-line; text-align: left; width: 90px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <f:facet name="filter">
+          <p:inputText size="5" onkeyup="PF('registrationsTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{listRegistrationsBean.getParticipantName( item.participantByIdOwner )}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getBasevalueTxt()}"
+        footerText="#{listRegistrationsBean.getBasevalueTxt()}" sortBy="#{item.valueBase}"
+        style="white-space: pre-line; text-align: right; width: 80px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.valueBase}">
+          <f:convertNumber pattern="+#.###E0#" />
+        </h:outputText>
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getLaptimeTxt()}"
+        footerText="#{listRegistrationsBean.getLaptimeTxt()}" sortBy="#{item.secondsLap}"
+        style="white-space: pre-line; text-align: center; width: 70px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.secondsLap}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getSpeedPosTxt()}"
+        footerText="#{listRegistrationsBean.getSpeedPosTxt()}" sortBy="#{item.posSpeed}"
+        style="white-space: pre-line; text-align: center; width: 70px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.posSpeed}" />
+      </p:column>
+
+      <p:column style="width:0px">
+
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getGridPosTxt()}"
+        footerText="#{listRegistrationsBean.getGridPosTxt()}" sortBy="#{item.posRacegrid}"
+        style="white-space: pre-line; text-align: center; width: 50px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.posRacegrid}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getRaceLapsTxt()}"
+        footerText="#{listRegistrationsBean.getRaceLapsTxt()}" sortBy="#{item.lapsRace}"
+        style="white-space: pre-line; text-align: center; width: 50px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.lapsRace}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getRacePosTxt()}"
+        footerText="#{listRegistrationsBean.getRacePosTxt()}" sortBy="#{item.posRace}"
+        style="white-space: pre-line; text-align: center; width: 50px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.posRace}" />
+      </p:column>
+
+
+
+
+
+
+
+
+      <p:column headerText="#{listRegistrationsBean.getAuctionValueTxt()}"
+        footerText="#{listRegistrationsBean.getAuctionValueTxt()}" sortBy="#{item.valueAuction}"
+        style="white-space: pre-line; text-align: right; width: 60px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.valueAuction}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getSoldToTxt()}"
+        footerText="#{listRegistrationsBean.getSoldToTxt()}" sortBy="#{item.participantByIdBuyer.id}"
+        style="white-space: pre-line; text-align: right; width: 60px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.participantByIdBuyer.id}" />
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getEfficiencyPosTxt()}"
+        footerText="#{listRegistrationsBean.getEfficiencyPosTxt()}" sortBy="#{item.posEfficiency}"
+        style="white-space: pre-line; text-align: center; width: 60px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.posEfficiency}" />
+      </p:column>
+
+
+
+      <p:column style="width:0px">
+
+      </p:column>
+
+
+
+      <p:column headerText="#{listRegistrationsBean.getFinishingBetTxt()}"
+        footerText="#{listRegistrationsBean.getFinishingBetTxt()}" sortBy="#{item.betFinishing}"
+        style="white-space: pre-line; text-align: right; width: 100px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.betFinishing}">
+          <f:convertNumber pattern="###,###,###,###.00" />
+        </h:outputText>
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getFinishingPrizeTxt()}"
+        footerText="#{listRegistrationsBean.getFinishingPrizeTxt()}" sortBy="#{item.prizeFinishing}"
+        style="white-space: pre-line; text-align: right; width: 100px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.prizeFinishing}">
+          <f:convertNumber pattern="###,###,###,###.00" />
+        </h:outputText>
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getEfficiencyBetTxt()}"
+        footerText="#{listRegistrationsBean.getEfficiencyBetTxt()}" sortBy="#{item.betEfficiency}"
+        style="white-space: pre-line; text-align: right; width: 100px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.betEfficiency}">
+          <f:convertNumber pattern="###,###,###,###.00" />
+        </h:outputText>
+      </p:column>
+
+      <p:column headerText="#{listRegistrationsBean.getEfficiencyPrizeTxt()}"
+        footerText="#{listRegistrationsBean.getEfficiencyPrizeTxt()}" sortBy="#{item.prizeEfficiency}"
+        style="white-space: pre-line; text-align: right; width: 100px; color: #{item.regatta.colorFg}; background-color: #{item.regatta.colorBg}">
+        <h:outputText value="#{item.prizeEfficiency}">
+          <f:convertNumber pattern="###,###,###,###.00" />
+        </h:outputText>
+      </p:column>
+
+      <p:column style="width:0px">
+
+      </p:column>
+
+    </p:dataTable>
+
+    <p:remoteCommand name="onload" oncomplete="PF('registrationsTable').filter()" autoRun="true" />
+    <h1><br /></h1>
+
+  </ui:define>
+
+</ui:composition>
+

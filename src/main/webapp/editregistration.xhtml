@@ -1,0 +1,105 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./TemplateEdit.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                >
+
+  <ui:define name="editTitle">
+    <h2>#{editRegistrationBean.getEditRegistrationTitle()}</h2>
+    <p:commandButton styleClass="mybutton"   type="submit"
+                     actionListener="#{editRegistrationBean.clickEndEdit()}"
+                     onclick="PF('dlgWait').show();"
+                     icon="fa fa-fw fa-arrow-left"
+                     style="float: left"
+                     />
+  </ui:define>
+  <ui:define name="editForm">
+    <table>
+      <tr>
+        <td align="right" class="field_label">#{editRegistrationBean.getRegattaIdLabel()}</td>
+        <td align="left"> <h:outputText  value="#{editRegistrationBean.registration.regatta.id}"
+                                         class="field_output"/></td></tr>
+
+      <tr>
+        <td align="right" class="field_label">#{editRegistrationBean.getStatusLabel()}</td>
+        <td align="left"> <h:outputText  value="#{editRegistrationBean.getStatusName()}"
+                                         class="field_output"/></td></tr>
+
+      <tr>
+        <td align="right" class="field_label">#{editRegistrationBean.getDriverLabel()}</td>
+        <td align="left">
+          <h:outputText  value="#{editRegistrationBean.registration.participantByIdDriver.id} #{editRegistrationBean.registration.participantByIdDriver.namesGiven} #{editRegistrationBean.registration.participantByIdDriver.namesFamily}"
+                         class="field_output" >
+            <f:convertNumber maxIntegerDigits="6" integerOnly="true" />
+          </h:outputText>
+          <br/>
+          <p:commandButton styleClass="mybutton"
+                           disabled="#{editRegistrationBean.getDisableViewDriversButton()}"
+                           actionListener="#{editRegistrationBean.clickViewDrivers()}"
+                           onclick="PF('dlgWait').show();"
+                           value="#{editRegistrationBean.getViewDriversButton()}" >
+          </p:commandButton>
+        </td>
+      </tr>
+
+      <tr> <td align="right" class="field_label">#{editRegistrationBean.getCarIdLabel()}</td>
+        <td align="left">
+          <h:outputText  value="#{editRegistrationBean.registration.car.id} #{editRegistrationBean.registration.car.nickname}"
+                         class="field_output" >
+          </h:outputText>
+          <br/>
+          <p:commandButton styleClass="mybutton"
+                           disabled="#{editRegistrationBean.getDisableViewCarsButton()}"
+                           actionListener="#{editRegistrationBean.clickViewCars()}"
+                           onclick="PF('dlgWait').show();"
+                           value="#{editRegistrationBean.getViewCarsButton()}" >
+          </p:commandButton></td></tr>
+
+      <tr>
+        <td align="right" class="field_label">#{editRegistrationBean.getCarOwnerLabel()}</td>
+        <td align="left">
+          <h:outputText
+            class="field_output"
+            value="#{editRegistrationBean.getParticipantName(
+                     editRegistrationBean.registration.participantByIdOwner )}"/>
+        </td></tr>
+
+      <tr> <td align="right" class="field_label">#{editRegistrationBean.getRegistrationCostLabel()}</td>
+        <td align="left">
+          <h:outputText class="field_output"   value="#{editRegistrationBean.getRegattaRegistrationCost()}">
+            <f:convertNumber type="currency" currencySymbol="#{editRegistrationBean.getCurrencySymbol()}"/>
+          </h:outputText></td></tr>
+
+      <tr> <td align="right" class="field_label">#{editRegistrationBean.getBetFinishingLabel()}</td>
+        <td align="left">
+          <p:inputText  value="#{editRegistrationBean.registration.betFinishing}"
+                        disabled="#{editRegistrationBean.getDisableEditBetFinishing()}"
+                        required="true"
+                        style="width: 80px" >
+          </p:inputText></td></tr>
+
+      <tr> <td align="right" class="field_label">#{editRegistrationBean.getBetEfficiencyLabel()}</td>
+        <td align="left">
+          <p:inputText  value="#{editRegistrationBean.registration.betEfficiency}"
+                        disabled="#{editRegistrationBean.getDisableEditBetEfficiency()}"
+                        required="true"
+                        style="width: 80px" >
+          </p:inputText></td></tr>
+
+    </table>
+    <br/>
+
+    <p:commandButton styleClass="mybutton"   type="submit"
+                     disabled="#{editRegistrationBean.getDisableSaveButton()}"
+                     actionListener="#{editRegistrationBean.clickSave()}"
+                     onclick="PF('dlgWait').show();"
+                     value="Save data"
+                     />
+    <br/><br/>
+  </ui:define>
+
+</ui:composition>
+
+

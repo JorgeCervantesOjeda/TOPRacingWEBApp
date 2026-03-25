@@ -1,0 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./TemplateEdit.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="editTitle">
+    <h2>Edit Car</h2>
+    <p:commandButton styleClass="mybutton"   type="submit"
+                     actionListener="#{editCarBean.clickEndEdit()}"
+                     onclick="PF('dlgWait').show();"
+                     ajax="true"
+                     icon="fa fa-fw fa-arrow-left"
+                     style="float: left"
+                     />
+  </ui:define>
+  <ui:define name="editForm">
+    <table>
+      <tr> <td align="right" class="field_label">Id:</td>
+        <td align="left">
+          <h:outputText class="field_output"
+                        value="#{editCarBean.car.id}"/></td></tr>
+
+      <tr> <td align="right" class="field_label">Nickname:</td>
+        <td align="left">
+          <p:inputText value="#{editCarBean.car.nickname}"
+                       disabled="#{editCarBean.disableEditNicknameField}"
+                       required="true"/></td></tr>
+
+      <tr> <td align="right" class="field_label">Weight:</td>
+        <td align="left">
+          <p:inputText value="#{editCarBean.car.weight}"
+                       disabled="#{editCarBean.disableEditWeightField}"
+                       required="true"/>
+          <h:outputText class="field_output"
+                        value="kg"/>
+        </td></tr>
+
+      <tr> <td align="right" class="field_label">Width:</td>
+        <td align="left">
+          <p:inputText value="#{editCarBean.car.width}"
+                       disabled="#{editCarBean.disableEditWidthField}"
+                       required="true"/>
+          <h:outputText class="field_output"
+                        value="cm" />
+        </td></tr>
+
+      <tr>
+        <td align="right" class="field_label">Description</td>
+        <td align="center">
+          <p:textEditor
+            widgetVar="editor2"
+            value="#{editCarBean.description}"
+            height="300"
+            readonly="false"
+            style="margin-bottom:10px; color: black"
+            placeholder="Describe car here."
+            secure="false">
+            <f:facet name="toolbar">
+              <span class="ql-formats">
+                <button class="ql-bold"></button>
+                <button class="ql-italic"></button>
+                <button class="ql-underline"></button>
+                <button class="ql-strike"></button>
+              </span>
+              <span class="ql-formats">
+                <select class="ql-font"></select>
+                <select class="ql-size"></select>
+              </span>
+            </f:facet>
+          </p:textEditor>
+
+        </td>
+      </tr>
+
+      <tr> <td align="right" class="field_label">Owner:</td>
+        <td align="left">
+          <h:outputText class="field_output"
+                        value="#{editCarBean.participantName}"/>
+        </td></tr>
+
+    </table>
+
+    <br/>
+    <p:commandButton styleClass="mybutton"   type="submit"
+                     actionListener="#{editCarBean.clickSave()}"
+                     onclick="PF('dlgWait').show();"
+                     disabled="#{editCarBean.disableSaveButton}"
+                     ajax="true"
+                     value="Save data"
+                     />
+    <br/><br/>
+  </ui:define>
+
+</ui:composition>
+
+

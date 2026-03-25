@@ -1,0 +1,65 @@
+body {
+  background-color: darkgray;
+  font-size: 12px;
+  font-family: 'lexend', sans-serif !important;
+  color: whitesmoke;
+  margin: 10px;
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+  color: darkred;
+  font-family: 'lexend', sans-serif !important;
+  text-shadow: -2px 2px 3px white, 2px -2px 3px white, -2px -2px 3px white, 2px 2px 3px white !important;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0px;
+  padding: 0px;
+  color: black;
+  display: inline;
+  font-family: 'lexend', sans-serif !important;
+  text-shadow: -2px 2px 3px white, 2px -2px 3px white, -2px -2px 3px white, 2px 2px 3px white !important;
+}
+
+h3 {
+  font-family: 'lexend', sans-serif !important;
+  text-shadow: -1px 1px 1px white, 1px -1px 1px white, -1px -1px 1px white, 1px 1px 1px white !important;
+}
+
+
+p {
+  font-family: 'lexend', sans-serif !important;
+  text-shadow: -1px 1px 1px white, 1px -1px 1px white, -1px -1px 1px white, 1px 1px 1px white !important;
+}
+li {
+  font-family: 'lexend', sans-serif !important;
+  text-shadow: -1px 1px 1px white, 1px -1px 1px white, -1px -1px 1px white, 1px 1px 1px white !important;
+}
+
+table {
+  font-family: 'lexend', sans-serif !important;
+}
+
+input {
+  font-family: 'lexend', sans-serif !important;
+}
+
+a:link,
+a:visited {
+  color: #ece3a5;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:link:hover,
+a:visited:hover {
+  color: aqua;
+  font-weight: bolder;
+  font-size: 16px;
+}

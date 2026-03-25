@@ -1,0 +1,147 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="jakarta.faces.facelets"
+  template="/TemplateNav.xhtml" xmlns:h="jakarta.faces.html" xmlns:f="jakarta.faces.core"
+  xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+
+    <table>
+      <tr>
+        <td>
+        <p:graphicImage library="images" name="goldCup.png" height="30" alt="Gold cup" cache="true" />
+        </td>
+        <td>
+          <h2>#{listPointscountsBean.getPointscountTitle()}</h2>
+        </td>
+        <td>
+        <p:graphicImage library="images" name="goldCup.png" height="30" alt="Gold cup" cache="true" />
+        </td>
+      </tr>
+    </table>
+
+    <p:remoteCommand name="onPeriodlevelChange" action="#{listPointscountsBean.periodLevelChanged()}"
+      update="contentForm" />
+    <p:remoteCommand name="onTracksetlevelChange" action="#{listPointscountsBean.tracksetLevelChanged()}"
+      update="contentForm" />
+
+    <p:dataTable id="pointscountList" var="item" value="#{listPointscountsBean.pointscount}"
+      widgetVar="pointscountTable" emptyMessage="#{viewBean.getListEmptyMsg()}"
+      filteredValue="#{listPointscountsBean.filteredPointscount}"
+      style="white-space: pre-line; font-stretch: ultra-condensed; width: 100%; height: 90%; padding: 0px"
+      scrollable="true" scrollHeight="80%" scrollWidth="90%" liveScroll="false" resizableColumns="true"
+      rowIndexVar="rowIndex">
+
+      <f:facet name="header">
+        <p:outputPanel>
+          <h:outputText value="#{viewBean.getSearchAllFieldsLabel()}" />
+          <p:inputText id="globalFilter" onkeyup="PF('pointscountTable').filter()" style="width:150px"
+            placeholder="#{viewBean.getEnterKeywordPlaceholder()}" />
+
+          <p:commandButton styleClass="mybutton" actionListener="#{listPointscountsBean.clickReturn()}"
+            icon="fa fa-fw fa-arrow-left" title="#{viewBean.getReturnButtonTitle()}" onclick="PF('dlgWait').show();"
+            ajax="true" style="float: left" />
+          <p:selectOneMenu value="#{listPointscountsBean.periodLevelStr}" style="float: right">
+            <f:selectItems value="#{listPointscountsBean.getPeriodLevelNames()}" />
+            <p:ajax event="change" oncomplete="onPeriodlevelChange()" />
+          </p:selectOneMenu>
+          <p:selectOneMenu value="#{listPointscountsBean.tracksetLevelStr}" style="float: right">
+            <f:selectItems value="#{listPointscountsBean.getTracksetLevelNames()}" />
+            <p:ajax event="change" oncomplete="onTracksetlevelChange()" />
+          </p:selectOneMenu>
+
+        </p:outputPanel>
+      </f:facet>
+
+      <p:column filterBy="#{listPointscountsBean.getPeriodName( item )}"
+        headerText="#{listPointscountsBean.getPeriodNameTxt()}" footerText="#{listPointscountsBean.getPeriodNameTxt()}"
+        filterMatchMode="contains" width="80"
+        style="white-space: pre-line; padding: 2px; color: black; background-color: #{listPointscountsBean.getPeriodColorBg(item)}">
+        <h:outputText value="#{listPointscountsBean.getPeriodName( item )}" />
+      </p:column>
+
+      <p:column filterBy="#{listPointscountsBean.getTracksetName( item )}"
+        headerText="#{listPointscountsBean.getTracksetNameTxt()}"
+        footerText="#{listPointscountsBean.getTracksetNameTxt()}" filterMatchMode="contains" width="130"
+        style="white-space: pre-line; padding: 2px; color: black; background-color: #{listPointscountsBean.getTracksetColorBg(item)}">
+        <h:outputText value="#{listPointscountsBean.getTracksetName( item )}" />
+      </p:column>
+
+      <p:column id="participantName" filterBy="#{listPointscountsBean.getParticipantName( item.id.idParticipant )}"
+        sortBy="#{listPointscountsBean.getParticipantName( item.id.idParticipant )}"
+        footerText="#{listPointscountsBean.getParticipantTxt()}" filterMatchMode="contains" width="120"
+        style="white-space: pre-line; padding: 2px">
+        <f:facet name="header">
+          <h:outputText value="#{listPointscountsBean.getParticipantTxt()}" />
+          <p:tooltip value="Participant Name" for="participantName" position="top" />
+        </f:facet>
+        <h:outputText value="#{listPointscountsBean.getParticipantName( item.id.idParticipant )}" />
+      </p:column>
+
+      <p:column sortBy="#{item.pointsSD+item.pointsRD}" style="white-space: pre-line; text-align: right"
+        headerText="#{listPointscountsBean.getSR_DriverPointsTxt()}"
+        footerText="#{listPointscountsBean.getSR_DriverPointsTxt()}" width="60">
+        <h:outputText value="#{item.pointsSD+item.pointsRD}">
+          <f:convertNumber groupingUsed="true" />
+        </h:outputText>
+      </p:column>
+
+      <p:column sortBy="#{item.pointsSD}" style="white-space: pre-line; text-align: right"
+        headerText="#{listPointscountsBean.getS_DriverPointsTxt()}"
+        footerText="#{listPointscountsBean.getS_DriverPointsTxt()}" width="60">
+        <h:outputText value="#{item.pointsSD}">
+          <f:convertNumber groupingUsed="true" />
+        </h:outputText>
+      </p:column>
+
+      <p:column sortBy="#{item.pointsRD}" style="white-space: pre-line; text-align: right"
+        headerText="#{listPointscountsBean.getR_DriverPointsTxt()}"
+        footerText="#{listPointscountsBean.getR_DriverPointsTxt()}" width="60">
+        <h:outputText value="#{item.pointsRD}">
+          <f:convertNumber groupingUsed="true" />
+        </h:outputText>
+      </p:column>
+
+      <p:column sortBy="#{item.pointsED}" style="white-space: pre-line; text-align: right"
+        headerText="#{listPointscountsBean.getE_DriverPointsTxt()}"
+        footerText="#{listPointscountsBean.getE_DriverPointsTxt()}" width="60">
+        <h:outputText value="#{item.pointsED}">
+          <f:convertNumber groupingUsed="true" />
+        </h:outputText>
+      </p:column>
+
+      <p:column sortBy="#{item.pointsSO}" style="white-space: pre-line; text-align: right"
+        headerText="#{listPointscountsBean.getS_OwnerPointsTxt()}"
+        footerText="#{listPointscountsBean.getS_OwnerPointsTxt()}" width="60">
+        <h:outputText value="#{item.pointsSO}">
+          <f:convertNumber groupingUsed="true" />
+        </h:outputText>
+      </p:column>
+
+      <p:column sortBy="#{item.pointsRO}" style="white-space: pre-line; text-align: right"
+        headerText="#{listPointscountsBean.getR_OwnerPointsTxt()}"
+        footerText="#{listPointscountsBean.getR_OwnerPointsTxt()}" width="60">
+        <h:outputText value="#{item.pointsRO}">
+          <f:convertNumber groupingUsed="true" />
+        </h:outputText>
+      </p:column>
+
+      <p:column sortBy="#{item.pointsEO}" style="white-space: pre-line; text-align: right"
+        headerText="#{listPointscountsBean.getE_OwnerPointsTxt()}"
+        footerText="#{listPointscountsBean.getE_OwnerPointsTxt()}" width="60">
+        <h:outputText value="#{item.pointsEO}">
+          <f:convertNumber groupingUsed="true" />
+        </h:outputText>
+      </p:column>
+      <!--
+            <p:ajax event="filter" update="contentForm:graphsAccordion" />
+            <p:ajax event="sort" update="contentForm:graphsAccordion" />
+      -->
+    </p:dataTable>
+
+    <p:remoteCommand name="onCompleteAuto" oncomplete="PF('pointscountTable').filter()" autoRun="true" />
+
+    <h1><br /></h1>
+  </ui:define>
+
+
+</ui:composition>
+

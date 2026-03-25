@@ -1,0 +1,115 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./TemplateBasic.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+    <h2>Cars: #{listCarsBean.getNumCar()}</h2>
+
+    <p:dataTable id="carsList"
+                 var="item"
+                 value="#{listCarsBean.cars}"
+                 widgetVar="carsTable"
+                 emptyMessage="No cars match that criteria"
+                 filteredValue="#{listCarsBean.filteredCar}"
+                 style="font-stretch: condensed; width: 100%; height: 90%;"
+                 scrollable="true"
+                 scrollRows="5"
+                 scrollHeight="90%"
+                 scrollWidth="90%"
+                 liveScroll="false"
+                 resizableColumns="true"
+                 selection="#{listCarsBean.selectedCar}"
+                 selectionMode="single"
+                 rowKey="#{item.id}"
+                 rowIndexVar="rowIndex"
+                 >
+      <p:ajax event="rowSelect"
+              listener="#{listCarsBean.rowSelectCar}"
+              update="contentForm"
+              process="carsList"
+              onstart="PF('dlgWait').show();" />
+
+
+      <f:facet name="header">
+        <p:outputPanel>
+          <h:outputText value="Search all columns" />
+          <p:inputText id="globalFilter" onkeyup="PF('carsTable').filter()"
+                       style="width:150px"
+                       placeholder="Write here"/>
+
+          <p:commandButton styleClass="mybutton"
+                           actionListener="#{listCarsBean.clickNewCar()}"
+                           value="Create new Car"
+                           onclick="PF('dlgWait').show();"
+                           ajax="true"
+                           style="float: right" >
+            <p:confirm header="Are you sure?"
+                       message="Create new Car" />
+          </p:commandButton>
+          <p:commandButton styleClass="mybutton"
+                           actionListener="#{listCarsBean.clickReturn()}"
+                           icon="fa fa-fw fa-arrow-left"
+                           onclick="PF('dlgWait').show();"
+                           ajax="true"
+                           style="float: left" ></p:commandButton>
+        </p:outputPanel>
+      </f:facet>
+
+      <p:column headerText="&#160;" footerText="&#160;"
+                style="width: 80px"
+                >
+        <p:commandButton styleClass="mybutton"  actionListener="#{listCarsBean.clickSelectCar( item )}"
+                         disabled="#{listCarsBean.disableSelectCar(item)}"
+                         value="Select"
+                         onclick="PF('dlgWait').show();"
+                         ajax="true"/> </p:column>
+
+      <p:column headerText="Id" footerText="Id"
+                filterBy="#{item.id}"
+                sortBy="#{item.id}"
+                filterMatchMode="exact"
+                style="white-space: pre-line; text-align: center; width: 30px">
+        <f:facet name="filter">  <p:inputText style="width: 35px" size="1"
+                                              onkeyup="PF('carsTable').filter()" /> </f:facet>
+        <h:outputText value="#{item.id}"/>  </p:column>
+
+      <p:column headerText="Nickname" footerText="Nickname"
+                filterBy="#{item.nickname}"
+                sortBy="#{item.nickname}"
+                filterMatchMode="contains"
+                style="white-space: pre-line; text-align: left; width: 180px">
+        <f:facet name="filter">  <p:inputText style="width: 70px" size="1"
+                                              onkeyup="PF('carsTable').filter()" /> </f:facet>
+        <h:outputText value="#{item.nickname}"/>  </p:column>
+
+
+      <p:column headerText="Weight" footerText="Weight"
+                sortBy="#{item.weight}"
+                style="white-space: pre-line; text-align: right; width: 40px">
+        <h:outputText value="#{item.weight}"/></p:column>
+
+      <p:column headerText="Width" footerText="Width"
+                sortBy="#{item.width}"
+                style="white-space: pre-line; text-align: right; width: 40px">
+        <h:outputText value="#{item.width}"/></p:column>
+
+      <p:column headerText="Owner" footerText="Owner"
+                filterBy="#{listCarsBean.getOwnerName( item )}"
+                sortBy="#{listCarsBean.getOwnerName( item )}"
+                filterMatchMode="contains"
+                style="white-space: pre-line; text-align: left">
+        <f:facet name="filter">  <p:inputText style="width: 90px;" size="1"
+                                              onkeyup="PF('carsTable').filter()" /> </f:facet>
+        <h:outputText value="#{listCarsBean.getOwnerName( item )}"/>  </p:column>
+
+    </p:dataTable>
+    <h1><br /></h1>
+
+  </ui:define>
+
+</ui:composition>
+
+

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 17-Jul-2024 12:43:51 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class entity-name="Pointscount" name="Tables.Pointscount" table="pointscount" catalog="topracing26" optimistic-lock="version">
+        <composite-id name="id" class="Tables.PointscountId">
+            <key-property name="idParticipant" type="long">
+                <column name="id_participant" />
+            </key-property>
+            <key-property name="levelPeriod" type="int">
+                <column name="level_period" />
+            </key-property>
+            <key-property name="idPeriod" type="long">
+                <column name="id_period" />
+            </key-property>
+            <key-property name="levelTrackset" type="int">
+                <column name="level_trackset" />
+            </key-property>
+            <key-property name="idTrackset" type="long">
+                <column name="id_trackset" />
+            </key-property>
+        </composite-id>
+        <many-to-one name="participant" class="Tables.Participant" update="false" insert="false" fetch="select">
+            <column name="id_participant" not-null="true" />
+        </many-to-one>
+        <property name="pointsSD" type="double">
+            <column name="points_S_D" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="pointsSO" type="double">
+            <column name="points_S_O" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="pointsRD" type="double">
+            <column name="points_R_D" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="pointsRO" type="double">
+            <column name="points_R_O" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="pointsED" type="double">
+            <column name="points_E_D" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="pointsEO" type="double">
+            <column name="points_E_O" precision="22" scale="0" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

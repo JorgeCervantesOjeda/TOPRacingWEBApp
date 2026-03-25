@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 17-Jul-2024 12:43:51 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="Tables.Venue" table="venue" catalog="topracing26" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="participant" class="Tables.Participant" fetch="select">
+            <column name="id_owner" not-null="true" />
+        </many-to-one>
+        <many-to-one name="provinceregion" class="Tables.Provinceregion" fetch="select">
+            <column name="id_provinceregion" not-null="true" />
+        </many-to-one>
+        <property name="name" type="string">
+            <column name="name" not-null="true" />
+        </property>
+        <property name="meridian" type="double">
+            <column name="meridian" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="parallel" type="double">
+            <column name="parallel" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="idCreator" type="long">
+            <column name="id_creator" not-null="true" />
+        </property>
+        <set name="participants" table="participant" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_venue" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Participant" />
+        </set>
+        <set name="variants" table="variant" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_venue" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Variant" />
+        </set>
+    </class>
+</hibernate-mapping>

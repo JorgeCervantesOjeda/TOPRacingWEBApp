@@ -1,0 +1,250 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./TemplateBasic.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+    <p:panel style="background-color: transparent">
+      <h2>Registrations count: #{editRegattaResultsBean.getNumRegistrations()}</h2>
+
+      <p:dataTable id="regattaRegistrationsList"
+                   editable="true"
+                   editMode="cell"
+                   var="item"
+                   value="#{editRegattaResultsBean.bids}"
+                   widgetVar="registrationsTable"
+                   emptyMessage="No registrations match that criteria"
+                   style="white-space: pre-line; font-stretch: condensed; width: 100%; height: 90%"
+                   scrollable="true"
+                   scrollHeight="90%"
+                   scrollWidth="95%"
+                   liveScroll="false"
+                   resizableColumns="true"
+                   selection="#{editRegattaResultsBean.selectedBid}"
+                   selectionMode="single"
+                   rowKey="#{item.id}"
+                   rowIndexVar="rowIndex"
+                   sortBy="#{item.registration.posSpeed}"
+                   >
+        <p:ajax event="rowSelect"
+                listener="#{editRegattaResultsBean.rowSelectBid}"
+                update="contentForm"
+                process="regattaRegistrationsList"
+                onstart="PF('dlgWait').show();"
+                />
+
+        <f:facet name="header">
+          <p:commandButton
+            styleClass="mybutton"
+            actionListener="#{editRegattaResultsBean.clickAddRegistration()}"
+            disabled="#{editRegattaResultsBean.disableAddRegistrationButton()}"
+            value="Create new registration"
+            onclick="PF('dlgWait').show();"
+            ajax="true"
+            style="white-space: pre-line; float: right; width: 120px">
+            <p:confirm header="Are you sure?"
+                       message="Create new registration" />
+          </p:commandButton>
+          <p:commandButton styleClass="mybutton"
+                           actionListener="#{editRegattaResultsBean.clickSave()}"
+                           disabled="#{editRegattaResultsBean.disableSaveButton}"
+                           value="Save data"
+                           onclick="PF('dlgWait').show();"
+                           ajax="false"
+                           style="white-space: pre-line; float: right; width: 120px">
+          </p:commandButton>
+
+          <p:commandButton styleClass="mybutton"
+                           actionListener="#{editRegattaResultsBean.clickReturn()}"
+                           icon="fa fa-fw fa-arrow-left"
+                           ajax="false"
+                           onclick="PF('dlgWait').show();"
+                           style="white-space: pre-line; float: left">
+          </p:commandButton>
+
+          <h:outputText value="Results for Regatta id: #{editRegattaResultsBean.regatta.id}"/>
+          <h:outputText
+            value=" Status: #{editRegattaResultsBean.regattaStatusName}"/>
+          <br/>
+          <h:outputText
+            value="Date Time: #{editRegattaResultsBean.regatta.datetime}"/>
+        </f:facet>
+
+        <p:column
+          headerText="Status" footerText="Status"
+          sortBy="#{editRegattaResultsBean.getRegistrationStatusName( item.registration.status )}"
+          style="white-space: pre-line; text-align: center; width: 140px">
+          <p:selectOneMenu
+            id="inputStatus"
+            value="#{item.registration.status}"
+            disabled="#{editRegattaResultsBean.getDisableEditStatus( item.registration )}"
+            onchange="PF('registrationsTable').filter()">
+            <f:selectItem itemLabel="#{editRegattaResultsBean.getRegistrationStatusName( 0 )}" itemValue="0" />
+            <f:selectItem itemLabel="#{editRegattaResultsBean.getRegistrationStatusName( 1 )}" itemValue="1" />
+            <f:selectItem itemLabel="#{editRegattaResultsBean.getRegistrationStatusName( 2 )}" itemValue="2" />
+            <f:selectItem itemLabel="#{editRegattaResultsBean.getRegistrationStatusName( 3 )}" itemValue="3" />
+          </p:selectOneMenu>
+        </p:column>
+
+        <p:column headerText="Driver" footerText="Driver"
+                  style="white-space: pre-line; text-align: left; width: 80px">
+          <h:outputText value="#{editRegattaResultsBean.getParticipantName( item.registration.participantByIdDriver )}"/>
+        </p:column>
+
+        <p:column headerText="Car" footerText="Car"
+                  style="white-space: pre-line; text-align: left; width: 80px">
+          <h:outputText value="#{item.registration.car.id} #{item.registration.car.nickname}"/>
+        </p:column>
+
+        <p:column headerText="Owner" footerText="Owner"
+                  style="white-space: pre-line; text-align: left; width: 80px">
+          <h:outputText value="#{editRegattaResultsBean.getParticipantName( item.registration.participantByIdOwner )}"/>
+        </p:column>
+
+        <p:column headerText="Best lap" footerText="Best lap"
+                  sortBy="#{item.registration.secondsLap}"
+                  style="#{editRegattaResultsBean.getLaptimeStyle()}"
+                  >
+          <p:cellEditor>
+            <f:facet name="output"><h:outputText value="#{item.registration.secondsLap}"/></f:facet>
+            <f:facet name="input">
+              <p:inputText
+                value="#{item.registration.secondsLap}"
+                disabled="#{editRegattaResultsBean.getDisableEditLaptime( item.registration )}"
+                style="width:60px; text-align: right" >
+                <p:ajax event="change"
+                        listener="#{editRegattaResultsBean.clickSave()}"/>
+              </p:inputText>
+            </f:facet>
+          </p:cellEditor>
+        </p:column>
+
+        <p:column headerText="Speed position" footerText="Speed position"
+                  sortBy="#{item.registration.posSpeed}"
+                  style="white-space: pre-line; text-align: center; width: 40px">
+          <h:outputText value="#{item.registration.posSpeed}"/></p:column>
+
+        <p:column headerText="Grid position" footerText="Gris position"
+                  sortBy="#{item.registration.posRacegrid}"
+                  style="white-space: pre-line; text-align: center; width: 40px">
+          <h:outputText value="#{item.registration.posRacegrid}"/></p:column>
+
+        <p:column headerText="Race position" footerText="Race position"
+                  sortBy="#{item.registration.posRace}"
+                  style="#{editRegattaResultsBean.getRacePosStyle()}"
+                  >
+          <p:cellEditor>
+            <f:facet name="output"><h:outputText value="#{item.registration.posRace}"/></f:facet>
+            <f:facet name="input">
+              <p:inputText value="#{item.registration.posRace}"
+                           disabled="#{editRegattaResultsBean.disableEditRacepos( item.registration )}"
+                           style="width:40px; text-align: right">
+                <p:ajax event="change"
+                        listener="#{editRegattaResultsBean.clickSave()}"/>
+              </p:inputText>
+            </f:facet>
+          </p:cellEditor>
+        </p:column>
+
+        <p:column headerText="Race laps" footerText="Race laps"
+                  sortBy="#{item.registration.lapsRace}"
+                  style="#{editRegattaResultsBean.getRaceLapsStyle()}"
+                  >
+          <p:cellEditor>
+            <f:facet name="output"><h:outputText value="#{item.registration.lapsRace}"/></f:facet>
+            <f:facet name="input">
+              <p:inputText value="#{item.registration.lapsRace}"
+                           disabled="#{editRegattaResultsBean.disableEditRacelaps( item.registration )}"
+                           style="width:40px; text-align: right">
+                <p:ajax event="change"
+                        listener="#{editRegattaResultsBean.clickSave()}"/>
+              </p:inputText>
+            </f:facet>
+          </p:cellEditor>
+        </p:column>
+
+        <p:column headerText="Expected laps" footerText="Expected laps"
+                  sortBy="#{editRegattaResultsBean.getExpectedLaps(item)}"
+                  style="white-space: pre-line; text-align: left; width: 60px">
+          <h:outputText value="#{editRegattaResultsBean.getExpectedLaps(item)}">
+            <f:convertNumber pattern="#0.00"/>
+          </h:outputText></p:column>
+
+        <p:column headerText="Finishing bet" footerText="Finishing bet"
+                  sortBy="#{item.registration.betFinishing}"
+                  style="white-space: pre-line; text-align: right; width: 50px;">
+          <h:outputText value="#{item.registration.betFinishing}"/></p:column>
+
+        <p:column headerText="Finishing prize" footerText="Finishing prize"
+                  sortBy="#{item.registration.prizeFinishing}"
+                  style="white-space: pre-line; text-align: right; width: 50px;">
+          <h:outputText value="#{item.registration.prizeFinishing}">
+            <f:convertNumber pattern="#0.00"/>
+          </h:outputText></p:column>
+
+        <p:column
+          headerText="Your bid #{editRegattaResultsBean.regatta.currency.code}"
+          footerText="Your bid #{editRegattaResultsBean.regatta.currency.code}"
+          sortBy="#{item.ammount}"
+          style="#{editRegattaResultsBean.getEditBidStyle()}; white-space: pre-line; text-align: right; width: 90px;">
+          <p:cellEditor>
+            <f:facet name="output"><h:outputText value="#{item.ammount}"/></f:facet>
+            <f:facet name="input">
+              <p:inputText value="#{item.ammount}"
+                           disabled="#{editRegattaResultsBean.disableEditBid( item.registration )}"
+                           style="width:60px; text-align: right" >
+                <p:ajax event="blur"
+                        listener="#{editRegattaResultsBean.clickSaveBid( item )}"/>
+              </p:inputText>
+            </f:facet>
+          </p:cellEditor>
+        </p:column>
+
+        <p:column headerText="Sold to" footerText="Sold to"
+                  sortBy="#{item.registration.participantByIdBuyer.id}"
+                  style="white-space: pre-line; text-align: right; width: 50px;">
+          <h:outputText value="#{item.registration.participantByIdBuyer.id}"/>
+        </p:column>
+
+        <p:column headerText="Sale Amount" footerText="Sale Amount"
+                  sortBy="#{item.registration.valueAuction}"
+                  style="white-space: pre-line; text-align: right; width: 50px;">
+          <h:outputText value="#{item.registration.valueAuction}"/>
+        </p:column>
+
+        <p:column headerText="Base value" footerText="Base value"
+                  sortBy="#{item.registration.valueBase}"
+                  style="white-space: pre-line; text-align: right; width: 80px">
+          <h:outputText value="#{item.registration.valueBase}">
+            <f:convertNumber pattern="+#.####E0#"/>
+          </h:outputText>
+        </p:column>
+
+        <p:column headerText="Efficiency position" footerText="Efficiency position"
+                  sortBy="#{item.registration.posEfficiency}"
+                  style="white-space: pre-line; text-align: center; width: 30px">
+          <h:outputText value="#{item.registration.posEfficiency}"/>
+        </p:column>
+
+        <p:column headerText="Efficiency bet" footerText="Efficiency bet"
+                  sortBy="#{item.registration.betEfficiency}"
+                  style="white-space: pre-line; text-align: center; width: 30px">
+          <h:outputText value="#{item.registration.betEfficiency}"/>
+        </p:column>
+
+        <p:column headerText="Efficiency prize" footerText="Efficiency prize"
+                  sortBy="#{item.registration.prizeEfficiency}"
+                  style="white-space: pre-line; text-align: center; width: 30px">
+          <h:outputText value="#{item.registration.prizeEfficiency}">
+            <f:convertNumber pattern="#0.00"/>
+          </h:outputText></p:column>
+
+      </p:dataTable>
+    </p:panel>
+  </ui:define>
+
+</ui:composition>
+
+

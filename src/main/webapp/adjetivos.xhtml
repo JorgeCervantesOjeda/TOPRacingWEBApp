@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <title>Adjetivos de TOP-Racing</title>
+    <h:outputStylesheet>
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .accordion-header {
+            background-color: #d9e4dd !important; /* Verde claro pastel */
+            color: #333;
+        }
+
+        .level-2 .ui-accordion-header {
+            background-color: #e4d9dc !important; /* Rosa claro pastel */
+        }
+
+        .level-3 .ui-accordion-header {
+            background-color: #d9e0e4 !important; /* Azul claro pastel */
+        }
+    </h:outputStylesheet>
+</h:head>
+
+<h:body>
+    <div class="container">
+        <h2>Adjetivos que describen TOP-Racing</h2>
+
+        <!-- Nivel 1 -->
+        <p:accordionPanel styleClass="accordion-header">
+            <p:tab title="Innovador">
+                <h:outputText value="Innovador es el adjetivo más general que describe a TOP-Racing. Refleja el enfoque en la introducción de nuevas ideas, tecnologías y enfoques en el automovilismo. Este adjetivo abarca todos los aspectos del deporte, desde la estructura de los campeonatos hasta los sistemas financieros y la tecnología utilizada." />
+                
+                <!-- Nivel 2 -->
+                <p:accordionPanel multiple="true" styleClass="level-2">
+                    <p:tab title="Competitivo">
+                        <h:outputText value="Competitivo describe la esencia del deporte, donde pilotos, propietarios y equipos luchan por alcanzar la excelencia. Esta competitividad se manifiesta en varios aspectos clave:" />
+                        
+                        <!-- Nivel 3 -->
+                        <p:accordionPanel multiple="true" styleClass="level-3">
+                            <p:tab title="Exigente">
+                                <h:outputText value="Exigente subraya el alto nivel de habilidad, preparación y dedicación que se requiere para tener éxito en TOP-Racing. Los competidores deben estar preparados para enfrentar desafíos complejos y mantenerse al día con las innovaciones tecnológicas." />
+                            </p:tab>
+
+                            <p:tab title="Desafiante">
+                                <h:outputText value="Desafiante se refiere a las múltiples dificultades que los competidores deben superar. Esto incluye desde la planificación estratégica hasta la gestión de recursos y la adaptación a diferentes circuitos y condiciones de carrera." />
+                            </p:tab>
+
+                            <p:tab title="Estratégico">
+                                <h:outputText value="Estratégico destaca la importancia de la planificación y toma de decisiones en TOP-Racing. Los competidores deben elegir cuidadosamente en qué eventos participar, cómo manejar sus recursos y cómo maximizar sus posibilidades de éxito en los campeonatos." />
+                            </p:tab>
+                        </p:accordionPanel>
+                    </p:tab>
+
+                    <p:tab title="Emocionante">
+                        <h:outputText value="Emocionante captura la experiencia intensa que ofrece TOP-Racing tanto a los participantes como a los espectadores. La emoción es un componente clave del deporte, haciendo que cada carrera sea una experiencia memorable." />
+
+                        <p:accordionPanel multiple="true" styleClass="level-3">
+                            <p:tab title="Espectacular">
+                                <h:outputText value="Espectacular se refiere al impacto visual y la asombrosa naturaleza de las carreras en TOP-Racing. Las maniobras audaces, la tecnología avanzada y la competencia feroz crean un espectáculo inolvidable." />
+                            </p:tab>
+
+                            <p:tab title="Dinámico">
+                                <h:outputText value="Dinámico subraya la constante acción y cambio en TOP-Racing. Las posiciones y estrategias pueden cambiar rápidamente, manteniendo a todos los involucrados en constante alerta y añadiendo un nivel extra de emoción." />
+                            </p:tab>
+                        </p:accordionPanel>
+                    </p:tab>
+
+                    <p:tab title="Inclusivo">
+                        <h:outputText value="Inclusivo refleja el compromiso de TOP-Racing con la apertura y la equidad. El deporte está diseñado para permitir la participación de una amplia gama de competidores, independientemente de su nivel de habilidad o recursos." />
+
+                        <p:accordionPanel multiple="true" styleClass="level-3">
+                            <p:tab title="Accesible">
+                                <h:outputText value="Accesible destaca cómo TOP-Racing reduce las barreras de entrada para los competidores. Los pilotos novatos pueden participar junto a los veteranos, y las reglas están diseñadas para fomentar la inclusión y la igualdad de oportunidades." />
+                            </p:tab>
+
+                            <p:tab title="Equitativo">
+                                <h:outputText value="Equitativo se refiere a las reglas y sistemas que garantizan una competencia justa. En TOP-Racing, el talento y la eficiencia pueden superar las ventajas financieras o tecnológicas, promoviendo un campo de juego nivelado." />
+                            </p:tab>
+                        </p:accordionPanel>
+                    </p:tab>
+
+                    <p:tab title="Tecnológico">
+                        <h:outputText value="Tecnológico describe el enfoque en la utilización de tecnología avanzada en TOP-Racing. La tecnología no solo mejora el rendimiento de los vehículos, sino que también juega un papel crucial en la estrategia y la competencia." />
+
+                        <p:accordionPanel multiple="true" styleClass="level-3">
+                            <p:tab title="Eficiente">
+                                <h:outputText value="Eficiente enfatiza la importancia de maximizar el rendimiento en relación con el costo. Este adjetivo es clave en TOP-Racing, donde los premios se basan en la eficiencia y no solo en la velocidad." />
+                            </p:tab>
+
+                            <p:tab title="Global">
+                                <h:outputText value="Global refleja la naturaleza internacional de TOP-Racing. La competencia atrae a pilotos y equipos de todo el mundo, creando un entorno verdaderamente global y diverso." />
+                            </p:tab>
+
+                            <p:tab title="Versátil">
+                                <h:outputText value="Versátil describe la adaptabilidad de TOP-Racing a diferentes tecnologías, estrategias y tipos de vehículos. Esta versatilidad permite una competencia rica y variada, donde la innovación es constantemente recompensada." />
+                            </p:tab>
+                        </p:accordionPanel>
+                    </p:tab>
+                </p:accordionPanel>
+            </p:tab>
+        </p:accordionPanel>
+    </div>
+</h:body>
+</html>
+
+

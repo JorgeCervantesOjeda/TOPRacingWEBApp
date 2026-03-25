@@ -1,0 +1,175 @@
+#top {
+  position: relative;
+  align-self: center;
+  padding: 5px;
+  margin: 0px 0px 0px 0px;
+  align-content: stretch;
+}
+
+#bottom {
+  position: relative;
+  padding: 5px;
+  margin: 10px 0px 0px 0px;
+  align-content: center;
+}
+
+#left {
+  float: left;
+  background-color: #ece3a5;
+  padding: 5px;
+  width: 150px;
+}
+
+#right {
+  float: right;
+  background-color: #ece3a5;
+  padding: 5px;
+  width: 150px;
+}
+
+.field_label {
+  background-color: lightgrey;
+  color: black;
+  white-space: pre-line;
+  padding: 2px 5px;
+  font-family: 'lexend', sans-serif !important;
+}
+
+.field_output {
+  font-weight: bold;
+  color: darkgray;
+  font-family: 'lexend', sans-serif !important;
+}
+
+.center_content {
+  padding: 0;
+  width: 100%;
+  background-image: url("#{resource['images/meta.jpg']}");
+  background-size: cover;
+  font-family: 'lexend', sans-serif !important;
+}
+
+.left_content {
+  background-color: #dddddd;
+  padding: 5px;
+  margin-left: 170px;
+}
+
+.right_content {
+  background-color: #dddddd;
+  padding: 5px;
+  margin: 0px 170px 0px 170px;
+}
+
+#top a:link,
+#top a:visited {
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+#top a:link:hover,
+#top a:visited:hover {
+  color: black;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.myloginbutton {
+  width: 120px;
+  height: 60px;
+  border-width: 3px;
+  font-family: 'lexend', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+}
+
+.myloginbutton:pressed {
+  border-color: red !important;
+  color: black;
+}
+
+.myloginbutton:hover {
+  font-weight: 800 !important;
+  font-size: 20px !important;
+  width: 100%;
+  filter: invert(0.2) !important;
+}
+
+.mybutton {
+  font-weight: bold !important;
+  color: black;
+  font-family: 'lexend', sans-serif !important;
+}
+
+.mybutton:hover {
+  filter: invert(0.2) !important;
+}
+
+.eventsImage {
+  background-image: url(../images/banderinesSmall.png);
+}
+
+
+.editPanel {
+  width: 90% !important;
+}
+
+.ui-dialog-docking-zone {
+  position: absolute;
+  top: 0;
+}
+
+.rowDisabled {
+  color: window;
+}
+
+.rowEnabled {}
+
+.confirmation {
+  top: 0% !important;
+}
+
+.freezedHeader {
+  height: 60px !important;
+}
+
+.myCalendar {
+  color: black !important;
+  background-color: white !important;
+}
+
+.ui-confirm-dialog {
+  background-color: yellow !important;
+}
+
+.logoTOPRacing {
+  opacity: 1;
+  padding: 0px;
+  border-style: none;
+  border-width: 0px;
+  border-color: darkgray;
+  width: 100%;
+}
+
+.logoTOPRacing:hover {
+  filter: invert(0.3) !important;
+}
+
+#map {
+  height: 80%;
+}
+
+.ui-widget {
+  font-family: 'lexend', sans-serif !important;
+}
+
+.ui-datatable {
+  font-family: 'lexend', sans-serif !important;
+}
+
+.ui-widget-content {
+  border: 1px solid #acbece;
+  background: rgba(250, 250, 250, 0.3) !important;
+  color: black;
+}

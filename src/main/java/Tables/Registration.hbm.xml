@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 17-Jul-2024 12:43:51 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class entity-name="Registration" name="Tables.Registration" table="registration" catalog="topracing26" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="car" class="Tables.Car" fetch="select">
+            <column name="id_car" not-null="true" />
+        </many-to-one>
+        <many-to-one name="participantByIdBuyer" class="Tables.Participant" fetch="select">
+            <column name="id_buyer" not-null="true" />
+        </many-to-one>
+        <many-to-one name="participantByIdDriver" class="Tables.Participant" fetch="select">
+            <column name="id_driver" not-null="true" />
+        </many-to-one>
+        <many-to-one name="participantByIdOwner" class="Tables.Participant" fetch="select">
+            <column name="id_owner" not-null="true" />
+        </many-to-one>
+        <many-to-one name="regatta" class="Tables.Regatta" fetch="select">
+            <column name="id_regatta" not-null="true" />
+        </many-to-one>
+        <property name="betEfficiency" type="double">
+            <column name="bet_efficiency" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="betFinishing" type="double">
+            <column name="bet_finishing" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="secondsLap" type="double">
+            <column name="seconds_lap" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="posSpeed" type="short">
+            <column name="pos_speed" not-null="true" />
+        </property>
+        <property name="posRacegrid" type="short">
+            <column name="pos_racegrid" not-null="true" />
+        </property>
+        <property name="posRace" type="short">
+            <column name="pos_race" not-null="true" />
+        </property>
+        <property name="lapsRace" type="short">
+            <column name="laps_race" not-null="true" />
+        </property>
+        <property name="prizeFinishing" type="double">
+            <column name="prize_finishing" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="valueAuction" type="double">
+            <column name="value_auction" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="valueBase" type="double">
+            <column name="value_base" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="posEfficiency" type="short">
+            <column name="pos_efficiency" not-null="true" />
+        </property>
+        <property name="prizeEfficiency" type="double">
+            <column name="prize_efficiency" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="balance" type="double">
+            <column name="balance" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="status" type="byte">
+            <column name="status" not-null="true" />
+        </property>
+        <set name="bids" table="bid" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_registration" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Bid" />
+        </set>
+    </class>
+</hibernate-mapping>

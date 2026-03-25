@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 17-Jul-2024 12:43:51 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="Tables.Participant" table="participant" catalog="topracing26" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="venue" class="Tables.Venue" fetch="select">
+            <column name="id_venue" not-null="true" />
+        </many-to-one>
+        <property name="password" type="string">
+            <column name="password" not-null="true" />
+        </property>
+        <property name="namesGiven" type="string">
+            <column name="names_given" not-null="true" />
+        </property>
+        <property name="namesFamily" type="string">
+            <column name="names_family" not-null="true" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" not-null="true" />
+        </property>
+        <property name="phone" type="string">
+            <column name="phone" not-null="true" />
+        </property>
+        <property name="emailKey" type="string">
+            <column name="email_key" not-null="true" />
+        </property>
+        <property name="confirmed" type="boolean">
+            <column name="confirmed" not-null="true" />
+        </property>
+        <property name="defaulter" type="int">
+            <column name="defaulter" not-null="true" />
+        </property>
+        <set name="pointscounts" table="pointscount" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_participant" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Pointscount" />
+        </set>
+        <set name="registrationsForIdBuyer" table="registration" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_buyer" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Registration" />
+        </set>
+        <set name="regattas" table="regatta" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_promoter" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Regatta" />
+        </set>
+        <set name="venues" table="venue" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_owner" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Venue" />
+        </set>
+        <set name="registrationsForIdDriver" table="registration" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_driver" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Registration" />
+        </set>
+        <set name="registrationsForIdOwner" table="registration" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_owner" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Registration" />
+        </set>
+        <set name="cars" table="car" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_owner" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Car" />
+        </set>
+        <set name="bids" table="bid" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_participant" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Bid" />
+        </set>
+    </class>
+</hibernate-mapping>

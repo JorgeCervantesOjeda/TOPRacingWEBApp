@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 17-Jul-2024 12:43:51 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="Tables.Regatta" table="regatta" catalog="topracing26" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="currency" class="Tables.Currency" fetch="select">
+            <column name="id_currency" />
+        </many-to-one>
+        <many-to-one name="participant" class="Tables.Participant" fetch="select">
+            <column name="id_promoter" not-null="true" />
+        </many-to-one>
+        <many-to-one name="variant" class="Tables.Variant" fetch="select">
+            <column name="id_variant" not-null="true" />
+        </many-to-one>
+        <property name="maxWeight" type="int">
+            <column name="max_weight" not-null="true" />
+        </property>
+        <property name="minLoad" type="int">
+            <column name="min_load" not-null="true" />
+        </property>
+        <property name="datetime" type="timestamp">
+            <column name="datetime" length="19" not-null="true" />
+        </property>
+        <property name="minutesSpeed" type="int">
+            <column name="minutes_speed" not-null="true" />
+        </property>
+        <property name="minutesRace" type="int">
+            <column name="minutes_race" not-null="true" />
+        </property>
+        <property name="entryfee" type="double">
+            <column name="entryfee" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="trackrental" type="double">
+            <column name="trackrental" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="prizeFinishing" type="double">
+            <column name="prize_finishing" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="prizeEfficiency" type="double">
+            <column name="prize_efficiency" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="maxQualifiers" type="int">
+            <column name="max_qualifiers" not-null="true" />
+        </property>
+        <property name="status" type="byte">
+            <column name="status" not-null="true" />
+        </property>
+        <property name="colorFg" type="string">
+            <column name="color_FG" />
+        </property>
+        <property name="colorBg" type="string">
+            <column name="color_BG" />
+        </property>
+        <property name="levelPeriod" type="int">
+            <column name="level_period" not-null="true" />
+        </property>
+        <property name="levelTrackset" type="int">
+            <column name="level_trackset" not-null="true" />
+        </property>
+        <property name="slope" type="double">
+            <column name="slope" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="intercept" type="double">
+            <column name="intercept" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="validregistrations" type="int">
+            <column name="validregistrations" not-null="true" />
+        </property>
+        <set name="penaltiespls" table="penaltiespl" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_regatta" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Penaltiespl" />
+        </set>
+        <set name="registrations" table="registration" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="id_regatta" not-null="true" />
+            </key>
+            <one-to-many class="Tables.Registration" />
+        </set>
+    </class>
+</hibernate-mapping>

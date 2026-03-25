@@ -1,0 +1,84 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/TemplateBasic.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+    <p:panel id="myPanel" style="background-color: white; padding: 0%; width: 90%; height: 700px" >
+      <f:facet id="myHeader" name="header">
+        <h2>#{editVenueInMapBean.getVenueName()}</h2>
+        #{editVenueInMapBean.getSubtitle()}
+        <p:commandButton styleClass="mybutton"  actionListener="#{editVenueInMapBean.clickReturn()}"
+                         icon="fa fa-fw fa-arrow-left"
+                         onclick="PF('dlgWait').show();"
+                         ajax="true"
+                         style="float: left" ></p:commandButton>
+      </f:facet>
+
+      <div id="map" style="height:80%">
+      </div>
+      <p:remoteCommand name="cmdSetLatLng" actionListener="#{editVenueInMapBean.setLatLng}" />
+      <script>
+        var map = L.map('map')
+                .setView([#{editVenueInMapBean
+                    .getVenueCoordinates()}], 18);
+        var tiles_G = L.tileLayer(
+                'http://{s}.google.com/vt/lyrs=s,h&amp;x={x}&amp;y={y}&amp;z={z}',
+                {maxZoom: 20,
+                  subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+                }
+        ).addTo(map);
+        var marker = L.marker([#{editVenueInMapBean.getVenueCoordinates()}])
+                .addTo(map);
+        var popup = L.popup()
+                .setLatLng([0.0003+#{editVenueInMapBean.getVenueCoordinates()}])
+                .setContent(
+                        " https://www.google.com.mx/maps/@#{editVenueInMapBean.getVenueCoordinates()},318m/data=!3m1!1e3?hl=en")
+                .openOn(map);
+        map.on('click', function (e) {
+          marker.setLatLng(e.latlng);
+          cmdSetLatLng(
+                  [{name: "parallel",
+                      value: e.latlng.lat
+                    },
+                    {name: "meridian",
+                      value: e.latlng.lng
+                    }
+                  ]
+                  );
+          var popup = L.popup()
+                  .setLatLng([e.latlng.lat+0.0003, e.latlng.lng])
+                  .setContent(
+                          " https://www.google.com.mx/maps/@#{editVenueInMapBean.getVenueCoordinates()},318m/data=!3m1!1e3?hl=en")
+                  .openOn(map);
+          return true;
+        });
+      </script>
+      <!--
+      <p:growl id="myGrowl" showDetail="true" />
+      <p:gmap widgetVar="w_gmap"
+              center="# {editVenueInMapBean.venueCoordinates}"
+              zoom="3" type="ROADMAP"
+              model="# {editVenueInMapBean.simpleModel}"
+              style="width: 100%; height: 600px; padding: 0px;">
+        <p:ajax event="markerDrag"
+                listener="# {editVenueInMapBean.onMarkerDrag}" update="myGrowl" />
+      </p:gmap>
+      <script type="text/javascript"
+              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBv03G6a8yKDhKkw9r6lHrSnmYtrYve32Y&amp;">
+      </script>
+      <script type="text/javascript"
+              src="https://maps.google.com/maps/api/js?key=AIzaSyAKqPCT5s47JVBEHc8Oz09hPFN-uLLh0DM&amp;">
+      </script>
+      <script type="text/javascript"
+              src="https://www.google.com/jsapi?key=AIzaSyBv03G6a8yKDhKkw9r6lHrSnmYtrYve32Y&amp;"></script>
+      -->
+    </p:panel>
+  </ui:define>
+
+</ui:composition>
+
+
+

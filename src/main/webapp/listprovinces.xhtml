@@ -1,0 +1,128 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./TemplateBasic.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+    <h2>Provinces: #{listProvincesBean.getNumProvinces()}</h2>
+
+    <p:dataTable id="provinces"
+                 var="item"
+                 value="#{listProvincesBean.provinces}"
+                 widgetVar="provincesTable"
+                 emptyMessage="No Provinces match that criteria"
+                 filteredValue="#{listProvincesBean.filteredProvince}"
+                 style="font-stretch: condensed; width: 100%; height: 90%; padding: 0px"
+                 scrollable="true"
+                 scrollRows="5"
+                 scrollHeight="90%"
+                 scrollWidth="90%"
+                 liveScroll="false"
+                 resizableColumns="true"
+                 selection="#{listProvincesBean.selectedProvince}"
+                 selectionMode="single"
+                 rowKey="#{item.id}"
+                 rowIndexVar="rowIndex"
+                 >
+      <p:ajax event="rowSelect"
+              listener="#{listProvincesBean.rowSelectProvince}"
+              update="contentForm"
+              process="provinces"
+              onstart="PF('dlgWait').show();" />
+
+
+      <f:facet name="header">
+        <p:outputPanel>
+          <h:outputText value="Search all columns" />
+          <p:inputText id="globalFilter"
+                       onkeyup="PF('provincesTable').filter()"
+                       style="width:150px"
+                       placeholder="Escribe aquí"/>
+
+          <p:commandButton styleClass="mybutton"  actionListener="#{listProvincesBean.clickNewProvince()}"
+                           value="Create new Province"
+                           onclick="PF('dlgWait').show();"
+                           ajax="true"
+                           style="float: right">
+            <p:confirm header="Are you sure?"
+                       message="Create new Province" />
+          </p:commandButton>
+
+          <p:commandButton styleClass="mybutton"  actionListener="#{listProvincesBean.clickReturn()}"
+                           icon="fa fa-fw fa-arrow-left"
+                           onclick="PF('dlgWait').show();"
+                           ajax="false"
+                           style="float: left"/>
+
+        </p:outputPanel>
+      </f:facet>
+
+      <p:column headerText="&#160;" footerText="&#160;"
+                style="width: 50px"
+                >
+        <p:commandButton styleClass="mybutton"
+                         actionListener="#{listProvincesBean.clickSelectProvince( item )}"
+                         value="Select"
+                         onclick="PF('dlgWait').show();"
+                         ajax="false"/> </p:column>
+
+      <p:column headerText="Id" footerText="Id"
+                filterBy="#{item.id}"
+                sortBy="#{item.id}"
+                filterMatchMode="exact"
+                style="text-align: center; width: 30px" >
+        <f:facet name="filter">
+          <p:inputText style="width: 35px"
+                       size="1"
+                       onkeyup="PF('provincesTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.id}"/>  </p:column>
+
+      <p:column headerText="Name" footerText="Name"
+                filterBy="#{item.name}"
+                sortBy="#{item.name}"
+                filterMatchMode="contains"
+                style="white-space: pre-line; text-align: left; width: 100px" >
+        <f:facet name="filter">
+          <p:inputText style="width: 90px"
+                       size="1"
+                       onkeyup="PF('provincesTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.name}"/>  </p:column>
+
+
+      <p:column headerText="Country Region" footerText="Country Region"
+                filterBy="#{listProvincesBean.getCountryregionName(item)}"
+                sortBy="#{listProvincesBean.getCountryregionName(item)}"
+                filterMatchMode="contains"
+                style="white-space: pre-line; text-align: left; width: 100px" >
+        <f:facet name="filter">
+          <p:inputText style="width: 90px"
+                       size="1"
+                       onkeyup="PF('provincesTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{listProvincesBean.getCountryregionName(item)}"/>
+      </p:column>
+
+      <p:column headerText="Creator" footerText="Creator"
+                filterBy="#{listProvincesBean.getCreatorName( item.idCreator )}"
+                sortBy="#{listProvincesBean.getCreatorName( item.idCreator )}"
+                filterMatchMode="contains"
+                style="white-space: pre-line; text-align: left; width: 100px" >
+        <f:facet name="filter">
+          <p:inputText style="width: 90px"
+                       size="1"
+                       onkeyup="PF('provincesTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{listProvincesBean.getCreatorName( item.idCreator )}"/>
+      </p:column>
+
+    </p:dataTable>
+    <h1><br /></h1>
+  </ui:define>
+
+</ui:composition>
+
+

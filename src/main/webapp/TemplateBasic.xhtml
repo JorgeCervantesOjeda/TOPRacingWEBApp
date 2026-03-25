@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      lang="en"
+      >
+
+  <h:head>
+    <link rel="shortcut icon" type="image/x-icon" href="./resources/images/favicon.ico"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+    <title>TOP-Racing</title>
+    <meta
+      name="description"
+      content="TOP-Racing web app. Where you can have fun, make money and learn about the world of motor racing.">
+    </meta>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.2/dist/leaflet.css"
+          integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js"
+            integrity="sha256-o9N1jGDZrf5tS+Ft4gbIK7mYMipq9lqpVJ91xHSyKhg="
+            crossorigin="">
+    </script>
+    <h:outputStylesheet name="css/cssLayout.css"/>
+    <h:outputStylesheet name="css/default.css"/>
+    <h:outputScript library="js" name="calendar_es.js" />
+  </h:head>
+
+  <h:body >
+    <div align="center">
+      <p:link href="http://top-racing.org">
+        <p:graphicImage
+          id="banner"
+          library="images"
+          name="logoTOPRacingBlurLensX.jpg"
+          styleClass="logoTOPRacing"
+          alt="TOP Racing logo"
+          cache="true"
+          title="Go to Home page"
+          style="width: 100%"
+          />
+      </p:link>
+      <p:tooltip for="banner" position="center" />
+    </div>
+
+    <div align="center" style="display:block; overflow: auto" >
+      <ui:insert name="menu">
+
+      </ui:insert>
+    </div>
+
+    <div id="content"
+         class="center_content"
+         align="center"
+         styleClass="contentClass"
+         >
+      <br />
+      <h:form id="contentForm"
+              style="padding: 0%; width: 100%;"
+              >
+        <ui:insert name="content" >
+
+        </ui:insert>
+        <p:growl sticky="true"
+                 keepAlive="true" />
+        <p:confirmDialog
+          id="globalConfirm"
+          global="true"
+          showEffect="fade" hideEffect="fade" responsive="true"
+          width="350"
+          class="confirmation"
+          style="top: 0px"
+          closable="false">
+          <p:commandButton value="No"
+                           type="button"
+                           styleClass="ui-confirmdialog-no ui-button-flat"
+                           style="float: right" />
+          <p:commandButton value="Yes"
+                           type="button"
+                           styleClass="ui-confirmdialog-yes"
+                           style="float: left"/>
+        </p:confirmDialog>
+
+        <p:dialog id="waitDialog"
+                  header="..."
+                  widgetVar="dlgWait"
+                  modal="true"
+                  showEffect="fade"
+                  position="top"
+                  width="250px"
+                  >
+          <h:outputText value="#{viewBean.getPleaseWaitMsg()}" /><br/>
+          <p:graphicImage library="images"
+                          name="wavingFlag2.gif"
+                          cache="true"
+                          alt="Waving flag"
+                          width="100%"
+                          />
+          <p:progressBar  ajax="true"
+                          widgetVar="progress"
+                          value="#{viewBean.progress}"
+                          labelTemplate="{value}%"
+                          styleClass="animated"
+                          global="true"/>
+        </p:dialog>
+
+        <p:dialog id="dlgInfo"
+                  header="Information"
+                  modal="true"
+                  width="50%"
+                  widgetVar="dlgInfo"
+                  showEffect="bounce"
+                  onShow="PF('dlgWait').hide();"
+                  onHide="PF('dlgInfo').reset();"
+                  dynamic="true"
+                  closable="false"
+                  position="top"
+                  >
+          <p:panelGrid id="infoPanel" columns="2" style="border: none">
+            <p:graphicImage library="images"
+                            name="steering25.jpg"
+                            height="50"
+                            cache="true"
+                            alt="Steering wheel" />
+            <h2>#{viewBean.messageHeader}</h2>
+            #{viewBean.messageDetail}
+          </p:panelGrid>
+          <p:commandButton id="infoMessageOK"
+                           value="OK"
+                           actionListener="#{viewBean.clickOK}"
+                           ajax="false"
+                           class="myloginbutton"
+                           onclick="PF('dlgInfo').hide(); PF('dlgWait').show();"
+                           styleClass="mybutton"
+                           >
+          </p:commandButton>
+        </p:dialog>
+      </h:form>
+    </div>
+
+    <div id="bottom" align="center">
+      #{viewBean.getMaintenanceMsg()}
+      <br />
+      <a href="http://www.cua.uam.mx" target="_blank" rel="noopener" >
+        Universidad Autónoma Metropolitana.
+      </a>
+      <br />
+      #{viewBean.numSessions}
+      <br />
+    </div>
+
+  </h:body>
+
+</html>
+
+

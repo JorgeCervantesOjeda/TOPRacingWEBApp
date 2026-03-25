@@ -1,0 +1,107 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="/TemplateBasic.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="jakarta.faces.core">
+
+  <ui:define name="menu">
+    <div style="padding: 0px; background-color: darkred; width: 100%; display: block; overflow: auto">
+      <h:form style="padding: 0px; width: 90%; font-size: small; white-space: nowrap; position: sticky">
+        <div style="float:left; display: inline-block; white-space: normal; overflow: auto !important; padding: 4px">
+          <p:button
+            styleClass="mybutton"
+            id="WelcomeButton"
+            href="#{facesContext.externalContext.requestContextPath}/faces/welcome.xhtml"
+            title="#{viewBean.getWelcomeButtonTitle()}"
+            onclick="PF('dlgWait').show();"
+            icon="fa fa-fw fa-home"
+            style="float: left">
+          </p:button>
+          <p:tooltip for="WelcomeButton" position="top" />
+
+          <p:button
+            styleClass="mybutton"
+            id="PointscountButton"
+            href="#{facesContext.externalContext.requestContextPath}/faces/listpointscounts.xhtml"
+            title="#{viewBean.getPointscountButtonTitle()}"
+            onclick="PF('dlgWait').show();"
+            icon="fa fa-fw fa-trophy"
+            style="float: left">
+          </p:button>
+          <p:tooltip for="PointscountButton" position="top" />
+
+          <!--
+                    <p:commandButton styleClass="mybutton"
+                                     id="RegattaButton"
+                                     actionListener="{viewBean.clickRegatta()}"
+                                     title="{viewBean.getRegattaButtonTitle()}"
+                                     onclick="PF('dlgWait').show();"
+                                     ajax="true"
+                                     icon="fa fa-fw fa-calendar"
+                                     style="float: left"
+                                     disabled="false"
+                                     rendered="false"
+                                     >
+                    </p:commandButton>
+                    <p:tooltip for="RegattaButton" position="top"/>
+          -->
+          <p:button styleClass="mybutton"
+                    id="PenaltiesButton"
+                    href="#{facesContext.externalContext.requestContextPath}/faces/listpenalties.xhtml"
+                    title="#{viewBean.getPenaltiesButtonTitle()}"
+                    onclick="PF('dlgWait').show();"
+                    icon="fa fa-fw fa-balance-scale"
+                    style="float: left">
+          </p:button>
+          <p:tooltip for="PenaltiesButton" position="top" />
+
+          <p:button styleClass="mybutton"
+                    id="RegistrationButton"
+                    href="#{facesContext.externalContext.requestContextPath}/faces/listregistrations.xhtml"
+                    title="#{viewBean.getRegistrationButtonTitle()}"
+                    onclick="PF('dlgWait').show();"
+                    icon="fa fa-fw fa-book"
+                    style="float: left">
+          </p:button>
+          <p:tooltip for="RegistrationButton" position="top" />
+
+        </div>
+
+        <div style="float: right; display: inline-block; white-space: normal; padding: 4px">
+          <p:commandButton styleClass="mybutton" id="EditProfileButton" value="#{viewBean.editProfileButton}"
+                           actionListener="#{viewBean.clickEditProfile()}" title="#{viewBean.getProfileButtonTitle()}"
+                           onclick="PF('dlgWait').show();" ajax="false" icon="fa fa-fw fa-edit">
+          </p:commandButton>
+          <p:tooltip for="EditProfileButton" position="top" />
+
+          <p:commandButton id="contactButton"
+                           title="Ver nuestro correo"
+                           onclick="alert('top-racing.org@gmail.com')"
+                           value="#{viewBean.getContactLabel()}">
+          </p:commandButton>
+          <p:tooltip for="contactButton" position="top" />
+
+          <p:commandButton styleClass="mybutton" style="float: right" id="logoutButton"
+                           actionListener="#{viewBean.clickLogout()}" rendered="#{viewBean.renderLogoutButton()}"
+                           onclick="PF('dlgWait').show();" ajax="false" icon="fa fa-fw fa-sign-out"
+                           title="#{viewBean.getLogoutButtonTitle()}">
+          </p:commandButton>
+          <p:tooltip for="logoutButton" position="top" />
+        </div>
+
+        <div align="center" style="white-space: normal; padding: 4px">
+          <a href="https://top-racing.freeforums.net/" target="_blank" rel="noopener">
+            #{viewBean.getForumsLinkTxt()}
+          </a>
+          -
+          <a href="https://www.facebook.com/TOPRacingORG/" target="_blank" rel="noopener">
+            #{viewBean.getNewsLinkTxt()}
+          </a>
+        </div>
+
+      </h:form>
+    </div>
+  </ui:define>
+
+</ui:composition>

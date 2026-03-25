@@ -1,0 +1,102 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./TemplateBasic.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+    <table>
+      <tr><td align="right" class="field_label">User number:</td>
+        <td align="left">
+          <h:outputText class="field_output"
+                        value="#{editParticipantBean.participant.id}" /></td></tr>
+
+      <tr><td align="right" class="field_label">Password:</td>
+        <td align="left">
+          <p:password id="passwordInput"
+                      value="#{editParticipantBean.participant.password}"
+                      size="16"
+                      feedback="true"
+                      required="false" >
+            <f:validateLength minimum="0" />
+          </p:password>
+          <p:message for="passwordInput" />
+        </td></tr>
+
+      <tr><td align="right" class="field_label">Given names:</td>
+        <td align="left">
+          <p:inputText    id="givenNamesInput" value="#{editParticipantBean.participant.namesGiven}" size="30"
+                          placeholder="First and middle names"
+                          required="true" >
+            <f:validateLength minimum="2" />
+            <p:clientValidator />
+          </p:inputText>
+          <p:message for="givenNamesInput" />
+        </td></tr>
+
+      <tr><td align="right" class="field_label">Family names:</td>
+        <td align="left">
+          <p:inputText    id="familyNamesInput"
+                          value="#{editParticipantBean.participant.namesFamily}" size="30"
+                          placeholder="Last name(s)"
+                          required="true" >
+            <f:validateLength minimum="2" />
+            <p:clientValidator />
+          </p:inputText>
+          <p:message for="familyNamesInput" />
+        </td></tr>
+
+      <tr><td align="right" class="field_label">e-mail address:</td>
+        <td align="left">
+          <p:inputText    id="emailInput"
+                          value="#{editParticipantBean.participant.email}" size="30"
+                          placeholder="nombre@sitio.com"
+                          required="true" >
+            <f:validateRegex
+              pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"/>
+            <p:clientValidator event="keyup" />
+          </p:inputText>
+          <p:message for="emailInput" />
+        </td></tr>
+
+      <tr><td align="right" class="field_label">Phone number:</td>
+        <td align="left">
+          <p:inputText    id="phoneInput"
+                          value="#{editParticipantBean.participant.phone}" size="30"
+                          placeholder="5555555555"
+                          required="true" >
+            <f:validateRegex pattern="^[0-9]{10}"/>
+            <p:clientValidator event="keyup" />
+          </p:inputText>
+          <p:message for="phoneInput" />
+        </td></tr>
+
+      <tr> <td align="right" class="field_label">Main Venue:</td>
+        <td align="left">
+          <h:outputText class="field_output"
+                        value="#{editParticipantBean.participant.venue.name}"
+                        style="white-space: pre-line; text-align: left;"
+                        />
+          <br/>
+          <p:commandButton styleClass="mybutton"  actionListener="#{editParticipantBean.clickViewVenues()}"
+                           onclick="PF('dlgWait').show();"
+                           ajax="false"
+                           value="View Venues"
+                           /></td></tr>
+
+    </table>
+    <br/>
+    <p:commandButton styleClass="mybutton"
+                     actionListener="#{editParticipantBean.clickSave()}"
+                     onclick="PF('dlgWait').show()"
+                     validateClient="true"
+                     ajax="false"
+                     value="Save data"
+                     />
+    <br/>
+  </ui:define>
+
+</ui:composition>
+
+

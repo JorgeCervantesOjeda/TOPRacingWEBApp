@@ -1,0 +1,42 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./TemplateEdit.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="editTitle">
+    <h2>Edit Planet Region</h2>
+    <p:commandButton styleClass="mybutton"   type="submit"
+                     actionListener="#{editPlanetregionBean.clickEndEdit()}"
+                     onclick="PF('dlgWait').show();"
+                     icon="fa fa-fw fa-arrow-left"
+                     style="float: left"
+                     />
+  </ui:define>
+  <ui:define name="editForm">
+    <table>
+      <tr> <td align="right" class="field_label">Identity:</td>
+        <td align="left"> <h:outputText class="field_output"
+                                        value="#{editPlanetregionBean.planetregion.id}"/></td></tr>
+
+      <tr> <td align="right" class="field_label">Name:</td>
+        <td align="left">
+          <p:inputText value="#{editPlanetregionBean.planetregion.name}"
+                       disabled="#{editPlanetregionBean.disableEditNameField}"
+                       required="true"/></td></tr>
+    </table>
+    <br/>
+    <p:commandButton styleClass="mybutton"   type="submit"
+                     actionListener="#{editPlanetregionBean.clickSave()}"
+                     onclick="PF('dlgWait').show();"
+                     ajax="true"
+                     disabled="#{editPlanetregionBean.disableSaveButton}"
+                     value="Save data"
+                     />
+    <br/><br/>
+  </ui:define>
+
+</ui:composition>
+
+

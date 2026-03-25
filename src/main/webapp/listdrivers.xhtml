@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                template="./TemplateBasic.xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+    <h2>Drivers: #{listDriversBean.getNumDriver()}</h2>
+
+    <p:dataTable id="driversList"
+                 var="item"
+                 value="#{listDriversBean.drivers}"
+                 widgetVar="driversTable"
+                 emptyMessage="No Drivers match that criteria."
+                 filteredValue="#{listDriversBean.filteredDriver}"
+                 style="font-stretch: condensed; width: 100%; height: 90%"
+                 scrollable="true"
+                 scrollRows="20"
+                 scrollHeight="90%"
+                 scrollWidth="90%"
+                 liveScroll="false"
+                 resizableColumns="true"
+                 selection="#{listDriversBean.selectedDriver}"
+                 selectionMode="single"
+                 rowKey="#{item.id}"
+                 rowIndexVar="rowIndex"
+                 sortBy="#{item.defaulter}"
+                 >
+
+      <f:facet name="header">
+        <p:outputPanel>
+          <h:outputText value="Search all columns" />
+          <p:inputText id="globalFilter"
+                       onkeyup="PF('driversTable').filter()"
+                       style="width:150px"
+                       placeholder="#{viewBean.getEnterKeywordPlaceholder()}"/>
+
+          <p:commandButton styleClass="mybutton"
+                           actionListener="#{listDriversBean.clickReturn()}"
+                           icon="fa fa-fw fa-arrow-left"
+                           title="#{viewBean.getReturnButtonTitle()}"
+                           onclick="PF('dlgWait').show();"
+                           ajax="true"
+                           style="float: left" ></p:commandButton>
+        </p:outputPanel>
+      </f:facet>
+
+      <p:column headerText="&#160;" footerText="&#160;"
+                style="width: 120px"
+                >
+        <p:commandButton
+          styleClass="mybutton"
+          actionListener="#{listDriversBean.clickSelectDriver(item)}"
+          disabled="#{listDriversBean.disableSelectDriver(item)}"
+          value="Select"
+          onclick="PF('dlgWait').show();"
+          ajax="false"/> </p:column>
+
+      <p:column
+        headerText="#{listDriversBean.getDefaulterTxt()}"
+        footerText="#{listDriversBean.getDefaulterTxt()}"
+        filterBy="#{item.defaulter}"
+        sortBy="#{item.defaulter}"
+        filterMatchMode="exact"
+        style="text-align: center; width:60px">
+        <f:facet name="filter">
+          <p:inputText size="1" onkeyup="PF('driversTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.defaulter}"/>
+      </p:column>
+
+      <p:column
+        headerText="#{listDriversBean.getConfirmedTxt()}"
+        footerText="#{listDriversBean.getConfirmedTxt()}"
+        filterBy="#{item.confirmed}"
+        sortBy="#{item.confirmed}"
+        filterMatchMode="exact"
+        style="text-align: center; width:100px">
+        <f:facet name="filter">
+          <p:inputText size="3" onkeyup="PF('driversTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.confirmed}"/>
+      </p:column>
+
+      <p:column
+        headerText="Id" footerText="Id"
+        filterBy="#{item.id}"
+        sortBy="#{item.id}"
+        filterMatchMode="exact"
+        style="white-space: pre-line; text-align: center; width: 40px">
+        <f:facet name="filter">
+          <p:inputText style="width: 35px" size="1"
+                       onkeyup="PF('driversTable').filter()" /> </f:facet>
+        <h:outputText value="#{item.id}"/>  </p:column>
+
+      <p:column headerText="Given names" footerText="Given names"
+                filterBy="#{item.namesGiven}"
+                sortBy="#{item.namesGiven}"
+                filterMatchMode="contains"
+                style="white-space: pre-line; text-align: left; width: 180px">
+        <f:facet name="filter">
+          <p:inputText style="width: 140px" size="1"
+                       onkeyup="PF('driversTable').filter()" /> </f:facet>
+        <h:outputText value="#{item.namesGiven}"/>  </p:column>
+
+      <p:column headerText="Family names" footerText="Family names"
+                filterBy="#{item.namesFamily}"
+                sortBy="#{item.namesFamily}"
+                filterMatchMode="contains"
+                style="white-space: pre-line; text-align: left; width: 180px">
+        <f:facet name="filter">  <p:inputText style="width: 140px" size="1"
+                                              onkeyup="PF('driversTable').filter()" /> </f:facet>
+        <h:outputText value="#{item.namesFamily}"/>  </p:column>
+
+
+      <p:column headerText="Main Venue" footerText="Main Venue"
+                filterBy="#{listDriversBean.getVenueName( item )}"
+                sortBy="#{listDriversBean.getVenueName( item )}"
+                filterMatchMode="contains"
+                style="white-space: pre-line; text-align: left">
+        <f:facet name="filter">  <p:inputText style="width: 300px;" size="1"
+                                              onkeyup="PF('driversTable').filter()" /> </f:facet>
+        <h:outputText value="#{listDriversBean.getVenueName( item )}"/>  </p:column>
+
+    </p:dataTable>
+    <h1><br /></h1>
+
+  </ui:define>
+
+</ui:composition>
+
+
