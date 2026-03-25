@@ -1,1 +1,98 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/TemplateBasic.xhtml">
 
+  <ui:define name="content">
+    <div align="center">
+      <p:panel style="width: 100%; padding: 0%; border: background">
+        <p:panel style="width: 300px">
+          <p:graphicImage library="images"
+                          name="StartLights.gif"
+                          width="280"
+                          style="align-content: center"
+                          cache="true"
+                          alt="Start lights" />
+          <br />
+          <br />
+
+          <h2 align="center">
+            Please login or<br />
+            Create a new account<br />
+            <br />
+          </h2>
+
+          <div align="center">
+            <table>
+              <tr>
+                <td align="right" class="field_label">
+                  <p:outputLabel for="participant_email" class="field_label">e-mail:</p:outputLabel>
+                </td>
+                <td align="left">
+                  <p:inputText id="participant_email"
+                               value="#{viewBean.currentParticipant.email}"
+                               placeholder="e-mail"
+                               size="15"
+                               title="#{viewBean.currentParticipant.email}"
+                               required="false">
+                    <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                  </p:inputText>
+                </td>
+              </tr>
+              <tr>
+                <td align="right" class="field_label">
+                  <p:outputLabel for="participant_password" class="field_label">password:</p:outputLabel>
+                </td>
+                <td align="left">
+                  <p:password id="participant_password"
+                              size="10"
+                              required="false"
+                              redisplay="true"
+                              value="#{viewBean.currentParticipant.password}" />
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div align="center">
+            <br />
+            <br />
+            <p:commandButton id="loginButton"
+                             actionListener="#{viewBean.clickLogin}"
+                             value="Login"
+                             icon="fa fa-fw fa-sign-in"
+                             styleClass="myloginbutton"
+                             ajax="false" />
+            <br />
+            <br />
+            <p:commandButton id="resetPasswordButton"
+                             actionListener="#{viewBean.clickResetPassword}"
+                             value="Request a Password Reset"
+                             icon="fa fa-fw fa-key"
+                             ajax="false"
+                             disabled="#{viewBean.disableResetButton()}">
+              <p:confirm header="Are you sure?"
+                         message="Reset your password now" />
+            </p:commandButton>
+            <br />
+            <br />
+            <p:commandButton id="newParticipantButton"
+                             actionListener="#{viewBean.clickNewParticipant}"
+                             value="Create Account"
+                             icon="fa fa-fw fa-plus"
+                             styleClass="myloginbutton"
+                             immediate="true"
+                             ajax="false"
+                             disabled="false">
+              <p:confirm header="Are you sure?"
+                         message="Create new account now" />
+            </p:commandButton>
+          </div>
+        </p:panel>
+      </p:panel>
+    </div>
+  </ui:define>
+
+</ui:composition>

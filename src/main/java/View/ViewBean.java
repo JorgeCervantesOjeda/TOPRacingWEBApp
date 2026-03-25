@@ -293,7 +293,7 @@ public class ViewBean
           currentParticipant = new Participant();
           currentParticipant.setEmail( "" );
           currentParticipant.setPassword( "" );
-          context.redirect( "login.xhtml" );
+          context.redirect( context.getRequestContextPath() + "/login.xhtml" );
           break;
         case UI.ERROR_LOGIN:
           showModal(
