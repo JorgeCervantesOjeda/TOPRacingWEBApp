@@ -1,1 +1,81 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="jakarta.faces.facelets"
+                xmlns:h="jakarta.faces.html"
+                xmlns:f="jakarta.faces.core"
+                xmlns:p="http://primefaces.org/ui"
+                template="./TemplateEdit.xhtml">
 
+  <ui:define name="editTitle">
+    <h2>View/Edit Event</h2>
+    <p:commandButton id="returnFromEditRegatta"
+                     styleClass="mybutton"
+                     type="submit"
+                     actionListener="#{editRegattaBean.clickEndEdit()}"
+                     onclick="PF('dlgWait').show();"
+                     ajax="false"
+                     icon="fa fa-fw fa-arrow-left"
+                     title="Return"
+                     style="float: left" />
+    <p:tooltip for="returnFromEditRegatta" position="top" />
+  </ui:define>
+
+  <ui:define name="editForm">
+    <table>
+      <tr>
+        <td align="right" class="field_label">Identity</td>
+        <td align="left">
+          <h:outputText value="#{editRegattaBean.regatta.id}" class="field_output" />
+        </td>
+      </tr>
+      <tr>
+        <td align="right" class="field_label">Promoter</td>
+        <td align="left">
+          <h:outputText value="#{editRegattaBean.promoterName}" class="field_output" />
+        </td>
+      </tr>
+      <tr>
+        <td align="right" class="field_label">Status</td>
+        <td align="left">
+          <h:outputText value="#{editRegattaBean.statusName}" class="field_output" />
+        </td>
+      </tr>
+      <tr>
+        <td align="right" class="field_label">Variant</td>
+        <td align="left">
+          <h:outputText value="#{editRegattaBean.variantName}" class="field_output" />
+        </td>
+      </tr>
+      <tr>
+        <td align="right" class="field_label">Period Level</td>
+        <td align="left">
+          <h:outputText value="#{editRegattaBean.periodLevelStr}" class="field_output" />
+        </td>
+      </tr>
+      <tr>
+        <td align="right" class="field_label">Trackset Level</td>
+        <td align="left">
+          <h:outputText value="#{editRegattaBean.tracksetLevelStr}" class="field_output" />
+        </td>
+      </tr>
+      <tr>
+        <td align="right" class="field_label">Date</td>
+        <td align="left">
+          <h:outputText value="#{editRegattaBean.regatta.datetime}" class="field_output">
+            <f:convertDateTime pattern="yyyy-MM-dd HH:mm" timeZone="#{editRegattaBean.timeZone}" />
+          </h:outputText>
+        </td>
+      </tr>
+    </table>
+
+    <br />
+
+    <p:commandButton styleClass="mybutton"
+                     type="submit"
+                     disabled="#{editRegattaBean.disableSaveButton}"
+                     actionListener="#{editRegattaBean.clickSave()}"
+                     onclick="PF('dlgWait').show();"
+                     value="Save data"
+                     ajax="false" />
+  </ui:define>
+
+</ui:composition>

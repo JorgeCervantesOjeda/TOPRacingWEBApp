@@ -73,6 +73,9 @@ public class ConfirmParticipantMailBean {
   }
 
   public String getParticipant() {
+    if( participant == null ) {
+      return "Unknown participant";
+    }
     return participant.getNamesGiven()
            + " " + participant.getNamesFamily()
            + " id: " + participant.getId();

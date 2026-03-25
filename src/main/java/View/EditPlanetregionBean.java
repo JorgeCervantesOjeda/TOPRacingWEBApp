@@ -49,6 +49,9 @@ public class EditPlanetregionBean {
     theModel = viewBean.getModelBean();
     theController = viewBean.getController();
     this.planetregion = viewBean.getPlanetregion();
+    if( this.planetregion == null ) {
+      this.planetregion = PlaceholderFactory.planetregion();
+    }
   }
 
   public Planetregion getPlanetregion() {

@@ -52,6 +52,9 @@ public class EditVenueInMapBean
     theModel = viewBean.getModelBean();
     theController = viewBean.getController();
     this.venue = viewBean.getVenue();
+    if( this.venue == null ) {
+      this.venue = PlaceholderFactory.venue();
+    }
 
     simpleModel = new DefaultMapModel();
 

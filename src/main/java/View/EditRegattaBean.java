@@ -70,6 +70,9 @@ public class EditRegattaBean {
     theModel = viewBean.getModelBean();
     theController = viewBean.getController();
     this.regatta = viewBean.getRegatta();
+    if( this.regatta == null ) {
+      this.regatta = PlaceholderFactory.regatta();
+    }
     this.periodLevelStr = LevelPeriod.NAME[ regatta.getLevelPeriod() ];
     this.tracksetLevelStr = LevelTrackset.NAME[ regatta.getLevelTrackset() ];
     this.levelPeriodPenaltiesList =

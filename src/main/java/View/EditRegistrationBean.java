@@ -52,6 +52,9 @@ public class EditRegistrationBean {
     theModel = viewBean.getModelBean();
     theController = viewBean.getController();
     this.registration = viewBean.getCurrentRegistration();
+    if( this.registration == null ) {
+      this.registration = PlaceholderFactory.registration();
+    }
   }
 
   public Registration getRegistration() {
@@ -99,6 +102,13 @@ public class EditRegistrationBean {
   }
 
   public double getRegattaRegistrationCost() {
+    if( this.registration == null || this.registration.getRegatta() == null ) {
+      return 0.0;
+    }
+    if( this.registration.getRegatta().getId() == null
+        || this.registration.getRegatta().getId() <= 0 ) {
+      return 0.0;
+    }
     return theModel.getRegattaById( this.registration.getRegatta().getId() )
       .getEntryfee();
   }

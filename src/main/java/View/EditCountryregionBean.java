@@ -53,6 +53,9 @@ public class EditCountryregionBean
     theModel = viewBean.getModelBean();
     theController = viewBean.getController();
     this.countryregion = viewBean.getCountryregion();
+    if( this.countryregion == null ) {
+      this.countryregion = PlaceholderFactory.countryregion();
+    }
   }
 
   public Countryregion getCountryregion() {

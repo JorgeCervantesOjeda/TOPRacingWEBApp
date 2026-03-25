@@ -49,6 +49,9 @@ public class EditProvinceBean {
     theModel = viewBean.getModelBean();
     theController = viewBean.getController();
     this.province = viewBean.getProvince();
+    if( this.province == null ) {
+      this.province = PlaceholderFactory.province();
+    }
   }
 
   public Province getProvince() {

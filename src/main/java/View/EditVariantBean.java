@@ -49,8 +49,10 @@ public class EditVariantBean {
     theModel = viewBean.getModelBean();
     theController = viewBean.getController();
     this.variant = viewBean.getVariant();
+    if( this.variant == null ) {
+      this.variant = PlaceholderFactory.variant();
+    }
 
-    // parche: mejor quitar campo?
     variant.setMetric( true );
   }
 

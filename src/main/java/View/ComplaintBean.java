@@ -193,7 +193,7 @@ public class ComplaintBean {
 
   public String getComplaintMsg() {
     if( defaulter == null || currentParticipant == null ) {
-      return "Error: null pointer at getComplaintMsg()";
+      return "Complaint request is incomplete or invalid.";
     }
     if( defaulter.getId() == currentParticipant.getId().longValue() ) {
       return "You cannot file a complaint on yourself.";
@@ -203,6 +203,14 @@ public class ComplaintBean {
            + "\nid:" + defaulter.getId()
            + "\nname: " + defaulter.getNamesGiven() + " " + defaulter
       .getNamesFamily();
+  }
+
+  public String getResultMessageBuyer() {
+    return getComplaintMsg();
+  }
+
+  public String getResultMessageSeller() {
+    return getComplaintMsg();
   }
 
 }

@@ -16,6 +16,7 @@ import Tables.Participant;
 import Tables.Regatta;
 import Tables.Registration;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import jakarta.annotation.PostConstruct;
@@ -72,6 +73,11 @@ public class EditRegattaResultsBean
     theModel = viewBean.getModelBean();
     theController = viewBean.getController();
     regatta = viewBean.getRegatta();
+    if( regatta == null || viewBean.getCurrentParticipant() == null ) {
+      regatta = PlaceholderFactory.regatta();
+      bids = new ArrayList<>();
+      return;
+    }
     bids = theModel.getBids( viewBean.getCurrentParticipant(),
                              this.regatta );
 

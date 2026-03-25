@@ -49,6 +49,9 @@ public class EditCountryBean {
     theModel = viewBean.getModelBean();
     theController = viewBean.getController();
     this.country = viewBean.getCountry();
+    if( this.country == null ) {
+      this.country = PlaceholderFactory.country();
+    }
   }
 
   public Country getCountry() {

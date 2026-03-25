@@ -231,9 +231,9 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery(
-          "from Currency as currency"
-        );
+      Query q = s.createQuery(
+          "from Tables.Currency as currency"
+         );
     List<Currency> currencyList = q.list();
 
     t.commit();
@@ -513,7 +513,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Participant as p"
+          "from Tables.Participant as p"
           + " join fetch p.venue"
         );
     List<Participant> participants = q.list();
@@ -531,7 +531,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Participant as p"
+          "from Tables.Participant as p"
           + " join fetch p.venue as v"
           + " join fetch v.provinceregion as pr"
           + " join fetch pr.province as prov"
@@ -564,7 +564,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Participant as p"
+          "from Tables.Participant as p"
           + " join fetch p.venue as v"
           + " join fetch v.provinceregion as pr"
           + " join fetch pr.province as prov"
@@ -626,7 +626,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "from Variant as va"
+    Query q = s.createQuery( "from Tables.Variant as va"
                              + " join fetch va.venue as ve"
                              + " join fetch ve.provinceregion as pr"
                              + " join fetch ve.participant as ow"
@@ -650,7 +650,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "from Venue as ve"
+    Query q = s.createQuery( "from Tables.Venue as ve"
                              + " join fetch ve.provinceregion as pr"
                              + " join fetch ve.participant as ow"
                              + " join fetch pr.province as p"
@@ -674,7 +674,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "from Provinceregion as pr"
+    Query q = s.createQuery( "from Tables.Provinceregion as pr"
                              + " join fetch pr.province as p"
                              + " join fetch p.countryregion as cr"
                              + " join fetch cr.country as c"
@@ -695,7 +695,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "from Province as p"
+    Query q = s.createQuery( "from Tables.Province as p"
                              + " join fetch p.countryregion as cr"
                              + " join fetch cr.country as c"
                              + " join fetch c.planetregion"
@@ -715,7 +715,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "from Countryregion as cr"
+    Query q = s.createQuery( "from Tables.Countryregion as cr"
                              + " join fetch cr.country as c"
                              + " join fetch c.planetregion"
                              + " where cr.id = "
@@ -734,7 +734,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "from Country as c"
+    Query q = s.createQuery( "from Tables.Country as c"
                              + " join fetch c.planetregion"
                              + " where c.id = "
                              + countryId );
@@ -752,7 +752,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "from Planetregion as pr"
+    Query q = s.createQuery( "from Tables.Planetregion as pr"
                              + " where pr.id = "
                              + planetregionId );
     Planetregion pr = ( (List<Planetregion>) q.list() ).get( 0 );
@@ -769,7 +769,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "from Car as c"
+    Query q = s.createQuery( "from Tables.Car as c"
                              + " join fetch c.participant"
                              + " where c.id = "
                              + carId
@@ -2745,7 +2745,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Variant as variant"
+          "from Tables.Variant as variant"
           + " join fetch variant.venue as venue"
           + " join fetch venue.provinceregion as provinceregion"
           + " join fetch provinceregion.province as province"
@@ -2768,7 +2768,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Venue as venue"
+          "from Tables.Venue as venue"
           + " join fetch venue.participant"
           + " join fetch venue.provinceregion as provinceregion"
           + " join fetch provinceregion.province as province"
@@ -2791,7 +2791,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Provinceregion as provinceregion"
+          "from Tables.Provinceregion as provinceregion"
           + " join fetch provinceregion.province as province"
           + " join fetch province.countryregion as countryregion"
           + " join fetch countryregion.country as country"
@@ -2812,7 +2812,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Province as province"
+          "from Tables.Province as province"
           + " join fetch province.countryregion as countryregion"
           + " join fetch countryregion.country as country"
           + " join fetch country.planetregion"
@@ -2832,7 +2832,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Countryregion as countryregion"
+          "from Tables.Countryregion as countryregion"
           + " join fetch countryregion.country as country"
           + " join fetch country.planetregion"
         );
@@ -2851,7 +2851,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Country as country"
+          "from Tables.Country as country"
           + " join fetch country.planetregion"
         );
     List<Country> countries = q.list();
@@ -2869,7 +2869,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Planetregion as planetregion"
+          "from Tables.Planetregion as planetregion"
         );
     List<Planetregion> planetregions = q.list();
 
@@ -2886,7 +2886,7 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Query q = s.createQuery(
-          "from Car as car"
+          "from Tables.Car as car"
           + " join fetch car.participant as p"
           + " where p.id = " + currentParticipant.getId()
         );
@@ -3326,7 +3326,7 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery( "from Car as c"
+    Query q = s.createQuery( "from Tables.Car as c"
                              + " join fetch c.participant"
                              + " where c.participant.id = "
                              + p.getId()
@@ -3692,7 +3692,7 @@ public class ModelBean
       new Date() + " !!! " + "---- getting participant by e-mail key: " + key );
 
     Query q = s.createQuery(
-          "from Participant as user where user.emailKey = " + key );
+          "from Tables.Participant as user where user.emailKey = " + key );
     Participant user = (Participant) q.uniqueResult();
 
     if( user != null ) {

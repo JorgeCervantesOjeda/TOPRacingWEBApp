@@ -51,6 +51,9 @@ public class EditCarBean {
     theModel = viewBean.getModelBean();
     theController = viewBean.getController();
     this.car = viewBean.getCar();
+    if( this.car == null ) {
+      this.car = PlaceholderFactory.car();
+    }
   }
 
   public Car getCar() {
