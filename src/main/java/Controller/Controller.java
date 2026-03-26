@@ -18,6 +18,8 @@ import View.ViewForController;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -36,10 +38,14 @@ public class Controller {
   private final PilaInteger previousUI;
   private Participant currentParticipant;
   private long session;
+  private static final Logger LOGGER = Logger.getLogger( Controller.class.getName() );
 
   public Controller( ViewForController view ) {
     this.theView = view;
     previousUI = new PilaInteger();
+    LOGGER.log( Level.INFO,
+                "Controller initialized for view {0}",
+                view.getClass().getSimpleName() );
   }
 
   public void clickLanguageChange( int _languageId ) {
@@ -108,6 +114,9 @@ public class Controller {
       return;
     }
 
+    LOGGER.log( Level.INFO,
+                "clickEditProfile for participant id {0}",
+                currentParticipant.getId() );
     theView.showUI( UI.EDIT_USER,
                     currentParticipant );
   }
@@ -116,6 +125,7 @@ public class Controller {
     this.currentParticipant = null;
     long numUsuariosActivos = modelBean.decNumUsuariosActivos();
 
+    LOGGER.info( "clickLogout, active users now: " + numUsuariosActivos );
     System.out.println(
       "---- Quedan " + numUsuariosActivos + " usuarios activos. ----" );
 
@@ -125,6 +135,12 @@ public class Controller {
 
   public void clickLogin( Participant user ) {
 
+    LOGGER.log( Level.INFO,
+                "clickLogin attempt for email={0}",
+                user == null ? "null" : user.getEmail() );
+    System.out.println( new Date()
+                        + " clickLogin attempt for "
+                        + (user == null ? "null" : user.getEmail()) );
     currentParticipant = modelBean.getValidParticipant( user );
     if( null == currentParticipant ) {
       theView.showUI( UI.ERROR_LOGIN );
@@ -158,6 +174,12 @@ public class Controller {
   }
 
   public void clickResetPasswordRequest( Participant user ) {
+    LOGGER.log( Level.INFO,
+                "clickResetPasswordRequest for email={0}",
+                user == null ? "null" : user.getEmail() );
+    System.out.println( new Date()
+                        + " clickResetPasswordRequest for "
+                        + (user == null ? "null" : user.getEmail()) );
     modelBean.resetPasswordRequest( user,
                                     this.session );
     theView.showUI( UI.PASSWORD_RESET_REQUEST,
@@ -171,6 +193,20 @@ public class Controller {
 
   public void clickNewParticipant() {
     currentParticipant = modelBean.createParticipant();
+
+    LOGGER.info( "clickNewParticipant created placeholder participant with venue=" +
+                 (currentParticipant == null
+                  ? "null"
+                  : currentParticipant.getVenue() == null
+                    ? "venue-null"
+                    : currentParticipant.getVenue().getId()) );
+    System.out.println( new Date()
+                        + " clickNewParticipant created placeholder venue="
+                        + (currentParticipant == null
+                           ? "null"
+                           : currentParticipant.getVenue() == null
+                             ? "venue-null"
+                             : currentParticipant.getVenue().getId()) );
 
     if( currentParticipant == null ) {
       theView.showUI( UI.ERROR_CREATE_REGISTRATION_DUPLICATE );
@@ -217,6 +253,7 @@ public class Controller {
   }
 
   public void clickViewWelcome() {
+    LOGGER.info( "clickViewWelcome requested" );
     modelBean.sendMonitorMail( currentParticipant,
                                "*** clickViewWelcome() ***",
                                session );
@@ -224,6 +261,7 @@ public class Controller {
   }
 
   public void clickViewPointscounts() {
+    LOGGER.info( "clickViewPointscounts requested" );
     modelBean.sendMonitorMail( currentParticipant,
                                "*** clickViewPointscounts() ***",
                                session );
@@ -231,6 +269,8 @@ public class Controller {
   }
 
   public void clickViewPenalties() {
+
+    LOGGER.info( "clickViewPenalties requested" );
 
     modelBean.sendMonitorMail( currentParticipant,
                                "*** clickViewPenalties() ***",
@@ -456,6 +496,7 @@ public class Controller {
   }
 
   public void clickViewRegistrations() {
+    LOGGER.info( "clickViewRegistrations requested" );
     modelBean.sendMonitorMail( currentParticipant,
                                "*** clickViewRegistrations() ***",
                                session );
@@ -653,9 +694,6 @@ public class Controller {
   }
 
   public void clickViewVenues( int currentUI ) {
-    currentParticipant = modelBean.save( currentParticipant,
-                                         true );
-
     this.previousUI.push( currentUI );
 
     theView.showUI( UI.LIST_VENUES );
@@ -1099,11 +1137,13 @@ public class Controller {
 
   public void clickSelectVenue( Venue venue,
                                 Variant variant ) {
-    if( !isValidParticipant() ) {
+    int previousUi = this.previousUI.last();
+    if( previousUi != UI.EDIT_USER
+        && !isValidParticipant() ) {
       return;
     }
 
-    switch( this.previousUI.last() ) {
+    switch( previousUi ) {
       case UI.EDIT_VARIANT:
 
         if( currentParticipant.getId() != variant.getIdCreator() ) {
@@ -1117,9 +1157,12 @@ public class Controller {
         break;
 
       case UI.EDIT_USER:
+        if( currentParticipant == null ) {
+          theView.showUI( UI.LOGIN );
+          return;
+        }
         currentParticipant.setVenue( venue );
-        modelBean.save( currentParticipant,
-                        false );
+        break;
     }
     theView.showUI( this.previousUI.pop() );
 
