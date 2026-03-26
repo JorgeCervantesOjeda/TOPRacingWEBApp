@@ -293,7 +293,8 @@ public class ViewBean
           currentParticipant = new Participant();
           currentParticipant.setEmail( "" );
           currentParticipant.setPassword( "" );
-          context.redirect( context.getRequestContextPath() + "/login.xhtml" );
+          redirect( context,
+                    context.getRequestContextPath() + "/login.xhtml" );
           break;
         case UI.ERROR_LOGIN:
           showModal(
@@ -305,21 +306,26 @@ public class ViewBean
           return;
 
         case UI.EDIT_USER:
-          context.redirect( "editparticipant.xhtml" );
+          redirect( context,
+                    "editparticipant.xhtml" );
           break;
         case UI.WELCOME:
-          context.redirect( "welcome.xhtml" );
+          redirect( context,
+                    "welcome.xhtml" );
           break;
 
         case UI.LIST_POINTSCOUNTS:
-          context.redirect( "listpointscounts.xhtml" );
+          redirect( context,
+                    "listpointscounts.xhtml" );
           break;
 
         case UI.LIST_REGATTAS:
-          context.redirect( "listregattas.xhtml" );
+          redirect( context,
+                    "listregattas.xhtml" );
           break;
         case UI.LIST_PENALTIES:
-          context.redirect( "listpenalties.xhtml" );
+          redirect( context,
+                    "listpenalties.xhtml" );
           break;
         case UI.ERROR_REGATTA_NOT_FOUND:
           showModal(
@@ -364,10 +370,12 @@ public class ViewBean
             "" );
           return;
         case UI.EDIT_REGATTA:
-          context.redirect( "editregatta.xhtml" );
+          redirect( context,
+                    "editregatta.xhtml" );
           break;
         case UI.VIEW_EDIT_REGATTA_RESULTS:
-          context.redirect( "editregattaresults.xhtml" );
+          redirect( context,
+                    "editregattaresults.xhtml" );
           break;
         case UI.REGATTA_STATUS_CHANGED:
           showModal(
@@ -378,7 +386,8 @@ public class ViewBean
           return;
 
         case UI.LIST_VARIANTS:
-          context.redirect( "listvariants.xhtml" );
+          redirect( context,
+                    "listvariants.xhtml" );
           break;
         case UI.ERROR_EDIT_VARIANT:
           showModal(
@@ -387,11 +396,13 @@ public class ViewBean
             "" );
           return;
         case UI.EDIT_VARIANT:
-          context.redirect( "editvariant.xhtml" );
+          redirect( context,
+                    "editvariant.xhtml" );
           break;
 
         case UI.LIST_VENUES:
-          context.redirect( "listvenues.xhtml" );
+          redirect( context,
+                    "listvenues.xhtml" );
           break;
         case UI.ERROR_EDIT_VENUE:
           showModal(
@@ -400,11 +411,13 @@ public class ViewBean
             "" );
           return;
         case UI.EDIT_VENUE:
-          context.redirect( "editvenue.xhtml" );
+          redirect( context,
+                    "editvenue.xhtml" );
           break;
 
         case UI.LIST_PROVINCEREGIONS:
-          context.redirect( "listprovinceregions.xhtml" );
+          redirect( context,
+                    "listprovinceregions.xhtml" );
           break;
         case UI.ERROR_EDIT_PROVINCEREGION:
           showModal(
@@ -413,11 +426,13 @@ public class ViewBean
             "" );
           return;
         case UI.EDIT_PROVINCEREGION:
-          context.redirect( "editprovinceregion.xhtml" );
+          redirect( context,
+                    "editprovinceregion.xhtml" );
           break;
 
         case UI.LIST_PROVINCES:
-          context.redirect( "listprovinces.xhtml" );
+          redirect( context,
+                    "listprovinces.xhtml" );
           break;
         case UI.ERROR_EDIT_PROVINCE:
           showModal(
@@ -426,11 +441,13 @@ public class ViewBean
             "" );
           return;
         case UI.EDIT_PROVINCE:
-          context.redirect( "editprovince.xhtml" );
+          redirect( context,
+                    "editprovince.xhtml" );
           break;
 
         case UI.LIST_COUNTRYREGIONS:
-          context.redirect( "listcountryregions.xhtml" );
+          redirect( context,
+                    "listcountryregions.xhtml" );
           break;
         case UI.ERROR_EDIT_COUNTRYREGION:
           showModal(
@@ -439,11 +456,13 @@ public class ViewBean
             "" );
           return;
         case UI.EDIT_COUNTRYREGION:
-          context.redirect( "editcountryregion.xhtml" );
+          redirect( context,
+                    "editcountryregion.xhtml" );
           break;
 
         case UI.LIST_COUNTRIES:
-          context.redirect( "listcountries.xhtml" );
+          redirect( context,
+                    "listcountries.xhtml" );
           break;
         case UI.ERROR_EDIT_COUNTRY:
           showModal(
@@ -452,11 +471,13 @@ public class ViewBean
             "" );
           return;
         case UI.EDIT_COUNTRY:
-          context.redirect( "editcountry.xhtml" );
+          redirect( context,
+                    "editcountry.xhtml" );
           break;
 
         case UI.LIST_PLANETREGIONS:
-          context.redirect( "listplanetregions.xhtml" );
+          redirect( context,
+                    "listplanetregions.xhtml" );
           break;
         case UI.ERROR_EDIT_PLANETREGION:
           showModal(
@@ -465,14 +486,17 @@ public class ViewBean
             "" );
           return;
         case UI.EDIT_PLANETREGION:
-          context.redirect( "editplanetregion.xhtml" );
+          redirect( context,
+                    "editplanetregion.xhtml" );
           break;
 
         case UI.LIST_REGISTRATIONS:
-          context.redirect( "listregistrations.xhtml" );
+          redirect( context,
+                    "listregistrations.xhtml" );
           break;
         case UI.EDIT_REGISTRATION:
-          context.redirect( "editregistration.xhtml" );
+          redirect( context,
+                    "editregistration.xhtml" );
           break;
         case UI.ERROR_CREATE_REGISTRATION_DUPLICATE:
           showModal(
@@ -492,10 +516,12 @@ public class ViewBean
           return;
 
         case UI.LIST_CARS:
-          context.redirect( "listcars.xhtml" );
+          redirect( context,
+                    "listcars.xhtml" );
           break;
         case UI.LIST_DRIVERS:
-          context.redirect( "listdrivers.xhtml" );
+          redirect( context,
+                    "listdrivers.xhtml" );
           break;
         case UI.ERROR_EDIT_CAR:
           showModal(
@@ -516,11 +542,13 @@ public class ViewBean
             "" );
           return;
         case UI.EDIT_CAR:
-          context.redirect( "editcar.xhtml" );
+          redirect( context,
+                    "editcar.xhtml" );
           break;
 
         case UI.EDIT_VENUE_IN_MAP:
-          context.redirect( "editvenueinmap.xhtml" );
+          redirect( context,
+                    "editvenueinmap.xhtml" );
           break;
 
         case UI.INVALID_SPEED_RESULTS:
@@ -597,6 +625,34 @@ public class ViewBean
      *
      * RequestContext.getCurrentInstance().openDialog( text, options, null );
      */
+  }
+
+  private void redirect( ExternalContext context,
+                         String target ) throws IOException {
+    String resolvedTarget = resolveNavigationTarget( context,
+                                                     target );
+    if( target == null || target.isBlank() ) {
+      context.redirect( resolvedTarget );
+      return;
+    }
+    context.redirect( resolvedTarget );
+  }
+
+  private String resolveNavigationTarget( ExternalContext context,
+                                          String target ) {
+    if( target == null || target.isBlank() ) {
+      return context.getRequestContextPath() + "/faces/welcome.xhtml";
+    }
+    if( target.contains( "://" ) ) {
+      return target;
+    }
+    if( target.startsWith( context.getRequestContextPath() + "/" ) ) {
+      return target;
+    }
+    if( target.startsWith( "/" ) ) {
+      return context.getRequestContextPath() + target;
+    }
+    return context.getRequestContextPath() + "/faces/" + target;
   }
 
   public String getMessage() {

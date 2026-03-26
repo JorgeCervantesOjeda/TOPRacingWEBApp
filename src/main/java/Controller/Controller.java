@@ -205,8 +205,8 @@ public class Controller {
                         + (currentParticipant == null
                            ? "null"
                            : currentParticipant.getVenue() == null
-                             ? "venue-null"
-                             : currentParticipant.getVenue().getId()) );
+                           ? "venue-null"
+                           : currentParticipant.getVenue().getId()) );
 
     if( currentParticipant == null ) {
       theView.showUI( UI.ERROR_CREATE_REGISTRATION_DUPLICATE );

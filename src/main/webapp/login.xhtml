@@ -84,7 +84,8 @@
                              icon="fa fa-fw fa-plus"
                              styleClass="myloginbutton"
                              immediate="true"
-                             ajax="false"
+                             ajax="true"
+                             onclick="PF('dlgWait').show();"
                              disabled="false">
               <p:confirm header="Are you sure?"
                          message="Create new account now" />
