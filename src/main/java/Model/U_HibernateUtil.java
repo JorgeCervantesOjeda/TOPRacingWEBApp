@@ -3,13 +3,35 @@ package Model;
 import java.util.Properties;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.service.ServiceRegistry;
 
 public class U_HibernateUtil {
 
+  private static final String[] MAPPING_RESOURCES = new String[] {
+    "Tables/Countryregion.hbm.xml",
+    "Tables/Province.hbm.xml",
+    "Tables/Penaltiespl.hbm.xml",
+    "Tables/Regatta.hbm.xml",
+    "Tables/Appstats.hbm.xml",
+    "Tables/Variant.hbm.xml",
+    "Tables/Provinceregion.hbm.xml",
+    "Tables/Bid.hbm.xml",
+    "Tables/Pointscount.hbm.xml",
+    "Tables/Currency.hbm.xml",
+    "Tables/Country.hbm.xml",
+    "Tables/Registration.hbm.xml",
+    "Tables/Car.hbm.xml",
+    "Tables/Planetregion.hbm.xml",
+    "Tables/Venue.hbm.xml",
+    "Tables/Participant.hbm.xml",
+  };
+
   private static final SessionFactory sessionFactory;
-  private static StandardServiceRegistryBuilder serviceRegistry;
+  private static ServiceRegistry serviceRegistry;
   private static final String DEFAULT_DB_URL =
     "jdbc:mysql://localhost:3306/topracing26?zeroDateTimeBehavior=convertToNull"
       + "&useSSL=false&allowPublicKeyRetrieval=true"
@@ -29,11 +51,18 @@ public class U_HibernateUtil {
       configuration.setProperty( "hibernate.connection.url",
                                  url );
 
-      serviceRegistry = new StandardServiceRegistryBuilder()
-      .applySettings( configuration.getProperties() );
+      StandardServiceRegistryBuilder registryBuilder =
+        new StandardServiceRegistryBuilder()
+          .applySettings( configuration.getProperties() );
+      serviceRegistry = registryBuilder.build();
 
-      sessionFactory = configuration.buildSessionFactory( serviceRegistry
-      .build() );
+      MetadataSources metadataSources = new MetadataSources( serviceRegistry );
+      for( String mapping : MAPPING_RESOURCES ) {
+        metadataSources.addResource( mapping );
+      }
+      Metadata metadata = metadataSources.getMetadataBuilder().build();
+
+      sessionFactory = metadata.getSessionFactoryBuilder().build();
     } catch( HibernateException ex ) {
       // Log the exception.
       System.err.println( "Initial SessionFactory creation failed." + ex );
@@ -48,6 +77,9 @@ public class U_HibernateUtil {
   public static void shutdown() {
     if( sessionFactory != null && !sessionFactory.isClosed() ) {
       sessionFactory.close();
+    }
+    if( serviceRegistry != null ) {
+      StandardServiceRegistryBuilder.destroy( serviceRegistry );
     }
   }
 

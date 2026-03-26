@@ -7,7 +7,6 @@ package Model;
 
 import Controller.RegattaStatus;
 import Controller.RegistrationStatus;
-import Tables.Appstats;
 import Tables.Bid;
 import Tables.BidId;
 import Tables.Car;
@@ -52,10 +51,11 @@ import jakarta.inject.Named;
 import jakarta.faces.context.FacesContext;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.hibernate.Query;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.hibernate.type.LongType;
 
 /**
@@ -648,23 +648,34 @@ public class ModelBean
   public synchronized Venue getVenueById( long venueId ) {
     SessionFactory sf = U_HibernateUtil.getSessionFactory();
     Session s = sf.openSession();
-    Transaction t = s.beginTransaction();
+    Transaction t = null;
 
-    Query q = s.createQuery( "from Tables.Venue as ve"
-                             + " join fetch ve.provinceregion as pr"
-                             + " join fetch ve.participant as ow"
-                             + " join fetch pr.province as p"
-                             + " join fetch p.countryregion as cr"
-                             + " join fetch cr.country as c"
-                             + " join fetch c.planetregion"
-                             + " where ve.id = "
-                             + venueId );
-    Venue v = ( (List<Venue>) q.list() ).get( 0 );
+    try {
+      t = s.beginTransaction();
 
-    t.commit();
-    s.close();
+      Venue v = s.get( Venue.class,
+                       venueId );
+      if( v != null ) {
+        Hibernate.initialize( v.getParticipant() );
+        Hibernate.initialize( v.getProvinceregion() );
+        Hibernate.initialize( v.getProvinceregion().getProvince() );
+        Hibernate.initialize( v.getProvinceregion().getProvince().getCountryregion() );
+        Hibernate.initialize( v.getProvinceregion().getProvince().getCountryregion().getCountry() );
+        Hibernate.initialize( v.getProvinceregion().getProvince().getCountryregion().getCountry().getPlanetregion() );
+      } else {
+        System.out.println( new Date() + " >>> WARNING: getVenueById(" + venueId + ") returned null." );
+      }
 
-    return v;
+      t.commit();
+      return v;
+    } catch( RuntimeException ex ) {
+      if( t != null && t.isActive() ) {
+        t.rollback();
+      }
+      throw ex;
+    } finally {
+      s.close();
+    }
   }
 
   @Override
@@ -3459,7 +3470,7 @@ public class ModelBean
   /*
    * Methods previously in AppScopeBean
    */
-  public synchronized long getNewSessionId() {
+    public synchronized long getNewSessionId() {
 
     this.numSesionesActivas++;
     long sessionId = System.currentTimeMillis();
@@ -3467,31 +3478,31 @@ public class ModelBean
     Session s = null;
     Transaction t = null;
 
-    try {
-      // Update session count in MySQL when the mapping is available.
-      SessionFactory sf = U_HibernateUtil.getSessionFactory();
-      s = sf.openSession();
-      t = s.beginTransaction();
+      try {
+        // Update session count in MySQL when the mapping is available.
+        SessionFactory sf = U_HibernateUtil.getSessionFactory();
+        s = sf.openSession();
+        t = s.beginTransaction();
 
-      System.out.println(
-        new Date() + " !!! " + "-------- Obteniendo Appstats ----------" );
-      Appstats appstat = (Appstats) s.get( "Appstats",
-                                           1 );
+        System.out.println(
+          new Date() + " !!! " + "-------- Obteniendo Appstats ----------" );
+        int updated = s.createNativeQuery(
+                        "UPDATE appstats SET sessioncount = sessioncount + 1 WHERE id = 1" )
+                       .executeUpdate();
+        if( updated == 0 ) {
+          s.createNativeQuery(
+            "INSERT INTO appstats(id, sessioncount) VALUES (1, 1)" )
+            .executeUpdate();
+          sessionId = 1;
+        } else {
+          Number current = (Number) s.createNativeQuery(
+            "SELECT sessioncount FROM appstats WHERE id = 1" )
+            .getSingleResult();
+          sessionId = current.longValue();
+        }
 
-      if( appstat == null ) {
-        appstat = new Appstats();
-        appstat.setId( 1 );
-        appstat.setSessioncount( 0 );
-      }
-
-      appstat.setSessioncount(
-        appstat.getSessioncount() + 1
-      );
-      sessionId = appstat.getSessioncount();
-      s.saveOrUpdate( appstat );
-
-      t.commit();
-    } catch( Exception e ) {
+        t.commit();
+      } catch( Exception e ) {
       if( t != null ) {
         try {
           t.rollback();

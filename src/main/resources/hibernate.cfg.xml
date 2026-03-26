@@ -11,21 +11,5 @@
     <property name="hibernate.connection.release_mode">after_transaction</property>
     <property name="hibernate.connection.pool_size">50</property>
     <property name="hibernate.query.factory_class">org.hibernate.hql.internal.ast.ASTQueryTranslatorFactory</property>
-    <mapping resource="Tables/Countryregion.hbm.xml"/>
-    <mapping resource="Tables/Province.hbm.xml"/>
-    <mapping resource="Tables/Penaltiespl.hbm.xml"/>
-    <mapping resource="Tables/Regatta.hbm.xml"/>
-    <mapping resource="Tables/Appstats.hbm.xml"/>
-    <mapping resource="Tables/Variant.hbm.xml"/>
-    <mapping resource="Tables/Provinceregion.hbm.xml"/>
-    <mapping resource="Tables/Bid.hbm.xml"/>
-    <mapping resource="Tables/Pointscount.hbm.xml"/>
-    <mapping resource="Tables/Currency.hbm.xml"/>
-    <mapping resource="Tables/Country.hbm.xml"/>
-    <mapping resource="Tables/Registration.hbm.xml"/>
-    <mapping resource="Tables/Car.hbm.xml"/>
-    <mapping resource="Tables/Planetregion.hbm.xml"/>
-    <mapping resource="Tables/Venue.hbm.xml"/>
-    <mapping resource="Tables/Participant.hbm.xml"/>
   </session-factory>
 </hibernate-configuration>
