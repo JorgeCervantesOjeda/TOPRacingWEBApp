@@ -1,7 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="jakarta.faces.facelets"
-                xmlns:h="jakarta.faces.html"
-                xmlns:f="jakarta.faces.core"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
                 template="/TemplateBasic.xhtml">
 
@@ -19,8 +19,7 @@
           <br />
 
           <h2 align="center">
-            Please login or<br />
-            Create a new account<br />
+            Please login<br />
             <br />
           </h2>
 
@@ -60,36 +59,11 @@
             <br />
             <br />
             <p:commandButton id="loginButton"
-                             actionListener="#{viewBean.clickLogin}"
+                             actionListener="#{viewBean.clickLogin()}"
                              value="Login"
                              icon="fa fa-fw fa-sign-in"
                              styleClass="myloginbutton"
                              ajax="false" />
-            <br />
-            <br />
-            <p:commandButton id="resetPasswordButton"
-                             actionListener="#{viewBean.clickResetPassword}"
-                             value="Request a Password Reset"
-                             icon="fa fa-fw fa-key"
-                             ajax="false"
-                             disabled="#{viewBean.disableResetButton()}">
-              <p:confirm header="Are you sure?"
-                         message="Reset your password now" />
-            </p:commandButton>
-            <br />
-            <br />
-            <p:commandButton id="newParticipantButton"
-                             actionListener="#{viewBean.clickNewParticipant}"
-                             value="Create Account"
-                             icon="fa fa-fw fa-plus"
-                             styleClass="myloginbutton"
-                             immediate="true"
-                             ajax="true"
-                             onclick="PF('dlgWait').show();"
-                             disabled="false">
-              <p:confirm header="Are you sure?"
-                         message="Create new account now" />
-            </p:commandButton>
           </div>
         </p:panel>
       </p:panel>

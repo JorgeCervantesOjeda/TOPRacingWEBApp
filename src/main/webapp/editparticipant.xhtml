@@ -1,8 +1,8 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="jakarta.faces.facelets"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="./TemplateBasic.xhtml"
-                xmlns:h="jakarta.faces.html"
-                xmlns:f="jakarta.faces.core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui">
 
   <ui:define name="content">
@@ -26,9 +26,11 @@
 
       <tr><td align="right" class="field_label">Given names:</td>
         <td align="left">
-          <p:inputText    id="givenNamesInput" value="#{editParticipantBean.participant.namesGiven}" size="30"
-                          placeholder="First and middle names"
-                          required="true" >
+          <p:inputText id="givenNamesInput"
+                       value="#{editParticipantBean.participant.namesGiven}"
+                       size="30"
+                       placeholder="First and middle names"
+                       required="true" >
             <f:validateLength minimum="2" />
             <p:clientValidator />
           </p:inputText>
@@ -37,10 +39,11 @@
 
       <tr><td align="right" class="field_label">Family names:</td>
         <td align="left">
-          <p:inputText    id="familyNamesInput"
-                          value="#{editParticipantBean.participant.namesFamily}" size="30"
-                          placeholder="Last name(s)"
-                          required="true" >
+          <p:inputText id="familyNamesInput"
+                       value="#{editParticipantBean.participant.namesFamily}"
+                       size="30"
+                       placeholder="Last name(s)"
+                       required="true" >
             <f:validateLength minimum="2" />
             <p:clientValidator />
           </p:inputText>
@@ -49,10 +52,11 @@
 
       <tr><td align="right" class="field_label">e-mail address:</td>
         <td align="left">
-          <p:inputText    id="emailInput"
-                          value="#{editParticipantBean.participant.email}" size="30"
-                          placeholder="nombre@sitio.com"
-                          required="true" >
+          <p:inputText id="emailInput"
+                       value="#{editParticipantBean.participant.email}"
+                       size="30"
+                       placeholder="nombre@sitio.com"
+                       required="true" >
             <f:validateRegex
               pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$"/>
             <p:clientValidator event="keyup" />
@@ -62,10 +66,11 @@
 
       <tr><td align="right" class="field_label">Phone number:</td>
         <td align="left">
-          <p:inputText    id="phoneInput"
-                          value="#{editParticipantBean.participant.phone}" size="30"
-                          placeholder="5555555555"
-                          required="true" >
+          <p:inputText id="phoneInput"
+                       value="#{editParticipantBean.participant.phone}"
+                       size="30"
+                       placeholder="5555555555"
+                       required="true" >
             <f:validateRegex pattern="^[0-9]{10}"/>
             <p:clientValidator event="keyup" />
           </p:inputText>
@@ -79,7 +84,9 @@
                         style="white-space: pre-line; text-align: left;"
                         />
           <br/>
-          <p:commandButton styleClass="mybutton"  actionListener="#{editParticipantBean.clickViewVenues()}"
+          <p:commandButton id="viewVenuesButton"
+                           styleClass="mybutton"
+                           actionListener="#{editParticipantBean.clickViewVenues()}"
                            onclick="PF('dlgWait').show();"
                            ajax="false"
                            value="View Venues"
@@ -87,7 +94,8 @@
 
     </table>
     <br/>
-    <p:commandButton styleClass="mybutton"
+    <p:commandButton id="saveParticipantButton"
+                     styleClass="mybutton"
                      actionListener="#{editParticipantBean.clickSave()}"
                      onclick="PF('dlgWait').show()"
                      validateClient="true"
@@ -98,5 +106,3 @@
   </ui:define>
 
 </ui:composition>
-
-

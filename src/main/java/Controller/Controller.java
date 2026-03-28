@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jakarta.faces.context.ExternalContext;
+import jakarta.faces.context.FacesContext;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -27,6 +29,8 @@ import java.util.logging.Logger;
  * in the editor.
  */
 public class Controller {
+
+  public static final String AUTH_SESSION_KEY = "authenticatedParticipantId";
 
   private int currentPeriodLevel;
 
@@ -55,6 +59,7 @@ public class Controller {
   public long newSession( ModelForView modelForView ) {
     this.session = -1;
     this.modelBean = (ModelBean) modelForView;
+    updateAuthenticatedSession( null );
     int i = 0;
     while( i < 20 && this.session == -1 ) {
       try {
@@ -66,7 +71,6 @@ public class Controller {
         i++;
       }
     }
-    theView.showUI( UI.WELCOME );
     /*
      * this.modelBean.sendMonitorMail( new Participant(), theModel.bundle( "A
      * NEW SESSION HAS STARTED" ), session );
@@ -123,6 +127,7 @@ public class Controller {
 
   public void clickLogout() {
     this.currentParticipant = null;
+    updateAuthenticatedSession( null );
     long numUsuariosActivos = modelBean.decNumUsuariosActivos();
 
     LOGGER.info( "clickLogout, active users now: " + numUsuariosActivos );
@@ -169,6 +174,7 @@ public class Controller {
                          "You have logged in to top-racing.org.",
                          this.session );
 
+    updateAuthenticatedSession( currentParticipant );
     theView.showUI( UI.WELCOME,
                     currentParticipant );
   }
@@ -247,6 +253,7 @@ public class Controller {
         "A NEW USER HAS BEEN REGISTERED" ),
       this.session
     );
+    updateAuthenticatedSession( currentParticipant );
     theView.showUI( UI.WELCOME,
                     currentParticipant );
 
@@ -1323,6 +1330,24 @@ public class Controller {
       ( p )
       -> this.theView.setProgress( p )
     );
+  }
+
+  private void updateAuthenticatedSession( Participant participant ) {
+    FacesContext facesContext = FacesContext.getCurrentInstance();
+    if( facesContext == null ) {
+      return;
+    }
+
+    ExternalContext externalContext = facesContext.getExternalContext();
+    if( participant == null
+        || participant.getId() == null
+        || participant.getId() <= 0 ) {
+      externalContext.getSessionMap().remove( AUTH_SESSION_KEY );
+      return;
+    }
+
+    externalContext.getSessionMap().put( AUTH_SESSION_KEY,
+                                         participant.getId() );
   }
 
 }
