@@ -19,7 +19,8 @@
           <br />
 
           <h2 align="center">
-            Please login<br />
+            Please login or<br />
+            Create a new account<br />
             <br />
           </h2>
 
@@ -64,6 +65,31 @@
                              icon="fa fa-fw fa-sign-in"
                              styleClass="myloginbutton"
                              ajax="false" />
+            <br />
+            <br />
+            <p:commandButton id="resetPasswordButton"
+                             actionListener="#{viewBean.clickResetPassword()}"
+                             value="Request a Password Reset"
+                             icon="fa fa-fw fa-key"
+                             ajax="true"
+                             onclick="PF('dlgWait').show();"
+                             disabled="#{viewBean.disableResetButton()}">
+              <p:confirm header="Are you sure?"
+                         message="Reset your password now" />
+            </p:commandButton>
+            <br />
+            <br />
+            <p:commandButton id="newParticipantButton"
+                             actionListener="#{viewBean.clickNewParticipant()}"
+                             value="Create Account"
+                             icon="fa fa-fw fa-plus"
+                             styleClass="myloginbutton"
+                             immediate="true"
+                             ajax="false"
+                             onclick="PF('dlgWait').show();">
+              <p:confirm header="Are you sure?"
+                         message="Create new account now" />
+            </p:commandButton>
           </div>
         </p:panel>
       </p:panel>

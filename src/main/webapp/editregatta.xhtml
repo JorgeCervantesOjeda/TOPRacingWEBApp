@@ -7,6 +7,25 @@
 
   <ui:define name="editTitle">
     <h2>View/Edit Event</h2>
+    <p:commandButton styleClass="mybutton"
+                     actionListener="#{editRegattaBean.clickViewEditRegistrations()}"
+                     disabled="#{editRegattaBean.disableViewEditRegistrationsButton}"
+                     value="View/Edit Registrations"
+                     onclick="PF('dlgWait').show();"
+                     ajax="false"
+                     style="white-space: pre-line; float: right; width: 120px" />
+
+    <p:commandButton styleClass="mybutton"
+                     disabled="#{editRegattaBean.disableSetStatusButton}"
+                     actionListener="#{editRegattaBean.clickSetStatusToNextStatus()}"
+                     value="Next status: #{editRegattaBean.nextStatusName}"
+                     onclick="PF('dlgWait').show();"
+                     ajax="true"
+                     style="white-space: pre-line; float: right; width: 160px">
+      <p:confirm header="Are you sure?"
+                 message="Change to next status: #{editRegattaBean.nextStatusName}" />
+    </p:commandButton>
+
     <p:commandButton id="returnFromEditRegatta"
                      styleClass="mybutton"
                      type="submit"
@@ -17,65 +36,410 @@
                      title="Return"
                      style="float: left" />
     <p:tooltip for="returnFromEditRegatta" position="top" />
+
+    <p:commandButton value="Previous"
+                     styleClass="mybutton"
+                     type="submit"
+                     actionListener="#{editRegattaBean.clickPreviousRegatta()}"
+                     onclick="PF('dlgWait').show();"
+                     ajax="false"
+                     icon="fa fa-fw fa-chevron-left"
+                     style="float: left" />
+
+    <p:commandButton value="Next"
+                     styleClass="mybutton"
+                     type="submit"
+                     actionListener="#{editRegattaBean.clickNextRegatta()}"
+                     onclick="PF('dlgWait').show();"
+                     ajax="false"
+                     icon="fa fa-fw fa-chevron-right"
+                     iconPos="right"
+                     style="float: left" />
   </ui:define>
 
   <ui:define name="editForm">
-    <table>
-      <tr>
-        <td align="right" class="field_label">Identity</td>
-        <td align="left">
-          <h:outputText value="#{editRegattaBean.regatta.id}" class="field_output" />
-        </td>
-      </tr>
-      <tr>
-        <td align="right" class="field_label">Promoter</td>
-        <td align="left">
-          <h:outputText value="#{editRegattaBean.promoterName}" class="field_output" />
-        </td>
-      </tr>
-      <tr>
-        <td align="right" class="field_label">Status</td>
-        <td align="left">
-          <h:outputText value="#{editRegattaBean.statusName}" class="field_output" />
-        </td>
-      </tr>
-      <tr>
-        <td align="right" class="field_label">Variant</td>
-        <td align="left">
-          <h:outputText value="#{editRegattaBean.variantName}" class="field_output" />
-        </td>
-      </tr>
-      <tr>
-        <td align="right" class="field_label">Period Level</td>
-        <td align="left">
-          <h:outputText value="#{editRegattaBean.periodLevelStr}" class="field_output" />
-        </td>
-      </tr>
-      <tr>
-        <td align="right" class="field_label">Trackset Level</td>
-        <td align="left">
-          <h:outputText value="#{editRegattaBean.tracksetLevelStr}" class="field_output" />
-        </td>
-      </tr>
-      <tr>
-        <td align="right" class="field_label">Date</td>
-        <td align="left">
-          <h:outputText value="#{editRegattaBean.regatta.datetime}" class="field_output">
-            <f:convertDateTime pattern="yyyy-MM-dd HH:mm" timeZone="#{editRegattaBean.timeZone}" />
-          </h:outputText>
-        </td>
-      </tr>
-    </table>
+    <div
+      style="padding: 10px; align-items:center; max-width: 600px ;color: ##{editRegattaBean.regatta.colorFg}; background-color: ##{editRegattaBean.regatta.colorBg};">
 
+      <style>
+        .form-row {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+        }
+
+        .form-row label {
+          flex: 0 0 200px;
+          text-align: right;
+          margin-right: 10px;
+          max-width: 80px;
+        }
+
+        .form-row .field-container {
+          flex: 1;
+          display: flex;
+          text-align: left;
+        }
+
+        .form-row .field-container > * {
+          padding: 5px;
+          border: 1px solid #ccc;
+          margin-right: 10px;
+        }
+
+        .form-row .field-container output {
+          text-align: left;
+        }
+      </style>
+
+      <div class="form-row">
+        <label class="field_label">Identity:</label>
+        <div class="field-container">
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}; background-color: ##{editRegattaBean.regatta.colorBg}"
+                        value="#{editRegattaBean.regatta.id}" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Status:</label>
+        <div class="field-container">
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}; background-color: ##{editRegattaBean.regatta.colorBg}"
+                        value="#{editRegattaBean.statusName}" />
+          <br />
+          <h:outputText style="width:70%; color: ##{editRegattaBean.regatta.colorFg}; background-color: ##{editRegattaBean.regatta.colorBg}"
+                        value="#{editRegattaBean.statusLong}" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Promoter:</label>
+        <div class="field-container">
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}; background-color: ##{editRegattaBean.regatta.colorBg}"
+                        value="#{editRegattaBean.regatta.participant.id}" />&#160;
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}; background-color: ##{editRegattaBean.regatta.colorBg}"
+                        value="#{editRegattaBean.promoterName}" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Starting grid period-level:</label>
+        <div class="field-container">
+          <p:selectOneMenu value="#{editRegattaBean.periodLevelStr}"
+                           style="float: left; width: 100px ">
+            <f:selectItems value="#{editRegattaBean.periodLevelNames}" />
+          </p:selectOneMenu>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Starting grid trackset-level:</label>
+        <div class="field-container">
+          <p:selectOneMenu value="#{editRegattaBean.tracksetLevelStr}"
+                           style="float: left; width: 100px">
+            <f:selectItems value="#{editRegattaBean.tracksetLevelNames}" />
+          </p:selectOneMenu>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Variant:</label>
+        <div class="field-container">
+          <h:outputText value="#{editRegattaBean.variantName}"
+                        style="white-space: pre-line; text-align: left; width: 240px; font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}; background-color: ##{editRegattaBean.regatta.colorBg}" />
+          <p:commandButton styleClass="mybutton"
+                           actionListener="#{editRegattaBean.clickViewVariants()}"
+                           onclick="PF('dlgWait').show();"
+                           ajax="false"
+                           value="View Variants" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Maximum weight:</label>
+        <div class="field-container">
+          <p:inputText value="#{editRegattaBean.regatta.maxWeight}"
+                       required="true"
+                       disabled="#{editRegattaBean.disableEditMaxweightField}"
+                       style="width: 60px">
+            <f:convertNumber minIntegerDigits="1" maxIntegerDigits="5" />
+          </p:inputText>
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}; background-color: ##{editRegattaBean.regatta.colorBg}"
+                        value="kg" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Minimum load:</label>
+        <div class="field-container">
+          <p:inputText value="#{editRegattaBean.regatta.minLoad}"
+                       required="true"
+                       disabled="#{editRegattaBean.disableEditMinloadField}"
+                       style="width: 60px">
+            <f:convertNumber minIntegerDigits="1" maxIntegerDigits="10" />
+          </p:inputText>
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}"
+                        value="kg" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Date/Time (local):</label>
+        <div class="field-container">
+          <p:calendar id="dateTime"
+                      value="#{editRegattaBean.regatta.datetime}"
+                      pattern="yyyy.MM.dd HH:mm"
+                      showWeek="true"
+                      locale="en"
+                      style="color:black !important"
+                      disabled="#{editRegattaBean.disableEditDatetimeField}" />
+          <br />
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}"
+                        value="#{editRegattaBean.periodName}" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Speed test duration:</label>
+        <div class="field-container">
+          <p:inputText value="#{editRegattaBean.regatta.minutesSpeed}"
+                       required="true"
+                       disabled="#{editRegattaBean.disableEditDateField}"
+                       style="width: 60px"
+                       placeholder="00" />
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}"
+                        value="min" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Race test duration:</label>
+        <div class="field-container">
+          <p:inputText value="#{editRegattaBean.regatta.minutesRace}"
+                       required="true"
+                       disabled="#{editRegattaBean.disableEditDateField}"
+                       style="width: 60px"
+                       placeholder="00" />
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}"
+                        value="min" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Currency:</label>
+        <div class="field-container">
+          <p:selectOneMenu value="#{editRegattaBean.regattaCurrency}"
+                           style="float: left">
+            <f:selectItems value="#{editRegattaBean.currencies}" />
+          </p:selectOneMenu>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Registration cost:</label>
+        <div class="field-container">
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}"
+                        value="#{editRegattaBean.regatta.currency.symbol}" />
+          <p:inputText value="#{editRegattaBean.regatta.entryfee}"
+                       required="false"
+                       disabled="#{editRegattaBean.disableEditRegistrationCostField}"
+                       style="width: 100px" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Track rental cost:</label>
+        <div class="field-container">
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}"
+                        value="#{editRegattaBean.regatta.currency.symbol}" />
+          <p:inputText value="#{editRegattaBean.regatta.trackrental}"
+                       required="false"
+                       disabled="#{editRegattaBean.disableEditTrackRentalField}"
+                       style="width: 100px" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Finishing prize (pot):</label>
+        <div class="field-container">
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}"
+                        value="#{editRegattaBean.regatta.currency.symbol}" />
+          <p:inputText value="#{editRegattaBean.regatta.prizeFinishing}"
+                       disabled="#{editRegattaBean.disableEditFinishingPrizeField}"
+                       style="width: 100px" />
+          <p:commandButton styleClass="mybutton"
+                           actionListener="#{editRegattaBean.clickAddToFinishingPrize()}"
+                           disabled="#{editRegattaBean.disableEditFinishingPrizeField}"
+                           value="Promise +100"
+                           ajax="false"
+                           onclick="PF('dlgWait').show();">
+            <p:confirm header="Trust deposit"
+                       message="Register an external promise of +100 for the finishing prize?" />
+          </p:commandButton>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Efficiency prize (pot):</label>
+        <div class="field-container">
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}"
+                        value="#{editRegattaBean.regatta.currency.symbol}" />
+          <p:inputText value="#{editRegattaBean.regatta.prizeEfficiency}"
+                       disabled="#{editRegattaBean.disableEditEfficiencyPrizeField}"
+                       style="width: 100px" />
+          <p:commandButton styleClass="mybutton"
+                           actionListener="#{editRegattaBean.clickAddToEfficiencyPrize()}"
+                           disabled="#{editRegattaBean.disableEditEfficiencyPrizeField}"
+                           value="Promise +100"
+                           ajax="false"
+                           onclick="PF('dlgWait').show();">
+            <p:confirm header="Trust deposit"
+                       message="Register an external promise of +100 for the efficiency prize?" />
+          </p:commandButton>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Qualifying cut:</label>
+        <div class="field-container">
+          <p:inputText value="#{editRegattaBean.regatta.maxQualifiers}"
+                       required="true"
+                       disabled="#{editRegattaBean.disableEditMaxQualifiersField}"
+                       style="width: 70px">
+            <f:convertNumber maxIntegerDigits="16" integerOnly="true" />
+          </p:inputText>
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}"
+                        value="Cars" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Priority rating:</label>
+        <div class="field-container">
+          <h:outputText style="font-weight: bold; color: ##{editRegattaBean.regatta.colorFg}"
+                        value="#{editRegattaBean.priorityPoints}">
+            <f:convertNumber maxFractionDigits="3" />
+          </h:outputText>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Text color:</label>
+        <div class="field-container">
+          <p:colorPicker value="#{editRegattaBean.regatta.colorFg}" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label class="field_label">Background color:</label>
+        <div class="field-container">
+          <p:colorPicker value="#{editRegattaBean.regatta.colorBg}" />
+        </div>
+      </div>
+
+    </div>
+    <br />
+    <h:outputText style="display:block; max-width: 600px; text-align: left;"
+                  value="Prize pool additions are trust promises only. Funds stay outside the app; balances may be recalculated later if a participant is marked as defaulter." />
     <br />
 
     <p:commandButton styleClass="mybutton"
                      type="submit"
                      disabled="#{editRegattaBean.disableSaveButton}"
                      actionListener="#{editRegattaBean.clickSave()}"
-                     onclick="PF('dlgWait').show();"
+                     onclick="PF('dlgWait').show(); PF('progress').start()"
+                     validateClient="true"
+                     async="true"
                      value="Save data"
-                     ajax="false" />
+                     update="@form"
+                     global="true" />
+    <br />
+    <br />
+
+    <p:dataTable id="penalty"
+                 var="item"
+                 value="#{editRegattaBean.levelPeriodPenaltiesList}"
+                 emptyMessage="No information available"
+                 scrollable="false"
+                 resizableColumns="false">
+      <f:facet name="header">
+        <h2>Priorities:</h2>
+      </f:facet>
+
+      <p:column headerText="&#160;"
+                style="width: 135px">
+        <h:outputText value="#{editRegattaBean.getPeriodLevelName( item.id.levelPeriod )}" />
+      </p:column>
+
+      <p:column headerText="#{editRegattaBean.getTracksetLevelName(0)}"
+                style="width: 60px">
+        <h:outputText id="v0"
+                      value="#{editRegattaBean.getPercentage(item.value0)}"
+                      style="float:right">
+          <f:convertNumber type="percent" minFractionDigits="2" />
+        </h:outputText>
+        <p:tooltip for="v0" value="#{editRegattaBean.getPercentage(item.value0)}" />
+      </p:column>
+
+      <p:column headerText="#{editRegattaBean.getTracksetLevelName(1)}"
+                style="width: 60px">
+        <h:outputText id="v1"
+                      value="#{editRegattaBean.getPercentage(item.value1)}"
+                      style="float:right">
+          <f:convertNumber type="percent" minFractionDigits="2" />
+        </h:outputText>
+        <p:tooltip for="v1" value="#{editRegattaBean.getPercentage(item.value1)}" />
+      </p:column>
+
+      <p:column headerText="#{editRegattaBean.getTracksetLevelName(2)}"
+                style="width: 60px">
+        <h:outputText id="v2"
+                      value="#{editRegattaBean.getPercentage(item.value2)}"
+                      style="float:right">
+          <f:convertNumber type="percent" minFractionDigits="2" />
+        </h:outputText>
+        <p:tooltip for="v2" value="#{editRegattaBean.getPercentage(item.value2)}" />
+      </p:column>
+
+      <p:column headerText="#{editRegattaBean.getTracksetLevelName(3)}"
+                style="width: 60px">
+        <h:outputText id="v3"
+                      value="#{editRegattaBean.getPercentage(item.value3)}"
+                      style="float:right">
+          <f:convertNumber type="percent" minFractionDigits="2" />
+        </h:outputText>
+        <p:tooltip for="v3" value="#{editRegattaBean.getPercentage(item.value3)}" />
+      </p:column>
+
+      <p:column headerText="#{editRegattaBean.getTracksetLevelName(4)}"
+                style="width: 60px">
+        <h:outputText id="v4"
+                      value="#{editRegattaBean.getPercentage(item.value4)}"
+                      style="float:right">
+          <f:convertNumber type="percent" minFractionDigits="2" />
+        </h:outputText>
+        <p:tooltip for="v4" value="#{editRegattaBean.getPercentage(item.value4)}" />
+      </p:column>
+
+      <p:column headerText="#{editRegattaBean.getTracksetLevelName(5)}"
+                style="width: 60px">
+        <h:outputText id="v5"
+                      value="#{editRegattaBean.getPercentage(item.value5)}"
+                      style="float:right">
+          <f:convertNumber type="percent" minFractionDigits="2" />
+        </h:outputText>
+        <p:tooltip for="v5" value="#{editRegattaBean.getPercentage(item.value5)}" />
+      </p:column>
+
+      <p:column headerText="#{editRegattaBean.getTracksetLevelName(6)}"
+                style="width: 60px">
+        <h:outputText id="v6"
+                      value="#{editRegattaBean.getPercentage(item.value6)}"
+                      style="float:right">
+          <f:convertNumber type="percent" minFractionDigits="2" />
+        </h:outputText>
+        <p:tooltip for="v6" value="#{editRegattaBean.getPercentage(item.value6)}" />
+      </p:column>
+    </p:dataTable>
   </ui:define>
 
 </ui:composition>

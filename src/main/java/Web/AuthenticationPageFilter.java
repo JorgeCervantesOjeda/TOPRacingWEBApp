@@ -20,6 +20,16 @@ public class AuthenticationPageFilter
   private static final String LOGIN_FACES_PAGE = "/faces/login.xhtml";
   private static final String WELCOME_PAGE = "/welcome.xhtml";
   private static final String WELCOME_FACES_PAGE = "/faces/welcome.xhtml";
+  private static final String EDIT_PARTICIPANT_PAGE = "/editparticipant.xhtml";
+  private static final String EDIT_PARTICIPANT_FACES_PAGE = "/faces/editparticipant.xhtml";
+  private static final String RESET_PASSWORD_PAGE = "/resetpassword.xhtml";
+  private static final String RESET_PASSWORD_FACES_PAGE = "/faces/resetpassword.xhtml";
+  private static final String COMPLAINT_PAGE = "/complaint.xhtml";
+  private static final String COMPLAINT_FACES_PAGE = "/faces/complaint.xhtml";
+  private static final String COMPLAINT_BUYER_PAGE = "/complaintbuyer.xhtml";
+  private static final String COMPLAINT_BUYER_FACES_PAGE = "/faces/complaintbuyer.xhtml";
+  private static final String COMPLAINT_SELLER_PAGE = "/complaintseller.xhtml";
+  private static final String COMPLAINT_SELLER_FACES_PAGE = "/faces/complaintseller.xhtml";
 
   @Override
   public void doFilter( ServletRequest request,
@@ -64,6 +74,16 @@ public class AuthenticationPageFilter
     return LOGIN_PAGE.equals( path )
            || LOGIN_FACES_PAGE.equals( path )
            || WELCOME_PAGE.equals( path )
-           || WELCOME_FACES_PAGE.equals( path );
+           || WELCOME_FACES_PAGE.equals( path )
+           || EDIT_PARTICIPANT_PAGE.equals( path )
+           || EDIT_PARTICIPANT_FACES_PAGE.equals( path )
+           || RESET_PASSWORD_PAGE.equals( path )
+           || RESET_PASSWORD_FACES_PAGE.equals( path )
+           || COMPLAINT_PAGE.equals( path )
+           || COMPLAINT_FACES_PAGE.equals( path )
+           || COMPLAINT_BUYER_PAGE.equals( path )
+           || COMPLAINT_BUYER_FACES_PAGE.equals( path )
+           || COMPLAINT_SELLER_PAGE.equals( path )
+           || COMPLAINT_SELLER_FACES_PAGE.equals( path );
   }
 }

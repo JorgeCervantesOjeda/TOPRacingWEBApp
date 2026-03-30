@@ -72,6 +72,14 @@
             <f:convertNumber type="currency" currencySymbol="#{editRegistrationBean.getCurrencySymbol()}"/>
           </h:outputText></td></tr>
 
+      <tr>
+        <td></td>
+        <td align="left">
+          <h:outputText style="display:block; max-width: 320px;"
+                        value="Registration payment and bets are external promises between participants. The app only calculates suggested balances and can recalculate them later if someone is marked defaulter." />
+        </td>
+      </tr>
+
       <tr> <td align="right" class="field_label">#{editRegistrationBean.getBetFinishingLabel()}</td>
         <td align="left">
           <p:inputText  value="#{editRegistrationBean.registration.betFinishing}"
