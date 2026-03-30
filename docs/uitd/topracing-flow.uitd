@@ -1,0 +1,493 @@
+UITD "TOPRacing Full Flow" {
+UI 1 "Public Welcome" actions {
+  clicks "Log In";
+}
+
+UI 2 "Login" actions {
+  types "Email";
+  types "Password";
+  clicks "Login";
+  clicks "Create Account";
+}
+
+UI 3 "Create Account Form" actions {
+  types "Password";
+  types "Given Names";
+  types "Family Names";
+  types "Email";
+  types "Phone Number";
+  clicks "View Venues";
+  clicks "Save Data";
+}
+
+UI 4 "Login Error Dialog" actions {
+  clicks "OK";
+}
+
+UI 5 "Authenticated Navigation" actions {
+  clicks "Welcome";
+  clicks "View Point Counts";
+  clicks "View Penalties";
+  clicks "View Registrations";
+  clicks "Edit Profile";
+  clicks "Logout";
+}
+
+UI 6 "Authenticated Welcome" actions {
+}
+
+UI 7 "Edit Profile" actions {
+  types "Password";
+  types "Given Names";
+  types "Family Names";
+  types "Email";
+  types "Phone Number";
+  clicks "View Venues";
+  clicks "Save Data";
+  clicks "Return";
+}
+
+UI 8 "Venues List" actions {
+  selects "Venue Row";
+  clicks "Select Venue";
+  clicks "Create New Venue";
+  clicks "View in Map";
+  clicks "Return";
+}
+
+UI 9 "Point Counts" actions {
+  selects "Period Level";
+  selects "Trackset Level";
+  clicks "Return";
+}
+
+UI 10 "Registrations List" actions {
+  selects "Registration";
+  clicks "Return";
+}
+
+UI 11 "Edit Registration" actions {
+  clicks "View Drivers";
+  clicks "View Cars";
+  types "Bet Finishing";
+  types "Bet Efficiency";
+  clicks "Save Data";
+  clicks "Return";
+}
+
+UI 12 "Drivers Selector" actions {
+  clicks "Select Driver";
+  clicks "Return";
+}
+
+UI 13 "Cars Selector" actions {
+  clicks "Select Car";
+  clicks "Create New Car";
+  clicks "Return";
+}
+
+UI 14 "Penalties List" actions {
+  selects "Period Level";
+  selects "Trackset Level";
+  selects "Regatta";
+  clicks "Create Regatta";
+  clicks "Return";
+}
+
+UI 15 "Edit Regatta" actions {
+  clicks "Save Data";
+  clicks "Advance Regatta Status";
+  clicks "View Variants";
+  clicks "View Regatta Results";
+  clicks "Return";
+}
+
+UI 16 "Edit Car" actions {
+  types "Nickname";
+  types "Weight";
+  types "Width";
+  types "Description";
+  clicks "Save Data";
+  clicks "Return";
+}
+
+UI 17 "Venue In Map" actions {
+  clicks "Map Point";
+  clicks "Return";
+}
+
+UI 18 "Edit Venue" actions {
+  types "Name";
+  types "Owner";
+  types "Meridian";
+  types "Parallel";
+  clicks "View Province Regions";
+  clicks "Save Data";
+  clicks "Return";
+}
+
+UI 19 "Province Regions List" actions {
+  selects "Province Region Row";
+  clicks "Select Province Region";
+  clicks "Create New Province Region";
+  clicks "Return";
+}
+
+UI 20 "Edit Province Region" actions {
+  types "Name";
+  clicks "View Provinces";
+  clicks "Save Data";
+  clicks "Return";
+}
+
+UI 21 "Provinces List" actions {
+  selects "Province Row";
+  clicks "Select Province";
+  clicks "Create New Province";
+  clicks "Return";
+}
+
+UI 22 "Edit Province" actions {
+  types "Name";
+  clicks "View Country Regions";
+  clicks "Save Data";
+  clicks "Return";
+}
+
+UI 23 "Country Regions List" actions {
+  selects "Country Region Row";
+  clicks "Select Country Region";
+  clicks "Create New Country Region";
+  clicks "Return";
+}
+
+UI 24 "Edit Country Region" actions {
+  types "Name";
+  clicks "View Countries";
+  clicks "Save Data";
+  clicks "Return";
+}
+
+UI 25 "Countries List" actions {
+  selects "Country Row";
+  clicks "Select Country";
+  clicks "Create New Country";
+  clicks "Return";
+}
+
+UI 26 "Edit Country" actions {
+  types "Name";
+  clicks "View Planet Regions";
+  clicks "Save Data";
+  clicks "Return";
+}
+
+UI 27 "Planet Regions List" actions {
+  selects "Planet Region Row";
+  clicks "Select Planet Region";
+  clicks "Create New Planet Region";
+  clicks "Return";
+}
+
+UI 28 "Edit Planet Region" actions {
+  types "Name";
+  clicks "Save Data";
+  clicks "Return";
+}
+
+UI 29 "Variants List" actions {
+  selects "Variant Row";
+  clicks "Select Variant";
+  clicks "Create New Variant";
+  clicks "Return";
+}
+
+UI 30 "Edit Variant" actions {
+  types "Name";
+  types "Min Width";
+  types "Length";
+  clicks "View Venues";
+  clicks "Save Data";
+  clicks "Return";
+}
+
+UI 31 "Edit Regatta Results" actions {
+  selects "Registration Row";
+  clicks "Create New Registration";
+  clicks "Save Data";
+  clicks "Return";
+  types "Lap Time";
+  types "Race Position";
+  types "Race Laps";
+  types "Bid Amount";
+}
+
+UI 32 "Duplicate User Error Message" actions {
+  clicks "OK";
+}
+
+UI 33 "Weak Password Error Message" actions {
+  clicks "OK";
+}
+
+UI 34 "Regatta Not Open Error Message" actions {
+  clicks "OK";
+}
+
+UI 35 "Not Car Owner Error Message" actions {
+  clicks "OK";
+}
+
+UI 36 "Invalid Speed Results Error Message" actions {
+  clicks "OK";
+}
+
+UI 37 "Invalid Race Results Error Message" actions {
+  clicks "OK";
+}
+
+UI 38 "Regatta Status Changed Message" actions {
+  clicks "OK";
+}
+
+UI 39 "Regatta Not Owned Error Message" actions {
+  clicks "OK";
+}
+
+UI 40 "Save Regatta Error Message" actions {
+  clicks "OK";
+}
+
+UI 41 "Email Confirmation Result Page" actions {
+  clicks "Open TOP Racing Login";
+  clicks "Open TOP Racing Banner";
+}
+
+UI 42 "Password Reset Result Page" actions {
+  clicks "Open TOP Racing Banner";
+}
+
+UI 43 "Complaint Result Page" actions {
+  clicks "Open TOP Racing Banner";
+}
+
+UI 44 "External Mailbox" actions {
+  clicks "Open Confirmation Link";
+  clicks "Open Password Reset Link";
+  clicks "Open Complaint Link";
+}
+
+FRAGMENT "Authentication Entry" {
+  WIDTH 28;
+  DRAW { 1, 2, 4, 6 };
+  TRANSITION from 1 to 2 if user clicks "Log In";
+  TRANSITION from 2 to 2 if user types "Email" AND "The user updates the login email";
+  TRANSITION from 2 to 2 if user types "Password" AND "The user updates the login password";
+  TRANSITION from 2 to 6 if user clicks "Login" AND "Credentials are valid";
+  TRANSITION from 2 to 4 if user clicks "Login" AND "Credentials are invalid";
+  TRANSITION from 4 to 2 if user clicks "OK";
+}
+
+FRAGMENT "Account Creation" {
+  WIDTH 28;
+  DRAW { 2, 3, 6, 8 };
+  TRANSITION from 2 to 3 if user clicks "Create Account";
+  TRANSITION from 3 to 3 if user types "Password" AND "The participant updates the password";
+  TRANSITION from 3 to 3 if user types "Given Names" AND "The participant updates the given names";
+  TRANSITION from 3 to 3 if user types "Family Names" AND "The participant updates the family names";
+  TRANSITION from 3 to 3 if user types "Email" AND "The participant updates the email address";
+  TRANSITION from 3 to 3 if user types "Phone Number" AND "The participant updates the phone number";
+  TRANSITION from 3 to 8 if user clicks "View Venues";
+  TRANSITION from 8 to 3 if user clicks "Select Venue" AND "The account form is the previous UI";
+  TRANSITION from 8 to 3 if user clicks "Return" AND "The account form is the previous UI";
+  TRANSITION from 3 to 6 if user clicks "Save Data" AND "Participant data is valid and the account is created";
+}
+
+FRAGMENT "Authenticated Navigation Menu" {
+  WIDTH 28;
+  DRAW { 1, 5, 6, 6[5], 7, 7[5], 9, 9[5], 10, 10[5], 14, 14[5] };
+  TRANSITION from 5 to 6 if user clicks "Welcome";
+  TRANSITION from 5 to 9 if user clicks "View Point Counts";
+  TRANSITION from 5 to 14 if user clicks "View Penalties";
+  TRANSITION from 5 to 10 if user clicks "View Registrations";
+  TRANSITION from 5 to 7 if user clicks "Edit Profile";
+  TRANSITION from 5 to 1 if user clicks "Logout";
+}
+
+FRAGMENT "Profile Editing" {
+  WIDTH 28;
+  DRAW { 6, 7, 8 };
+  TRANSITION from 7 to 7 if user types "Password" AND "The participant updates the password";
+  TRANSITION from 7 to 7 if user types "Given Names" AND "The participant updates the given names";
+  TRANSITION from 7 to 7 if user types "Family Names" AND "The participant updates the family names";
+  TRANSITION from 7 to 7 if user types "Email" AND "The participant updates the email address";
+  TRANSITION from 7 to 7 if user types "Phone Number" AND "The participant updates the phone number";
+  TRANSITION from 7 to 8 if user clicks "View Venues";
+  TRANSITION from 8 to 7 if user clicks "Select Venue" AND "The profile form is the previous UI";
+  TRANSITION from 8 to 7 if user clicks "Return" AND "The profile form is the previous UI";
+  TRANSITION from 7 to 6 if user clicks "Save Data" AND "Participant data is valid";
+  TRANSITION from 7 to 6 if user clicks "Return";
+}
+
+FRAGMENT "Standings And Regattas" {
+  WIDTH 28;
+  DRAW { 6, 9, 14, 15 };
+  TRANSITION from 9 to 9 if user selects "Period Level" AND "The point count period filter changes";
+  TRANSITION from 9 to 9 if user selects "Trackset Level" AND "The point count trackset filter changes";
+  TRANSITION from 9 to 6 if user clicks "Return";
+  TRANSITION from 14 to 14 if user selects "Period Level" AND "The penalties period filter changes";
+  TRANSITION from 14 to 14 if user selects "Trackset Level" AND "The penalties trackset filter changes";
+  TRANSITION from 14 to 15 if user selects "Regatta";
+  TRANSITION from 14 to 15 if user clicks "Create Regatta";
+  TRANSITION from 14 to 6 if user clicks "Return";
+  TRANSITION from 15 to 15 if user clicks "Save Data" AND "The regatta remains open for further editing";
+  TRANSITION from 15 to 14 if user clicks "Return";
+}
+
+FRAGMENT "Registrations And Cars" {
+  WIDTH 28;
+  DRAW { 6, 10, 11, 12, 13, 16 };
+  TRANSITION from 10 to 11 if user selects "Registration";
+  TRANSITION from 10 to 6 if user clicks "Return";
+  TRANSITION from 11 to 11 if user types "Bet Finishing" AND "The participant updates the finishing bet";
+  TRANSITION from 11 to 11 if user types "Bet Efficiency" AND "The participant updates the efficiency bet";
+  TRANSITION from 11 to 12 if user clicks "View Drivers";
+  TRANSITION from 11 to 13 if user clicks "View Cars";
+  TRANSITION from 11 to 11 if user clicks "Save Data" AND "The registration remains open for further editing";
+  TRANSITION from 11 to 10 if user clicks "Return";
+  TRANSITION from 12 to 11 if user clicks "Select Driver";
+  TRANSITION from 12 to 11 if user clicks "Return";
+  TRANSITION from 13 to 11 if user clicks "Select Car";
+  TRANSITION from 13 to 16 if user clicks "Create New Car";
+  TRANSITION from 13 to 11 if user clicks "Return";
+  TRANSITION from 16 to 16 if user types "Nickname" AND "The participant updates the car nickname";
+  TRANSITION from 16 to 16 if user types "Weight" AND "The participant updates the car weight";
+  TRANSITION from 16 to 16 if user types "Width" AND "The participant updates the car width";
+  TRANSITION from 16 to 16 if user types "Description" AND "The participant updates the car description";
+  TRANSITION from 16 to 16 if user clicks "Save Data" AND "The car remains open for further editing";
+  TRANSITION from 16 to 13 if user clicks "Return";
+}
+
+FRAGMENT "Venue Selection And Editing" {
+  WIDTH 28;
+  DRAW { 3, 7, 8, 17, 18, 19 };
+  TRANSITION from 8 to 18 if user selects "Venue Row";
+  TRANSITION from 8 to 17 if user clicks "View in Map";
+  TRANSITION from 8 to 18 if user clicks "Create New Venue";
+  TRANSITION from 17 to 17 if user clicks "Map Point" AND "The venue coordinates change";
+  TRANSITION from 17 to 8 if user clicks "Return";
+  TRANSITION from 18 to 18 if user types "Name" AND "The venue name changes";
+  TRANSITION from 18 to 18 if user types "Owner" AND "The venue owner changes";
+  TRANSITION from 18 to 18 if user types "Meridian" AND "The venue meridian changes";
+  TRANSITION from 18 to 18 if user types "Parallel" AND "The venue parallel changes";
+  TRANSITION from 18 to 19 if user clicks "View Province Regions";
+  TRANSITION from 18 to 18 if user clicks "Save Data" AND "The venue remains open for further editing";
+  TRANSITION from 18 to 8 if user clicks "Return";
+}
+
+FRAGMENT "Geographic Hierarchy" {
+  WIDTH 28;
+  DRAW { 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28 };
+  TRANSITION from 19 to 18 if user clicks "Select Province Region";
+  TRANSITION from 19 to 20 if user selects "Province Region Row";
+  TRANSITION from 19 to 20 if user clicks "Create New Province Region";
+  TRANSITION from 19 to 18 if user clicks "Return";
+  TRANSITION from 20 to 20 if user types "Name" AND "The province region name changes";
+  TRANSITION from 20 to 21 if user clicks "View Provinces";
+  TRANSITION from 20 to 20 if user clicks "Save Data" AND "The province region remains open for further editing";
+  TRANSITION from 20 to 19 if user clicks "Return";
+  TRANSITION from 21 to 20 if user clicks "Select Province";
+  TRANSITION from 21 to 22 if user selects "Province Row";
+  TRANSITION from 21 to 22 if user clicks "Create New Province";
+  TRANSITION from 21 to 20 if user clicks "Return";
+  TRANSITION from 22 to 22 if user types "Name" AND "The province name changes";
+  TRANSITION from 22 to 23 if user clicks "View Country Regions";
+  TRANSITION from 22 to 22 if user clicks "Save Data" AND "The province remains open for further editing";
+  TRANSITION from 22 to 21 if user clicks "Return";
+  TRANSITION from 23 to 22 if user clicks "Select Country Region";
+  TRANSITION from 23 to 24 if user selects "Country Region Row";
+  TRANSITION from 23 to 24 if user clicks "Create New Country Region";
+  TRANSITION from 23 to 22 if user clicks "Return";
+  TRANSITION from 24 to 24 if user types "Name" AND "The country region name changes";
+  TRANSITION from 24 to 25 if user clicks "View Countries";
+  TRANSITION from 24 to 24 if user clicks "Save Data" AND "The country region remains open for further editing";
+  TRANSITION from 24 to 23 if user clicks "Return";
+  TRANSITION from 25 to 24 if user clicks "Select Country";
+  TRANSITION from 25 to 26 if user selects "Country Row";
+  TRANSITION from 25 to 26 if user clicks "Create New Country";
+  TRANSITION from 25 to 24 if user clicks "Return";
+  TRANSITION from 26 to 26 if user types "Name" AND "The country name changes";
+  TRANSITION from 26 to 27 if user clicks "View Planet Regions";
+  TRANSITION from 26 to 26 if user clicks "Save Data" AND "The country remains open for further editing";
+  TRANSITION from 26 to 25 if user clicks "Return";
+  TRANSITION from 27 to 26 if user clicks "Select Planet Region";
+  TRANSITION from 27 to 28 if user selects "Planet Region Row";
+  TRANSITION from 27 to 28 if user clicks "Create New Planet Region";
+  TRANSITION from 27 to 26 if user clicks "Return";
+  TRANSITION from 28 to 28 if user types "Name" AND "The planet region name changes";
+  TRANSITION from 28 to 28 if user clicks "Save Data" AND "The planet region remains open for further editing";
+  TRANSITION from 28 to 27 if user clicks "Return";
+}
+
+FRAGMENT "Variants And Regatta Results" {
+  WIDTH 28;
+  DRAW { 8, 11, 15, 29, 30, 31 };
+  TRANSITION from 15 to 29 if user clicks "View Variants" AND "The variant-management action is available in the current regatta editor";
+  TRANSITION from 15 to 31 if user clicks "View Regatta Results" AND "The regatta-results action is available in the current regatta editor";
+  TRANSITION from 29 to 30 if user selects "Variant Row";
+  TRANSITION from 29 to 15 if user clicks "Select Variant";
+  TRANSITION from 29 to 30 if user clicks "Create New Variant";
+  TRANSITION from 29 to 15 if user clicks "Return";
+  TRANSITION from 30 to 30 if user types "Name" AND "The variant name changes";
+  TRANSITION from 30 to 30 if user types "Min Width" AND "The variant minimum width changes";
+  TRANSITION from 30 to 30 if user types "Length" AND "The variant length changes";
+  TRANSITION from 30 to 8 if user clicks "View Venues";
+  TRANSITION from 8 to 30 if user clicks "Select Venue" AND "The variant editor is the previous UI";
+  TRANSITION from 8 to 30 if user clicks "Return" AND "The variant editor is the previous UI";
+  TRANSITION from 30 to 30 if user clicks "Save Data" AND "The variant remains open for further editing";
+  TRANSITION from 30 to 29 if user clicks "Return";
+  TRANSITION from 31 to 11 if user selects "Registration Row";
+  TRANSITION from 31 to 11 if user clicks "Create New Registration";
+  TRANSITION from 31 to 31 if user types "Lap Time" AND "The regatta speed-test lap time changes";
+  TRANSITION from 31 to 31 if user types "Race Position" AND "The regatta race position changes";
+  TRANSITION from 31 to 31 if user types "Race Laps" AND "The regatta race laps change";
+  TRANSITION from 31 to 31 if user types "Bid Amount" AND "The auction bid amount changes";
+  TRANSITION from 31 to 31 if user clicks "Save Data" AND "The regatta results remain open for further editing";
+  TRANSITION from 31 to 15 if user clicks "Return";
+}
+
+FRAGMENT "Modal Message States" {
+  WIDTH 28;
+  DRAW { 3, 11, 15, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40 };
+  TRANSITION from 3 to 32 if user clicks "Save Data" AND "Another participant already uses the same email";
+  TRANSITION from 32 to 3 if user clicks "OK";
+  TRANSITION from 3 to 33 if user clicks "Save Data" AND "The password is shorter than the minimum allowed length";
+  TRANSITION from 33 to 3 if user clicks "OK";
+  TRANSITION from 31 to 34 if user clicks "Create New Registration" AND "The regatta is not open for registrations";
+  TRANSITION from 34 to 31 if user clicks "OK";
+  TRANSITION from 11 to 35 if user clicks "Save Data" AND "The selected car does not belong to the current participant";
+  TRANSITION from 35 to 11 if user clicks "OK";
+  TRANSITION from 15 to 36 if user clicks "Save Data" AND "The speed-test results are invalid";
+  TRANSITION from 36 to 15 if user clicks "OK";
+  TRANSITION from 15 to 37 if user clicks "Save Data" AND "The race-test results are invalid";
+  TRANSITION from 37 to 15 if user clicks "OK";
+  TRANSITION from 15 to 38 if user clicks "Advance Regatta Status" AND "The status change succeeds and the system opens the informational dialog";
+  TRANSITION from 38 to 15 if user clicks "OK";
+  TRANSITION from 15 to 39 if user clicks "Advance Regatta Status" AND "The current participant does not own the regatta";
+  TRANSITION from 39 to 15 if user clicks "OK";
+  TRANSITION from 15 to 40 if user clicks "Advance Regatta Status" AND "The regatta data is incomplete or invalid for the next status";
+  TRANSITION from 40 to 15 if user clicks "OK";
+}
+
+FRAGMENT "External Link Entry Points" {
+  WIDTH 28;
+  DRAW { 1, 2, 41, 42, 43, 44 };
+  TRANSITION from 44 to 41 if user clicks "Open Confirmation Link";
+  TRANSITION from 44 to 42 if user clicks "Open Password Reset Link";
+  TRANSITION from 44 to 43 if user clicks "Open Complaint Link";
+  TRANSITION from 41 to 2 if user clicks "Open TOP Racing Login";
+  TRANSITION from 41 to 1 if user clicks "Open TOP Racing Banner";
+  TRANSITION from 42 to 1 if user clicks "Open TOP Racing Banner";
+  TRANSITION from 43 to 1 if user clicks "Open TOP Racing Banner";
+}
+}
