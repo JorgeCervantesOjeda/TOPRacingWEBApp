@@ -1296,6 +1296,40 @@ public class Controller {
 
   }
 
+  public void promoterBalanceComplaint( Registration r ) {
+    modelBean.setParticipantAsDefaulter( r.getRegatta().getParticipant() );
+    modelBean.requestRecalculateRegattaPenalties(
+      ( p )
+      -> this.theView.setProgress( p )
+    );
+    modelBean.sendMonitorMail(
+      r.getRegatta().getParticipant(),
+      "A PROMOTER DEFAULTER HAS BEEN REPORTED"
+      + "\nRegatta Id: " + r.getRegatta().getId()
+      + "\nOwner Id: " + r.getParticipantByIdOwner().getId()
+      + "\nPromoter Id: " + r.getRegatta().getParticipant().getId()
+      + "\nRegistration Id: " + r.getId(),
+      this.session
+    );
+  }
+
+  public void ownerBalanceComplaint( Registration r ) {
+    modelBean.setParticipantAsDefaulter( r.getParticipantByIdOwner() );
+    modelBean.requestRecalculateRegattaPenalties(
+      ( p )
+      -> this.theView.setProgress( p )
+    );
+    modelBean.sendMonitorMail(
+      r.getParticipantByIdOwner(),
+      "AN OWNER DEFAULTER HAS BEEN REPORTED"
+      + "\nRegatta Id: " + r.getRegatta().getId()
+      + "\nOwner Id: " + r.getParticipantByIdOwner().getId()
+      + "\nPromoter Id: " + r.getRegatta().getParticipant().getId()
+      + "\nRegistration Id: " + r.getId(),
+      this.session
+    );
+  }
+
   public void clickViewNextRegatta( Long _id ) {
 
     Regatta r = this.modelBean.getRegattaById( _id + 1 );

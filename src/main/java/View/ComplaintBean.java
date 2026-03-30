@@ -34,11 +34,15 @@ public class ComplaintBean {
 
     private String r1;
 
-    private String r2;
+  private String r2;
 
-    private String s;
+  private String s;
 
-    private String b;
+  private String b;
+
+  private String mode;
+
+  private String target;
 
   private Participant currentParticipant;
   private Participant defaulter;
@@ -100,8 +104,10 @@ public class ComplaintBean {
     r2 = params.get( "r2" );
     s = params.get( "s" );
     b = params.get( "b" );
+    mode = params.get( "mode" );
+    target = params.get( "target" );
 
-    if( key == null || r1 == null || s == null || b == null ) {
+    if( key == null || r1 == null ) {
       return;
     }
 
@@ -117,6 +123,19 @@ public class ComplaintBean {
     currentRegistration = modelBean.getRegistrationById( Long.parseLong( r1 ) );
     viewBean.setCurrentRegistration( currentRegistration );
 
+    if( currentParticipant == null || currentRegistration == null ) {
+      return;
+    }
+
+    if( "balance".equalsIgnoreCase( mode ) ) {
+      initBalanceComplaint();
+      return;
+    }
+
+    if( s == null || b == null ) {
+      return;
+    }
+
     Participant p = new Participant();
     p.setId( Long.parseLong( s ) );
     defaulter = modelBean.getParticipantById( p );
@@ -129,6 +148,60 @@ public class ComplaintBean {
       viewBean.setDefaulter( defaulter );
       buyerComplaint();
     }
+  }
+
+  private void initBalanceComplaint() {
+    if( target == null ) {
+      return;
+    }
+
+    Participant p = new Participant();
+    p.setId( Long.parseLong( target ) );
+    defaulter = modelBean.getParticipantById( p );
+    if( defaulter == null ) {
+      return;
+    }
+    if( defaulter.getId() == currentParticipant.getId().longValue() ) {
+      return;
+    }
+
+    viewBean.setDefaulter( defaulter );
+
+    long ownerId = currentRegistration.getParticipantByIdOwner().getId();
+    long promoterId = currentRegistration.getRegatta().getParticipant().getId();
+    long currentId = currentParticipant.getId();
+    long defaulterId = defaulter.getId();
+
+    if( currentId == ownerId && defaulterId == promoterId ) {
+      if( getComputedBalance() <= 0 ) {
+        return;
+      }
+      promoterBalanceComplaint();
+      return;
+    }
+    if( currentId == promoterId && defaulterId == ownerId ) {
+      if( getComputedBalance() >= 0 ) {
+        return;
+      }
+      ownerBalanceComplaint();
+    }
+  }
+
+  private double getComputedBalance() {
+    if( currentRegistration == null || currentRegistration.getRegatta() == null ) {
+      return 0.0;
+    }
+
+    double individualRental =
+           currentRegistration.getRegatta().getTrackrental()
+           / modelBean.getNumValidRegistrations( currentRegistration.getRegatta() );
+
+    return -individualRental
+           - currentRegistration.getRegatta().getEntryfee()
+           - currentRegistration.getBetFinishing()
+           - currentRegistration.getBetEfficiency()
+           + currentRegistration.getPrizeFinishing()
+           + currentRegistration.getPrizeEfficiency();
   }
 
   public void buyerComplaint() {
@@ -148,6 +221,20 @@ public class ComplaintBean {
       return;
     }
     viewBean.getController().sellerComplaint( currentRegistration );
+  }
+
+  public void promoterBalanceComplaint() {
+    if( currentParticipant == null ) {
+      return;
+    }
+    viewBean.getController().promoterBalanceComplaint( currentRegistration );
+  }
+
+  public void ownerBalanceComplaint() {
+    if( currentParticipant == null ) {
+      return;
+    }
+    viewBean.getController().ownerBalanceComplaint( currentRegistration );
   }
 
   // ...
@@ -189,6 +276,22 @@ public class ComplaintBean {
 
   public void setB( String _b ) {
     this.b = _b;
+  }
+
+  public String getMode() {
+    return mode;
+  }
+
+  public void setMode( String mode ) {
+    this.mode = mode;
+  }
+
+  public String getTarget() {
+    return target;
+  }
+
+  public void setTarget( String target ) {
+    this.target = target;
   }
 
   public String getComplaintMsg() {

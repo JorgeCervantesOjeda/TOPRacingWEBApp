@@ -38,7 +38,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -924,6 +926,22 @@ public class ModelBean
     // recalculate efficiency positions
     this.assignRegattaEfficiencyPositions( r.getRegatta() );
     this.assignRegattaIndividualEfficiencyPrize( r.getRegatta() );
+  }
+
+  public synchronized void setParticipantAsDefaulter( Participant participant ) {
+    if( participant == null || participant.getId() == null ) {
+      return;
+    }
+
+    Participant persisted = getParticipantById( participant );
+    if( persisted == null ) {
+      return;
+    }
+
+    Integer currentDefaulter = persisted.getDefaulter();
+    persisted.setDefaulter( (currentDefaulter == null ? 0 : currentDefaulter) + 1 );
+    save( persisted,
+          false );
   }
 
   public synchronized void assignRegattaSpeedPos( long regattaId ) {
@@ -3990,12 +4008,35 @@ public class ModelBean
     List<Registration> registrations =
                        this.getRegattaRegistrations( regatta );
 
-    Participant promoter = regatta.getParticipant();
+    Participant promoter = this.getParticipantById( regatta.getParticipant() );
+    Participant savedPromoter = save( promoter,
+                                      false );
+    if( savedPromoter != null ) {
+      promoter = savedPromoter;
+    }
+
+    Set<Long> ownerIdsWithFreshComplaintKey = new HashSet<>();
+    for( Registration registration
+         : registrations ) {
+      Participant owner = registration.getParticipantByIdOwner();
+      if( owner == null
+          || owner.getId() == null
+          || !ownerIdsWithFreshComplaintKey.add( owner.getId() ) ) {
+        continue;
+      }
+
+      Participant persistedOwner = this.getParticipantById( owner );
+      if( persistedOwner != null ) {
+        save( persistedOwner,
+              false );
+      }
+    }
 
     for( Registration registration
          : registrations ) {
 
-      Participant owner = registration.getParticipantByIdOwner();
+      Participant owner = this.getParticipantById(
+        registration.getParticipantByIdOwner() );
       Car car = registration.getCar();
 
       double individualRental =
@@ -4030,7 +4071,12 @@ public class ModelBean
         + "\npromoter: \t"
         + promoter.getNamesGiven()
         + " " + promoter.getNamesFamily()
-        + " email: " + promoter.getEmail(),
+        + " email: " + promoter.getEmail()
+        + getBalanceComplaintBlock( owner,
+                                    registration,
+                                    promoter,
+                                    registration.getBalance() > 0,
+                                    "If the promoter does not pay this balance, report the promoter using this link:" ),
         regatta.getId()
       );
       this.sendEmail(
@@ -4053,11 +4099,39 @@ public class ModelBean
         + "\nowner: \t"
         + owner.getNamesGiven()
         + " " + owner.getNamesFamily()
-        + " email: " + owner.getEmail(),
+        + " email: " + owner.getEmail()
+        + getBalanceComplaintBlock( promoter,
+                                    registration,
+                                    owner,
+                                    registration.getBalance() < 0,
+                                    "If the owner does not pay this balance, report the owner using this link:" ),
         regatta.getId()
       );
 
     }
+  }
+
+  private String getBalanceComplaintBlock( Participant reporter,
+                                           Registration registration,
+                                           Participant target,
+                                           boolean includeLink,
+                                           String intro ) {
+    if( !includeLink
+        || reporter == null
+        || reporter.getEmailKey() == null
+        || target == null
+        || target.getId() == null ) {
+      return "";
+    }
+
+    return "\n\n"
+           + intro
+           + "\nhttp://"
+           + this.appURL
+           + "faces/complaint.xhtml?mode=balance&key=%27"
+           + reporter.getEmailKey() + "%27"
+           + "&r1=" + registration.getId()
+           + "&target=" + target.getId();
   }
 
   public synchronized long incNumUsuariosActivos() {
