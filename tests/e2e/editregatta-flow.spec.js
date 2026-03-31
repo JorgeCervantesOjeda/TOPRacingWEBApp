@@ -46,27 +46,48 @@ test('authenticated user can open registration creation from regatta results', a
   const password = 'Pw-12345';
 
   await createAccount(page, email, password, 'Registration', 'Browser');
-  await createEventFromPenalties(page);
+  await createRegistrationEditor(page);
 
-  await page.getByRole('button', { name: /Next status:/ }).click();
-  await page.locator('.ui-confirmdialog-yes').click();
-  await expect(page.locator('#contentForm\\:infoMessageOK')).toBeVisible();
-  await page.locator('#contentForm\\:infoMessageOK').click();
+  await expect(page.getByRole('heading', { name: /Registration Information/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /View (Cars|Vehicles)/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /View Drivers/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Save data' })).toBeVisible();
+});
+
+test('authenticated user can create a car from registration flow and select it', async ({ page }) => {
+  const email = `codex+carflow-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, email, password, 'Car', 'Flow');
+  await createRegistrationEditor(page);
+
+  await page.getByRole('button', { name: /View (Cars|Vehicles)/i }).click();
+  await expect(page).toHaveURL(/\/faces\/listcars\.xhtml$/);
   await dismissWaitUi(page);
 
-  await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
-  await page.getByRole('button', { name: 'View/Edit Registrations' }).click();
-  await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
+  await page.getByRole('button', { name: 'Create new Car' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editcar\.xhtml$/);
   await dismissWaitUi(page);
 
-  await page.getByRole('button', { name: 'Create new registration' }).click();
-  await page.locator('.ui-confirmdialog-yes').click();
+  const carInputs = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
+  await carInputs.nth(0).fill(`Browser Car ${Date.now()}`);
+  await carInputs.nth(1).fill('123.4');
+  await carInputs.nth(2).fill('45.6');
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+
+  await expect(page).toHaveURL(/\/faces\/editcar\.xhtml$/);
+  await page.locator('#contentForm button:has(.fa-arrow-left)').first().click();
+  await expect(page).toHaveURL(/\/faces\/listcars\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Select' }).first().click();
   await expect(page).toHaveURL(/\/faces\/editregistration\.xhtml$/);
   await dismissWaitUi(page);
 
   await expect(page.getByRole('heading', { name: /Registration Information/i })).toBeVisible();
   await expect(page.getByRole('button', { name: /View (Cars|Vehicles)/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /View Drivers/i })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Save data' })).toBeVisible();
 });
 
@@ -96,6 +117,26 @@ async function createEventFromPenalties(page) {
   await page.getByRole('button', { name: 'Create Event' }).click();
   await page.locator('.ui-confirmdialog-yes').click();
   await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
+  await dismissWaitUi(page);
+}
+
+async function createRegistrationEditor(page) {
+  await createEventFromPenalties(page);
+
+  await page.getByRole('button', { name: /Next status:/ }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page.locator('#contentForm\\:infoMessageOK')).toBeVisible();
+  await page.locator('#contentForm\\:infoMessageOK').click();
+  await dismissWaitUi(page);
+
+  await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
+  await page.getByRole('button', { name: 'View/Edit Registrations' }).click();
+  await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Create new registration' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editregistration\.xhtml$/);
   await dismissWaitUi(page);
 }
 
