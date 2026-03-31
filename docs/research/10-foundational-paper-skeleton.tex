@@ -126,6 +126,28 @@ Accessibility should not be understood as mere formal permission to enter. It sh
 The ecosystem is accessible at time \(t\) if there exists a non-trivial set of agents with bounded initial resources for whom entry and continued participation remain feasible with non-negligible probability.
 \end{definition}
 
+This definition should eventually be strengthened by distinguishing between nominal and substantive access. Nominal access means that entry is not explicitly forbidden. Substantive access means that entry leads to a meaningful probability of remaining in the ecosystem long enough to obtain developmental value.
+
+A useful next step is to define, for a given resource threshold \(\bar{w}\), the bounded-resource population
+\[
+B_{\bar{w}}(t) := \{ i \in A : w_i(t) \leq \bar{w} \}.
+\]
+One may then interpret accessibility not merely through one-step admissibility, but through the existence of a non-trivial subset of \(B_{\bar{w}}(t)\) for whom feasible participation trajectories remain open over a finite horizon.
+
+In that spirit, a later version of the paper may define a continuation-feasible set
+\[
+C_H(t) := \{ i \in A : \Pr[x_i(t+\tau) \text{ remains meaningfully attainable for } 1 \leq \tau \leq H] \geq \varepsilon \},
+\]
+for some horizon \(H\) and threshold \(\varepsilon > 0\).
+
+Under such notation, a more informative reading of accessibility would be that
+\[
+\mu\big(B_{\bar{w}}(t) \cap C_H(t)\big)
+\]
+remains non-negligible for relevant \(\bar{w}\), \(H\), and \(\varepsilon\). The exact measure \(\mu\) remains open, but the conceptual point is clear: accessibility concerns attainable developmental continuation, not only initial admission.
+
+This also suggests that accessibility should ultimately be evaluated relative to meaningful participation rather than mere entry. The ecosystem is not accessible in the intended sense if bounded-resource agents can appear briefly but cannot rationally remain, learn, or progress.
+
 \subsection{Developmentality}
 
 Developmentality refers to the existence of real pathways through which repeated participation increases relevant capabilities. These capabilities may include technical, strategic, organizational, or competitive dimensions. Later formalization should distinguish between isolated improvement and structurally supported progression.
@@ -141,6 +163,27 @@ Economic sustainability should be interpreted as the ability of the ecosystem to
 \begin{definition}[Economic Sustainability]
 The ecosystem is economically sustainable if its recurrent operation and incentive structure can be maintained over time without requiring structurally unbounded external support.
 \end{definition}
+
+This notion should also be sharpened by distinguishing local solvency from structural sustainability. A system may satisfy obligations in the short term and still be unsustainable if it depends on recurrently fragile promises, unstable injections, or escalating commitments.
+
+At a schematic level, one may think of each event \(e\) as generating an economic profile with bounded cost and bounded incentive exposure. If \(c_e\) denotes entry cost and \(p_e\) denotes the relevant incentive structure, then sustainability should eventually constrain the long-run relation between aggregate commitments, realized participation, and the recurrent viability of the event stream.
+
+A first abstract expression may take the form
+\[
+\mathcal{S}(t) \sim H_S\big(\{c_e\}, \{p_e\}, \text{commitments}, \text{participation flow}\big),
+\]
+but later layers should distinguish at least three ideas:
+\begin{itemize}
+  \item bounded commitment exposure,
+  \item recurrent event viability,
+  \item non-dependence on structurally unbounded subsidy.
+\end{itemize}
+
+One may also anticipate a bounded-exposure condition of the form
+\[
+\sum_{e \in E_t} \Gamma_e(t) \leq K_t,
+\]
+where \(\Gamma_e(t)\) denotes effective economic exposure associated with event \(e\) and \(K_t\) denotes an admissible bound induced by the ecosystem's actual support capacity. The exact meaning of these quantities remains to be fixed, but the directional idea is that incentive promises must remain compatible with the ecosystem's recurrent support structure.
 
 \subsection{Enforceability}
 
@@ -175,6 +218,8 @@ Open entry means that the system must preserve real permeability. New participan
 There exists a recurrent entry path through which new agents may join the ecosystem without requiring prior elite status.
 \end{assumption}
 
+In terms of the model, this assumption should eventually constrain the transition function for participation so that \(x_i(t+1)\) remains attainable for bounded-resource agents not yet active in the ecosystem.
+
 \subsection{Participation must create future opportunity}
 
 Participation must have developmental continuity. If current involvement has no effect on future opportunity, then the ecosystem may still host events, but it no longer functions as a progressive environment.
@@ -182,6 +227,10 @@ Participation must have developmental continuity. If current involvement has no 
 \begin{assumption}[Progressive Opportunity]
 Current participation may affect future opportunity in at least one structurally meaningful way.
 \end{assumption}
+
+This assumption should eventually appear in the dynamics through non-trivial dependence of future participation, role, or capability variables on current participation state \(x_i(t)\) and action \(a_i(t)\).
+
+The deeper point is that participation must be meaningful. A formally admissible but developmentally empty participation state does not satisfy the spirit of this assumption.
 
 \subsection{Advantages must remain bounded}
 
@@ -191,6 +240,8 @@ Prior resources may generate advantages, but those advantages must remain bounde
 Differences in prior resources may affect outcomes, but they do not fully determine developmental or competitive relevance.
 \end{assumption}
 
+Formally, this assumption should later restrict the influence of \(w_i(t)\) so that resource asymmetry does not dominate all relevant transitions or outcomes.
+
 \subsection{Commitments must have consequences}
 
 The ecosystem must preserve trust under repetition. This requires that commitments, promises, and obligations affect future opportunity if they are violated. A system with no durable consequence for breach may remain active while losing credibility.
@@ -198,6 +249,8 @@ The ecosystem must preserve trust under repetition. This requires that commitmen
 \begin{assumption}[Durable Consequence]
 Violation of relevant commitments may produce a persistent effect on future opportunity, reputation, or expected value.
 \end{assumption}
+
+Within the model, this means that commitment outcomes \(\ell_i(t)\) should be able to influence \(r_i(t+1)\), \(x_i(t+1)\), or both.
 
 \subsection{Economic promises must remain bounded}
 
@@ -207,6 +260,8 @@ Economic incentives may be central to participation, but they must be structural
 The ecosystem restricts economic promises or obligations so that systemic exposure remains bounded.
 \end{assumption}
 
+Later formalization should connect this assumption to the event-level incentive structure \(p_e\), to aggregate system pressure \(\mathcal{S}(t)\), and possibly to admissible action sets.
+
 \subsection{Multiple roles must be possible}
 
 The system should allow agents to participate through more than one role over time. This matters because developmental ecosystems do not only produce better competitors; they may also produce organizers, promoters, builders, sponsors, and technical contributors.
@@ -214,6 +269,8 @@ The system should allow agents to participate through more than one role over ti
 \begin{assumption}[Role Multiplicity]
 An agent may occupy more than one role across time or in different parts of the ecosystem.
 \end{assumption}
+
+This assumption should later be reflected in the dynamics of \(\rho_i(t)\), allowing developmental mobility across the role space \(R\).
 
 \section{Formal Model}
 
@@ -232,9 +289,17 @@ This also means that not every important phenomenon needs immediate formal detai
 
 Let the ecosystem contain a population of agents indexed by \(i \in A\), where \(A\) denotes the set of all participating or potentially participating actors. The set should be interpreted broadly enough to include current participants, future entrants, and agents whose role in the system is not purely competitive.
 
+The population need not be static. Entry, exit, suspension, and return should later be incorporated into the model so that the ecosystem can be studied as an evolving population rather than as a fixed competitive set.
+
 \subsection{Roles}
 
 Each agent may play one or more roles. At a minimum, roles may include participant, organizer, promoter, owner, technical contributor, or sponsor. The role structure matters because developmental opportunity may involve movement not only within performance levels but also across functional positions in the ecosystem.
+
+For this reason, the role of agent \(i\) at time \(t\) may later be represented as a subset
+\[
+\rho_i(t) \subseteq R,
+\]
+where \(R\) is the role space of the ecosystem.
 
 \subsection{Participant-level variables}
 
@@ -246,6 +311,10 @@ s_i(t), \quad k_i(t), \quad w_i(t), \quad r_i(t), \quad x_i(t),
 \]
 where these symbols may later denote skill, technological capability, economic resources, reputation, and participation status, respectively.
 
+The important point is not yet the exact interpretation of each variable, but the fact that the ecosystem is dynamic. These variables are intended to evolve across time as functions of participation, incentives, technological learning, and institutional consequence.
+
+Among these variables, \(x_i(t)\) should not be understood as a purely binary attendance indicator. In later layers it may need to distinguish inactive, nominally active, and meaningfully active participation states.
+
 \subsection{Event-level variables}
 
 Events should eventually be represented not merely as dates or operational units, but as structured opportunities with costs, incentives, and developmental value. Their formalization should capture both economic and competitive dimensions.
@@ -256,6 +325,8 @@ c_e, \quad p_e, \quad q_e,
 \]
 where these may later denote entry cost, incentive structure, and developmental quality.
 
+Later versions may refine \(p_e\) into multiple incentive components and \(q_e\) into a composite object capturing not only competitive intensity but also developmental relevance.
+
 \subsection{Ecosystem-level variables}
 
 The ecosystem itself should be described by aggregate or emergent quantities. These quantities are not reducible to the state of a single participant because they concern the structure of the environment as a whole.
@@ -264,6 +335,65 @@ Candidate ecosystem-level variables include accessibility, sustainability, devel
 \[
 \mathcal{A}(t), \quad \mathcal{S}(t), \quad \mathcal{D}(t), \quad \mathcal{O}(t).
 \]
+
+These variables should be interpreted as system descriptors rather than direct agent attributes. They summarize emergent conditions of the ecosystem and may depend on distributions, thresholds, and repeated interactions among agents.
+
+At the present layer, it is useful to interpret them schematically as aggregate functions over participant states, event structures, and transition conditions. In particular, they should later be defined so that they respond not only to instantaneous counts but also to the quality of attainable future states.
+
+A first abstract reading may be the following:
+\begin{itemize}
+  \item \(\mathcal{A}(t)\) measures the extent to which meaningful entry and continuation remain feasible,
+  \item \(\mathcal{D}(t)\) measures the extent to which the ecosystem generates progressive capability growth,
+  \item \(\mathcal{S}(t)\) measures the extent to which the ecosystem can recurrently sustain its own operation and incentive structure,
+  \item \(\mathcal{O}(t)\) measures the extent to which opportunistic strategies remain viable under current conditions.
+\end{itemize}
+
+To make this more explicit, one may later represent these quantities as
+\[
+\mathcal{A}(t) = G_A\big(z(t)\big), \quad
+\mathcal{D}(t) = G_D\big(z(t), z(t+1)\big),
+\]
+\[
+\mathcal{S}(t) = G_S\big(z(t), E(t)\big), \quad
+\mathcal{O}(t) = G_O\big(z(t), a(t)\big),
+\]
+where \(z(t)\) denotes the global state and \(E(t)\) denotes ecosystem conditions or event opportunities at time \(t\).
+
+\subsection{Aggregate interpretations}
+
+The aggregate variables should eventually be grounded in observable or computable conditions rather than left purely symbolic. At the present layer, however, it is sufficient to indicate the type of structure each variable should capture.
+
+Accessibility may later depend on the proportion or measure of bounded-resource agents for whom admissible participation states remain reachable:
+\[
+\mathcal{A}(t) \sim \mu\big(\{i \in A : x_i(t+1) \text{ is meaningfully attainable under bounded } w_i(t)\}\big).
+\]
+
+In a stronger version, \(\mathcal{A}(t)\) should depend not only on one-step attainability but on the availability of continuation paths over a finite horizon for bounded-resource agents.
+
+It may therefore be useful to rewrite accessibility more explicitly in terms of meaningful participation:
+\[
+\mathcal{A}(t) \sim \mu\big(\{ i \in B_{\bar{w}}(t) : M_i(t) = 1 \}\big),
+\]
+with the understanding that both \(B_{\bar{w}}(t)\) and \(M_i(t)\) are themselves structurally induced by the ecosystem.
+
+Developmental capacity may later depend on the expected capability gain induced by admissible repeated participation:
+\[
+\mathcal{D}(t) \sim \mathbb{E}\big[\Delta s_i(t) + \Delta k_i(t) \mid x_i(t), a_i(t), E(t)\big].
+\]
+
+Economic sustainability may later depend on the boundedness and recurrent viability of event-level incentives and obligations:
+\[
+\mathcal{S}(t) \sim H_S\big(c_e, p_e, \text{commitments}, \text{participation flow}\big).
+\]
+
+In later layers, this quantity should probably decrease when the system's effective economic exposure grows faster than its recurrent support base, or when continuation requires increasingly fragile external injections.
+
+Opportunism pressure may later depend on the relative expected utility of strategic abuse under current enforcement and commitment conditions:
+\[
+\mathcal{O}(t) \sim H_O\big(\text{gain from violation}, \text{expected future consequence}\big).
+\]
+
+These expressions are not yet definitions. They indicate the kind of dependence structure that the theory should preserve.
 
 \subsection{System objective}
 
@@ -274,6 +404,116 @@ A first abstract representation may therefore take the form
 \max F\big(\mathcal{A}(t), \mathcal{D}(t), \mathcal{S}(t), -\mathcal{O}(t)\big),
 \]
 with the understanding that the actual form of \(F\) remains open at this stage.
+
+This representation should not yet be read as a standard optimization problem with a single centralized controller. Rather, it expresses the idea that the ecosystem should be evaluated according to a vector of structural outcomes rather than according to a single scalar such as profit or participation count.
+
+\subsection{State transitions}
+
+At a later stage, the ecosystem should be modeled as a repeated system with state transitions. A generic form may be written as
+\[
+z(t+1) = \Phi\big(z(t), a(t), \theta\big),
+\]
+where \(z(t)\) denotes the global state, \(a(t)\) denotes the profile of actions taken at time \(t\), and \(\theta\) denotes structural parameters of the ecosystem.
+
+This transition view is useful because it makes explicit that the ecosystem is not defined solely by current states but by the way present participation affects future conditions.
+
+It also makes explicit that ecosystem-level descriptors should be studied dynamically. If the system is developmental, then the current state matters not only through what it contains, but through the range of future trajectories it enables or suppresses.
+
+\subsection{Participant transitions}
+
+At the participant level, one may eventually write relations of the form
+\[
+s_i(t+1) = f_s\big(s_i(t), k_i(t), x_i(t), a_i(t)\big),
+\]
+\[
+r_i(t+1) = f_r\big(r_i(t), a_i(t), \ell_i(t)\big),
+\]
+\[
+x_i(t+1) = f_x\big(x_i(t), w_i(t), r_i(t), \rho_i(t), E(t)\big),
+\]
+where \(a_i(t)\) denotes the action of agent \(i\), \(\ell_i(t)\) denotes relevant commitment outcomes, and \(E(t)\) denotes ecosystem conditions at time \(t\).
+
+These relations remain schematic in the present layer, but they indicate the type of dynamical structure the paper is moving toward.
+
+\subsection{Agent evaluation and incentives}
+
+Because the ecosystem includes strategic behavior, it is not enough to specify state transitions alone. One must also represent, at least schematically, how agents evaluate available actions under current and expected future conditions.
+
+At a preliminary level, one may think of agent \(i\) as comparing actions according to an intertemporal objective of the form
+\[
+U_i(t) = U_i\big(a_i(t), z(t), \mathbb{E}[z(t+1)], \rho_i(t)\big),
+\]
+where current action, present conditions, expected future state, and current role all contribute to evaluation.
+
+A more explicit but still schematic expression may be written as
+\[
+U_i(t)
+= \alpha_i \Pi_i(t)
++ \beta_i \Delta s_i(t)
++ \gamma_i \Delta k_i(t)
++ \delta_i V_i^{\mathrm{future}}(t)
+- \lambda_i C_i(t)
+- \mu_i P_i(t),
+\]
+where:
+\begin{itemize}
+  \item \(\Pi_i(t)\) denotes immediate economic or competitive return,
+  \item \(\Delta s_i(t)\) and \(\Delta k_i(t)\) denote capability gains,
+  \item \(V_i^{\mathrm{future}}(t)\) denotes continuation value,
+  \item \(C_i(t)\) denotes participation cost,
+  \item \(P_i(t)\) denotes expected penalty or future loss induced by current behavior.
+\end{itemize}
+
+This utility expression should not yet be read as final. Its role is to identify the main channels through which ecosystem design may alter rational behavior.
+
+\subsection{Continuation value}
+
+The notion of continuation value is especially important in a developmental ecosystem. If present participation affects future opportunity, then agents need not evaluate actions only by immediate payoff. They may also evaluate them through expected access to later roles, events, capabilities, or reputational standing.
+
+For that reason, one may later treat
+\[
+V_i^{\mathrm{future}}(t)
+\]
+as a function of expected reachable states under the transition system. In a simplified reading, this value should increase when current compliance or participation improves future attainability of desirable states, and decrease when current behavior damages reputation or continuation paths.
+
+\subsection{Meaningful participation}
+
+The paper is now using the expression \emph{meaningful participation} in several places, so it is useful to introduce a preliminary interpretation. Participation should be called meaningful when it gives the agent more than nominal presence; it must provide access to some combination of learning, continuation, role mobility, or non-trivial competitive relevance.
+
+Accordingly, one may later distinguish between:
+\begin{itemize}
+  \item \emph{nominal participation}, in which an agent is formally present but has weak developmental continuation,
+  \item \emph{meaningful participation}, in which the agent retains non-negligible access to future valuable states.
+\end{itemize}
+
+A schematic condition for meaningful participation at time \(t\) may later take the form
+\[
+M_i(t) = 1
+\quad \text{if and only if} \quad
+\Pr\big(\text{reachable valuable future states} \mid z(t), a_i(t)\big) \geq \eta,
+\]
+for some threshold \(\eta > 0\).
+
+This does not yet define what counts as a valuable future state. It only establishes the conceptual requirement that participation be evaluated through future developmental reachability and not solely through present inclusion.
+
+\subsection{Ecosystem transitions}
+
+Because ecosystem-level variables summarize structural conditions, they should also be expected to evolve across time. A generic expression may be written as
+\[
+\mathcal{Y}(t+1) = \Psi\big(\mathcal{Y}(t), z(t), a(t), \theta\big),
+\]
+where
+\[
+\mathcal{Y}(t) := \big(\mathcal{A}(t), \mathcal{D}(t), \mathcal{S}(t), \mathcal{O}(t)\big).
+\]
+
+This notation emphasizes that the ecosystem has its own state of health or condition beyond the local trajectory of individual agents. In later layers, one should ask whether some regions of the ecosystem state space are self-reinforcing, fragile, or degrading.
+
+\subsection{Interpretive note}
+
+The formal model is intentionally being built in stages. The present layer introduces state variables and transition language without yet fixing their complete analytical form. This preserves interpretability while making the future mathematical direction explicit.
+
+The same holds for utility. The purpose of introducing a preliminary utility representation is not to force all behavior into a narrow economic model, but to provide a bridge between structural rules and rational response. Without such a bridge, claims about opportunism, compliance, and developmental incentives remain underspecified.
 
 \section{Structural Properties}
 
@@ -292,28 +532,92 @@ Examples of such properties include meaningful entry, non-trivial progression, b
 
 At this stage, the main candidate properties to preserve are meaningful entry, progressive capability growth, bounded domination by prior resources, and credible future consequences for non-compliance. These should later be restated as formal properties or constraints.
 
+Using the notation already introduced, one may interpret these properties as follows:
+\begin{itemize}
+  \item meaningful entry is linked to the attainability of admissible states \(x_i(t+1)\) for bounded-resource agents,
+  \item progressive capability growth is linked to the behavior of transitions such as \(f_s\),
+  \item bounded domination concerns the comparative influence of \(w_i(t)\) on relevant transitions and outcomes,
+  \item credible consequence concerns the effect of \(\ell_i(t)\) on \(r_i(t+1)\) and \(x_i(t+1)\).
+\end{itemize}
+
+At the ecosystem level, preserving these properties should correspond to keeping \(\mathcal{A}(t)\), \(\mathcal{D}(t)\), and \(\mathcal{S}(t)\) sufficiently high while keeping \(\mathcal{O}(t)\) sufficiently low over time.
+
+In particular, preserving accessibility should eventually mean preserving not only entry counts but the prevalence of meaningful participation among agents with bounded initial resources.
+
 \subsection{Why those properties depend on structure}
 
 These properties do not arise from participation alone. They depend on how the ecosystem links incentives, repetition, reputation, and bounded advantage. A later version of the paper should make explicit which structural conditions support which properties.
+
+This dependence can already be stated schematically. If the transition map \(\Phi\) is modified so that some variables lose influence or gain overwhelming influence, then the preserved ecosystem properties may also change. In this sense, structural properties are not independent outputs but consequences of the shape of the transition system.
+
+More precisely, the ecosystem-level functions \(G_A, G_D, G_S, G_O\) should later be read as induced by the transition architecture of the system. A change in admissible actions, event structure, reputation effects, or bounded commitments may therefore alter the evolution of \(\mathcal{Y}(t)\) even if the participant set remains unchanged.
+
+This dependence also operates through rational response. If the structure of transitions and consequences changes, then the utility landscape of agents changes as well. Thus system properties are shaped both by transition equations and by the strategic choices that those equations make attractive or unattractive.
 
 \subsection{First candidate propositions}
 
 A first family of propositions should likely connect the weakening of one structural condition with the weakening of one ecosystem property. For example, one may later ask whether the absence of durable reputational effects makes opportunism rational, or whether unbounded resource advantages destroy meaningful access.
 
 \begin{proposition}[Need for Durable Consequence]
-If violation of commitments has no durable effect on future opportunity, then there exist parameter regimes in which opportunistic behavior is rational.
+Suppose that for some agent \(i\) and some relevant violation outcome \(\ell_i(t)\), the transition functions satisfy
+\[
+\frac{\partial f_r}{\partial \ell_i}(t) = 0
+\quad\text{and}\quad
+\frac{\partial f_x}{\partial \ell_i}(t) = 0
+\]
+in the sense that commitment violations do not alter future reputation or participation opportunity. Then there exist parameter regimes in which opportunistic behavior is rational.
 \end{proposition}
 
 \begin{proof}[Proof sketch]
-If an agent can obtain immediate gain through violation while facing no sufficiently large future loss in participation, reputation, or opportunity, then expected opportunistic utility exceeds compliant utility for some configurations of incentives.
+If a violation generates immediate gain and the violation has no effect on \(r_i(t+1)\) or \(x_i(t+1)\), then the expected future cost of opportunism may vanish or become too small. Under such conditions, the expected utility of opportunistic action can exceed that of compliant action for some incentive configurations.
 \end{proof}
 
 \begin{proposition}[Need for Bounded Advantage]
-If prior resources fully determine relevant outcomes, then accessibility and developmentality cannot both be preserved in the intended sense.
+Suppose that for some relevant family of agents the transitions governing opportunity and capability become dominated by prior resources, in the sense that \(w_i(t)\) determines the attainable range of \(x_i(t+1)\) and strongly determines \(s_i(t+1)\) or \(k_i(t+1)\). Then accessibility and developmentality cannot both be preserved in the intended sense.
 \end{proposition}
 
 \begin{proof}[Proof sketch]
-If initial resource endowments dominate later opportunity, then bounded-resource agents lose meaningful entry or progression value. Under such conditions, either access ceases to be substantive or development ceases to be structurally supported.
+If bounded-resource agents cannot access meaningful future states because \(w_i(t)\) dominates admissible transitions, then accessibility becomes merely formal. If capability growth also becomes strongly determined by prior resources, then developmental progression is no longer structurally supported for heterogeneous entrants. Thus the two objectives cannot both remain substantive.
+\end{proof}
+
+\begin{proposition}[Need for Progressive Opportunity]
+Suppose that current participation state has no effect on future opportunity, capability, or role, so that \(x_i(t)\) is absent from the relevant transition structure for advancement. Then the ecosystem cannot preserve strong developmental continuity.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+If present participation does not affect future capability, role, or opportunity, then repetition has no structurally progressive value beyond isolated event outcomes. The system may remain active, but it ceases to function as a developmental pathway in the intended sense.
+\end{proof}
+
+\begin{proposition}[Need for Positive Continuation Value]
+If compliant and developmental participation fails to generate sufficient continuation value for bounded-resource agents, then accessibility and retention cannot both remain structurally strong.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Suppose bounded-resource agents can enter but the expected future value of continued compliant participation remains too small relative to cost. Then entry may remain nominally feasible, but continued participation becomes unattractive. In that regime, one may observe nominal access with weak retention, which undermines substantive accessibility.
+\end{proof}
+
+\begin{proposition}[Nominal Access Is Not Substantive Access]
+Suppose bounded-resource agents can enter the ecosystem, but for a non-trivial subset of them meaningful participation fails, in the sense that \(M_i(t)=0\) with high probability after short horizons. Then nominal access may be present while substantive accessibility remains weak.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Formal entry alone does not preserve developmental opportunity. If agents can enter but quickly lose access to valuable continuation states, then their participation is only nominal. In that case the ecosystem may appear open while failing to preserve meaningful bounded-resource access.
+\end{proof}
+
+\begin{proposition}[System-Level Development Depends on Local Development]
+If, for a non-trivial region of the state space, participant transitions fail to generate expected capability growth under repeated admissible participation, then \(\mathcal{D}(t)\) cannot remain structurally high in that region.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+If repeated admissible participation does not yield meaningful expected increases in capability variables such as \(s_i(t)\) or \(k_i(t)\), then the aggregate developmental capacity of the ecosystem cannot remain high except as a purely nominal descriptor. Thus low or vanishing local developmental gain propagates to low system-level development.
+\end{proof}
+
+\begin{proposition}[Need for Bounded Economic Exposure]
+If effective economic exposure associated with ecosystem commitments becomes structurally unbounded relative to recurrent support capacity, then \(\mathcal{S}(t)\) cannot remain structurally high.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Economic sustainability requires that the ecosystem can recurrently support its incentive structure. If obligations or effective exposure grow without a corresponding bounded support base, then continuation depends on increasingly fragile conditions. In such a regime, short-term operation may persist, but structural sustainability degrades.
 \end{proof}
 
 \section{Degradation Modes}
@@ -333,6 +637,10 @@ Each degradation mode should eventually be linked to one or more weakened struct
 
 Exclusion occurs when entry remains formally possible but ceases to be substantively viable. In later layers, this mode should be connected to thresholds on resources, incentives, or expected continuation value.
 
+This suggests that exclusion should eventually be linked not only to \(x_i(t+1)\), but also to the collapse of continuation-feasible sets for bounded-resource agents over finite horizons.
+
+Under this interpretation, exclusion is compatible with visible openness. What matters is not only whether agents may enter, but whether they can remain meaningfully present long enough to access developmental value.
+
 \subsection{Plutocratic drift}
 
 Plutocratic drift occurs when prior resource asymmetries progressively dominate competitive relevance and developmental opportunity. This should eventually be modeled as a structural weakening of bounded advantage.
@@ -341,13 +649,21 @@ Plutocratic drift occurs when prior resource asymmetries progressively dominate 
 
 Opportunistic drift occurs when strategic abuse becomes rational under the prevailing incentive and enforcement structure. This mode is likely to be closely tied to insufficient reputational consequence or weak commitment structure.
 
+It may also be linked to poor continuation design. If compliance carries little future value while opportunism carries immediate gain, then the drift toward abuse may arise even without explicitly malicious agents.
+
 \subsection{Economic fragility}
 
 Economic fragility occurs when the ecosystem depends on unstable or unbounded commitments that cannot be recurrently sustained. Later formalization should connect this mode to bounded incentives and system-level continuity.
 
+In particular, fragility should be interpreted as a trajectory in which effective economic exposure loses proportionality with recurrent support conditions, thereby weakening \(\mathcal{S}(t)\) even if visible activity remains temporarily high.
+
 \subsection{Loss of developmental value}
 
 Loss of developmental value occurs when the ecosystem continues to operate but no longer produces meaningful progression, learning, or mobility. This degradation mode is especially important because it may remain hidden behind visible activity.
+
+In utility terms, this mode is associated with collapse in the future-oriented value of participation. The system may remain active in a narrow operational sense while ceasing to function as a rational pathway of growth for many of its agents.
+
+This degradation mode is therefore closely related to the distinction between nominal and meaningful participation. A system may preserve activity, event flow, and formal openness while steadily reducing the share of agents for whom participation remains a rational developmental pathway.
 
 \section{Discussion}
 
