@@ -802,14 +802,15 @@ public class ModelBean
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
-    Query q = s.createQuery(
-          "from Tables.Registration as r"
-          + " join fetch r.car as c"
-          + " join fetch c.participant as ow"
-          + " join fetch r.regatta"
-          + " join fetch r.participantByIdOwner"
-          + " join fetch r.participantByIdDriver"
-          + " join fetch r.participantByIdBuyer"
+      Query q = s.createQuery(
+            "from Tables.Registration as r"
+            + " join fetch r.car as c"
+            + " join fetch c.participant as ow"
+            + " join fetch r.regatta as rega"
+            + " join fetch rega.participant"
+            + " join fetch r.participantByIdOwner"
+            + " join fetch r.participantByIdDriver"
+            + " join fetch r.participantByIdBuyer"
           + " where r.id = "
           + registrationId
         );

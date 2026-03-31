@@ -2,3 +2,6 @@ target/
 .idea/
 *.iml
 tmp/
+node_modules/
+playwright-report/
+test-results/

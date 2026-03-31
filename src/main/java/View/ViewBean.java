@@ -127,10 +127,7 @@ public class ViewBean
   public void init() {
     System.out.println(
       new Date() + " !!! " + "---- PostConstruct en ViewBean.java ---------------" );
-    this.currentParticipant = new Participant();
-    this.currentParticipant.setId( 0L );
-    this.currentParticipant.setEmail( "" );
-    this.currentParticipant.setPassword( "" );
+    this.currentParticipant = createPlaceholderParticipant();
     theController = new Controller( this );
     this.session = theController.newSession( modelBean );
   }
@@ -189,14 +186,18 @@ public class ViewBean
   }
 
   public Participant getCurrentParticipant() {
+    ensureCurrentParticipant();
     return this.currentParticipant;
   }
 
   public void setCurrentParticipant( Participant user ) {
-    this.currentParticipant = user;
+    this.currentParticipant = ( user != null )
+                              ? user
+                              : createPlaceholderParticipant();
   }
 
   public void setPassword( String password ) {
+    ensureCurrentParticipant();
     this.currentParticipant.setPassword( password );
   }
 
@@ -289,13 +290,11 @@ public class ViewBean
             bundle(
               "PASSWORD RESET REQUEST LONG" ) );
           return;
-        case UI.LOGIN:
-          currentParticipant = new Participant();
-          currentParticipant.setEmail( "" );
-          currentParticipant.setPassword( "" );
-          redirect( context,
-                    context.getRequestContextPath() + "/login.xhtml" );
-          break;
+          case UI.LOGIN:
+            currentParticipant = createPlaceholderParticipant();
+            redirect( context,
+                      context.getRequestContextPath() + "/login.xhtml" );
+            break;
         case UI.ERROR_LOGIN:
           showModal(
             bundle(
@@ -966,7 +965,7 @@ public class ViewBean
   @Override
   public void showUI( int ui,
                       Participant u ) {
-    this.currentParticipant = u;
+    setCurrentParticipant( u );
     showUI( ui );
   }
 
@@ -1064,6 +1063,20 @@ public class ViewBean
     return java.util.ResourceBundle
       .getBundle( this.language[ languageId ] )
       .getString( messageId );
+  }
+
+  private void ensureCurrentParticipant() {
+    if( this.currentParticipant == null ) {
+      this.currentParticipant = createPlaceholderParticipant();
+    }
+  }
+
+  private Participant createPlaceholderParticipant() {
+    Participant participant = new Participant();
+    participant.setId( 0L );
+    participant.setEmail( "" );
+    participant.setPassword( "" );
+    return participant;
   }
 
 }

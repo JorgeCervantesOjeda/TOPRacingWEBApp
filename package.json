@@ -1,0 +1,10 @@
+{
+  "name": "topracingwebapp-local-tests",
+  "private": true,
+  "scripts": {
+    "test:e2e:live": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2"
+  }
+}

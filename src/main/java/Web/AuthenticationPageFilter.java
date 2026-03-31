@@ -24,6 +24,8 @@ public class AuthenticationPageFilter
   private static final String EDIT_PARTICIPANT_FACES_PAGE = "/faces/editparticipant.xhtml";
   private static final String RESET_PASSWORD_PAGE = "/resetpassword.xhtml";
   private static final String RESET_PASSWORD_FACES_PAGE = "/faces/resetpassword.xhtml";
+  private static final String CONFIRM_USER_MAIL_PAGE = "/confirmusermail.xhtml";
+  private static final String CONFIRM_USER_MAIL_FACES_PAGE = "/faces/confirmusermail.xhtml";
   private static final String COMPLAINT_PAGE = "/complaint.xhtml";
   private static final String COMPLAINT_FACES_PAGE = "/faces/complaint.xhtml";
   private static final String COMPLAINT_BUYER_PAGE = "/complaintbuyer.xhtml";
@@ -79,6 +81,8 @@ public class AuthenticationPageFilter
            || EDIT_PARTICIPANT_FACES_PAGE.equals( path )
            || RESET_PASSWORD_PAGE.equals( path )
            || RESET_PASSWORD_FACES_PAGE.equals( path )
+           || CONFIRM_USER_MAIL_PAGE.equals( path )
+           || CONFIRM_USER_MAIL_FACES_PAGE.equals( path )
            || COMPLAINT_PAGE.equals( path )
            || COMPLAINT_FACES_PAGE.equals( path )
            || COMPLAINT_BUYER_PAGE.equals( path )
