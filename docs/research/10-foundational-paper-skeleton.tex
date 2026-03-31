@@ -122,17 +122,33 @@ As a result, the design objectives should not be interpreted as a checklist. The
 
 Accessibility should not be understood as mere formal permission to enter. It should refer to a condition in which entry remains meaningful for agents with heterogeneous initial endowments. In later layers, this objective should be connected to the probability of sustained participation under bounded initial resources.
 
+\begin{definition}[Accessibility]
+The ecosystem is accessible at time \(t\) if there exists a non-trivial set of agents with bounded initial resources for whom entry and continued participation remain feasible with non-negligible probability.
+\end{definition}
+
 \subsection{Developmentality}
 
 Developmentality refers to the existence of real pathways through which repeated participation increases relevant capabilities. These capabilities may include technical, strategic, organizational, or competitive dimensions. Later formalization should distinguish between isolated improvement and structurally supported progression.
+
+\begin{definition}[Developmentality]
+The ecosystem is developmental if repeated participation can increase at least one relevant capability variable for a non-trivial set of agents under ordinary system conditions.
+\end{definition}
 
 \subsection{Economic sustainability}
 
 Economic sustainability should be interpreted as the ability of the ecosystem to continue operating without depending on structurally unstable external support. At a minimum, rewards, commitments, and participation incentives must remain compatible with bounded and recurrent economic conditions.
 
+\begin{definition}[Economic Sustainability]
+The ecosystem is economically sustainable if its recurrent operation and incentive structure can be maintained over time without requiring structurally unbounded external support.
+\end{definition}
+
 \subsection{Enforceability}
 
 Enforceability concerns whether the ecosystem can preserve credible expectations under repeated interaction. In practice, this means that violations, opportunistic behavior, or unfulfilled commitments must have consequences that affect future participation, opportunity, or standing.
+
+\begin{definition}[Enforceability]
+The ecosystem is enforceable if violation of relevant commitments can produce future consequences sufficient to alter the expected value of opportunistic behavior.
+\end{definition}
 
 \subsection{Innovation compatibility}
 
@@ -155,25 +171,49 @@ Informal axioms therefore serve as pre-formal commitments. They identify the con
 
 Open entry means that the system must preserve real permeability. New participants should be able to enter the ecosystem without requiring prior elite recognition, prohibitive capital, or privileged institutional position.
 
+\begin{assumption}[Open Entry]
+There exists a recurrent entry path through which new agents may join the ecosystem without requiring prior elite status.
+\end{assumption}
+
 \subsection{Participation must create future opportunity}
 
 Participation must have developmental continuity. If current involvement has no effect on future opportunity, then the ecosystem may still host events, but it no longer functions as a progressive environment.
+
+\begin{assumption}[Progressive Opportunity]
+Current participation may affect future opportunity in at least one structurally meaningful way.
+\end{assumption}
 
 \subsection{Advantages must remain bounded}
 
 Prior resources may generate advantages, but those advantages must remain bounded in a way that preserves the relevance of learning, strategy, and innovation. Otherwise, the developmental logic of the ecosystem is eventually replaced by capital filtering.
 
+\begin{assumption}[Bounded Advantage]
+Differences in prior resources may affect outcomes, but they do not fully determine developmental or competitive relevance.
+\end{assumption}
+
 \subsection{Commitments must have consequences}
 
 The ecosystem must preserve trust under repetition. This requires that commitments, promises, and obligations affect future opportunity if they are violated. A system with no durable consequence for breach may remain active while losing credibility.
+
+\begin{assumption}[Durable Consequence]
+Violation of relevant commitments may produce a persistent effect on future opportunity, reputation, or expected value.
+\end{assumption}
 
 \subsection{Economic promises must remain bounded}
 
 Economic incentives may be central to participation, but they must be structurally bounded. Unbounded promises increase systemic fragility and make the ecosystem vulnerable to cascades of distrust or non-fulfillment.
 
+\begin{assumption}[Bounded Commitments]
+The ecosystem restricts economic promises or obligations so that systemic exposure remains bounded.
+\end{assumption}
+
 \subsection{Multiple roles must be possible}
 
 The system should allow agents to participate through more than one role over time. This matters because developmental ecosystems do not only produce better competitors; they may also produce organizers, promoters, builders, sponsors, and technical contributors.
+
+\begin{assumption}[Role Multiplicity]
+An agent may occupy more than one role across time or in different parts of the ecosystem.
+\end{assumption}
 
 \section{Formal Model}
 
@@ -259,6 +299,22 @@ These properties do not arise from participation alone. They depend on how the e
 \subsection{First candidate propositions}
 
 A first family of propositions should likely connect the weakening of one structural condition with the weakening of one ecosystem property. For example, one may later ask whether the absence of durable reputational effects makes opportunism rational, or whether unbounded resource advantages destroy meaningful access.
+
+\begin{proposition}[Need for Durable Consequence]
+If violation of commitments has no durable effect on future opportunity, then there exist parameter regimes in which opportunistic behavior is rational.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+If an agent can obtain immediate gain through violation while facing no sufficiently large future loss in participation, reputation, or opportunity, then expected opportunistic utility exceeds compliant utility for some configurations of incentives.
+\end{proof}
+
+\begin{proposition}[Need for Bounded Advantage]
+If prior resources fully determine relevant outcomes, then accessibility and developmentality cannot both be preserved in the intended sense.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+If initial resource endowments dominate later opportunity, then bounded-resource agents lose meaningful entry or progression value. Under such conditions, either access ceases to be substantive or development ceases to be structurally supported.
+\end{proof}
 
 \section{Degradation Modes}
 
