@@ -120,13 +120,23 @@ As a result, the design objectives should not be interpreted as a checklist. The
 
 \subsection{Accessibility}
 
+Accessibility should not be understood as mere formal permission to enter. It should refer to a condition in which entry remains meaningful for agents with heterogeneous initial endowments. In later layers, this objective should be connected to the probability of sustained participation under bounded initial resources.
+
 \subsection{Developmentality}
+
+Developmentality refers to the existence of real pathways through which repeated participation increases relevant capabilities. These capabilities may include technical, strategic, organizational, or competitive dimensions. Later formalization should distinguish between isolated improvement and structurally supported progression.
 
 \subsection{Economic sustainability}
 
+Economic sustainability should be interpreted as the ability of the ecosystem to continue operating without depending on structurally unstable external support. At a minimum, rewards, commitments, and participation incentives must remain compatible with bounded and recurrent economic conditions.
+
 \subsection{Enforceability}
 
+Enforceability concerns whether the ecosystem can preserve credible expectations under repeated interaction. In practice, this means that violations, opportunistic behavior, or unfulfilled commitments must have consequences that affect future participation, opportunity, or standing.
+
 \subsection{Innovation compatibility}
+
+Innovation compatibility means that technical experimentation and improvement must be possible without allowing the ecosystem to collapse into pure resource domination. This objective is especially important in technological competition, where creativity and cost escalation often coexist in unstable ways.
 
 \section{Informal Axioms}
 
@@ -143,15 +153,27 @@ Informal axioms therefore serve as pre-formal commitments. They identify the con
 
 \subsection{Entry must remain open}
 
+Open entry means that the system must preserve real permeability. New participants should be able to enter the ecosystem without requiring prior elite recognition, prohibitive capital, or privileged institutional position.
+
 \subsection{Participation must create future opportunity}
+
+Participation must have developmental continuity. If current involvement has no effect on future opportunity, then the ecosystem may still host events, but it no longer functions as a progressive environment.
 
 \subsection{Advantages must remain bounded}
 
+Prior resources may generate advantages, but those advantages must remain bounded in a way that preserves the relevance of learning, strategy, and innovation. Otherwise, the developmental logic of the ecosystem is eventually replaced by capital filtering.
+
 \subsection{Commitments must have consequences}
+
+The ecosystem must preserve trust under repetition. This requires that commitments, promises, and obligations affect future opportunity if they are violated. A system with no durable consequence for breach may remain active while losing credibility.
 
 \subsection{Economic promises must remain bounded}
 
+Economic incentives may be central to participation, but they must be structurally bounded. Unbounded promises increase systemic fragility and make the ecosystem vulnerable to cascades of distrust or non-fulfillment.
+
 \subsection{Multiple roles must be possible}
+
+The system should allow agents to participate through more than one role over time. This matters because developmental ecosystems do not only produce better competitors; they may also produce organizers, promoters, builders, sponsors, and technical contributors.
 
 \section{Formal Model}
 
@@ -168,15 +190,50 @@ This also means that not every important phenomenon needs immediate formal detai
 
 \subsection{Agents}
 
+Let the ecosystem contain a population of agents indexed by \(i \in A\), where \(A\) denotes the set of all participating or potentially participating actors. The set should be interpreted broadly enough to include current participants, future entrants, and agents whose role in the system is not purely competitive.
+
 \subsection{Roles}
+
+Each agent may play one or more roles. At a minimum, roles may include participant, organizer, promoter, owner, technical contributor, or sponsor. The role structure matters because developmental opportunity may involve movement not only within performance levels but also across functional positions in the ecosystem.
 
 \subsection{Participant-level variables}
 
+For a given agent \(i\), later layers of the model should include variables representing capability, resources, reputation, and participation state. These variables need not all be scalar in the final theory, but they are sufficient for the present layer as placeholders for the main dimensions of development.
+
+At a minimum, one may anticipate variables such as:
+\[
+s_i(t), \quad k_i(t), \quad w_i(t), \quad r_i(t), \quad x_i(t),
+\]
+where these symbols may later denote skill, technological capability, economic resources, reputation, and participation status, respectively.
+
 \subsection{Event-level variables}
+
+Events should eventually be represented not merely as dates or operational units, but as structured opportunities with costs, incentives, and developmental value. Their formalization should capture both economic and competitive dimensions.
+
+At a minimum, one may expect event-level quantities such as:
+\[
+c_e, \quad p_e, \quad q_e,
+\]
+where these may later denote entry cost, incentive structure, and developmental quality.
 
 \subsection{Ecosystem-level variables}
 
+The ecosystem itself should be described by aggregate or emergent quantities. These quantities are not reducible to the state of a single participant because they concern the structure of the environment as a whole.
+
+Candidate ecosystem-level variables include accessibility, sustainability, developmental capacity, and opportunism pressure:
+\[
+\mathcal{A}(t), \quad \mathcal{S}(t), \quad \mathcal{D}(t), \quad \mathcal{O}(t).
+\]
+
 \subsection{System objective}
+
+At the system level, the objective is not to maximize a single output such as revenue, performance, or participation count. Instead, the ecosystem should preserve a vector of desirable properties under repeated interaction.
+
+A first abstract representation may therefore take the form
+\[
+\max F\big(\mathcal{A}(t), \mathcal{D}(t), \mathcal{S}(t), -\mathcal{O}(t)\big),
+\]
+with the understanding that the actual form of \(F\) remains open at this stage.
 
 \section{Structural Properties}
 
@@ -193,9 +250,15 @@ Examples of such properties include meaningful entry, non-trivial progression, b
 
 \subsection{Properties to preserve}
 
+At this stage, the main candidate properties to preserve are meaningful entry, progressive capability growth, bounded domination by prior resources, and credible future consequences for non-compliance. These should later be restated as formal properties or constraints.
+
 \subsection{Why those properties depend on structure}
 
+These properties do not arise from participation alone. They depend on how the ecosystem links incentives, repetition, reputation, and bounded advantage. A later version of the paper should make explicit which structural conditions support which properties.
+
 \subsection{First candidate propositions}
+
+A first family of propositions should likely connect the weakening of one structural condition with the weakening of one ecosystem property. For example, one may later ask whether the absence of durable reputational effects makes opportunism rational, or whether unbounded resource advantages destroy meaningful access.
 
 \section{Degradation Modes}
 
@@ -212,13 +275,23 @@ Each degradation mode should eventually be linked to one or more weakened struct
 
 \subsection{Exclusion}
 
+Exclusion occurs when entry remains formally possible but ceases to be substantively viable. In later layers, this mode should be connected to thresholds on resources, incentives, or expected continuation value.
+
 \subsection{Plutocratic drift}
+
+Plutocratic drift occurs when prior resource asymmetries progressively dominate competitive relevance and developmental opportunity. This should eventually be modeled as a structural weakening of bounded advantage.
 
 \subsection{Opportunistic drift}
 
+Opportunistic drift occurs when strategic abuse becomes rational under the prevailing incentive and enforcement structure. This mode is likely to be closely tied to insufficient reputational consequence or weak commitment structure.
+
 \subsection{Economic fragility}
 
+Economic fragility occurs when the ecosystem depends on unstable or unbounded commitments that cannot be recurrently sustained. Later formalization should connect this mode to bounded incentives and system-level continuity.
+
 \subsection{Loss of developmental value}
+
+Loss of developmental value occurs when the ecosystem continues to operate but no longer produces meaningful progression, learning, or mobility. This degradation mode is especially important because it may remain hidden behind visible activity.
 
 \section{Discussion}
 
@@ -235,9 +308,15 @@ This multi-audience ambition is not incidental. It follows from the object itsel
 
 \subsection{What this paper does}
 
+The paper proposes the object of study, identifies the central tensions, names the principal objectives, and introduces a first structure for later formalization. Its contribution is foundational rather than exhaustive.
+
 \subsection{What this paper does not yet do}
 
+The paper does not yet provide a full mechanism, a complete equilibrium treatment, or an empirical test of the proposed framework. It also does not yet fix the final mathematical form of the ecosystem's variables or objective function.
+
 \subsection{Interpretive scope}
+
+The framework is motivated by technological competition and open motorsport, but it is intended to support broader interpretation. The present layer keeps the domain visible while allowing the theory to remain more general than any single implementation.
 
 \section{Research Agenda}
 
@@ -254,13 +333,23 @@ Empirical validation should arrive after the conceptual and computational layers
 
 \subsection{Paper on reputation and compliance}
 
+This paper should study how future opportunity, reputational memory, and non-compliance interact under repeated participation. It is likely to become the first direct extension of the foundational framework.
+
 \subsection{Paper on accessibility versus plutocratic drift}
+
+This paper should investigate the conditions under which openness can coexist with meaningful competition when agents begin with unequal resources.
 
 \subsection{Paper on bounded economic promises}
 
+This paper should clarify how incentives, rewards, and obligations can remain economically meaningful without generating structural instability.
+
 \subsection{Paper on multi-agent simulation}
 
+This paper should explore the ecosystem computationally under alternative rule sets, especially where analytical derivation becomes difficult or incomplete.
+
 \subsection{Paper on empirical validation}
+
+This paper should test whether the conceptual-formal claims correspond to observable behavioral and developmental patterns in a real implementation.
 
 \section{Conclusion}
 
