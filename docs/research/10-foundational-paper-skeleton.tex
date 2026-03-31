@@ -561,6 +561,16 @@ where the thresholds \(\underline{A}, \underline{D}, \underline{S}, \overline{O}
 
 Under this interpretation, the central question is not whether the ecosystem reaches a static point, but whether its trajectory remains inside, returns to, or drifts away from \(\Omega\).
 
+\subsection{Resilience and recovery}
+
+If stability concerns whether the system remains within an admissible region, resilience should concern what happens after perturbation. A developmental ecosystem may suffer shocks, temporary asymmetries, opportunistic episodes, or economic stress without losing its identity, provided it can recover sufficiently.
+
+This suggests a preliminary notion of resilience: the ecosystem is resilient over a class of perturbations if trajectories that are temporarily displaced from \(\Omega\) return to \(\Omega\) within a bounded horizon with sufficiently high probability or under sufficiently broad conditions.
+
+At an abstract level, one may define a recovery horizon \(R\) and say that the ecosystem is \(R\)-recoverable under perturbation class \(\mathcal{P}\) if, whenever a perturbation in \(\mathcal{P}\) moves the system outside \(\Omega\), the induced trajectory re-enters \(\Omega\) within at most \(R\) periods under admissible response conditions.
+
+This concept is useful because developmental ecosystems need not be shock-free to be viable. What matters is whether temporary degradation becomes persistent drift or recoverable disturbance.
+
 \subsection{Interpretive note}
 
 The formal model is intentionally being built in stages. The present layer introduces state variables and transition language without yet fixing their complete analytical form. This preserves interpretability while making the future mathematical direction explicit.
@@ -568,6 +578,8 @@ The formal model is intentionally being built in stages. The present layer intro
 The same holds for utility. The purpose of introducing a preliminary utility representation is not to force all behavior into a narrow economic model, but to provide a bridge between structural rules and rational response. Without such a bridge, claims about opportunism, compliance, and developmental incentives remain underspecified.
 
 The same caution applies to stability. The region \(\Omega\) is not yet a theorem-level object. At this stage it is a conceptual placeholder that organizes later questions about persistence, resilience, and degradation.
+
+The same is true of resilience. Recovery should not be interpreted as a generic slogan about robustness, but as a later object of formal analysis tied to admissible perturbations, horizons, and return conditions.
 
 \section{Structural Properties}
 
@@ -702,6 +714,14 @@ If the ecosystem trajectory exits \(\Omega\) for sustained intervals, then at le
 By construction, leaving \(\Omega\) means that at least one threshold constraint on \(\mathcal{A}, \mathcal{D}, \mathcal{S}, \mathcal{O}\) is violated. Since those thresholds encode admissible developmental conditions, sustained exit corresponds to loss of structural integrity in at least one defining dimension.
 \end{proof}
 
+\begin{proposition}[Recovery Preserves Structural Identity After Perturbation]
+If a perturbation displaces the ecosystem outside \(\Omega\) but the induced trajectory re-enters \(\Omega\) within a bounded recovery horizon, then the perturbation need not imply persistent structural degradation.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+The role of \(\Omega\) is to encode admissible developmental conditions. Temporary exit followed by bounded re-entry indicates disturbance without sustained loss of structural identity. Persistent degradation requires not merely displacement, but failure to recover over relevant horizons.
+\end{proof}
+
 \section{Degradation Modes}
 
 \paragraph{Purpose of this section.}
@@ -756,6 +776,12 @@ In the language introduced above, loss of developmental value can be read as pro
 Instability occurs when the ecosystem persistently drifts outside the admissible region required to preserve its developmental identity. This need not imply immediate collapse. It may take the form of repeated excursions in which one or more structural properties fail to recover.
 
 Under this interpretation, instability should eventually be studied not only as threshold violation but also as loss of resilience: the system may continue to move, but no longer returns reliably to developmentally acceptable conditions.
+
+\subsection{Loss of resilience}
+
+Loss of resilience occurs when shocks, asymmetries, or temporary degradations cease to be recoverable within acceptable horizons. This mode is important because some ecosystems fail not by immediate collapse, but by progressively losing the capacity to return to admissible developmental conditions.
+
+In this sense, resilience is a second-order property of the ecosystem. It concerns not only where the system is, but whether the system can come back from adverse displacement without losing its developmental character.
 
 \section{Discussion}
 
