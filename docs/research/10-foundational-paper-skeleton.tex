@@ -540,11 +540,34 @@ where
 
 This notation emphasizes that the ecosystem has its own state of health or condition beyond the local trajectory of individual agents. In later layers, one should ask whether some regions of the ecosystem state space are self-reinforcing, fragile, or degrading.
 
+\subsection{Stability as a system-level concern}
+
+Because the ecosystem is dynamic, one eventually needs a notion of stability that is appropriate to developmental systems. Stability should not mean immobility. The ecosystem is supposed to evolve. Instead, stability should mean that the system remains within a region in which its developmental identity is preserved.
+
+At a first intuitive level, one may say that the ecosystem is structurally stable over a horizon if \(\mathcal{A}(t)\), \(\mathcal{D}(t)\), and \(\mathcal{S}(t)\) remain above relevant lower bounds while \(\mathcal{O}(t)\) remains below a relevant upper bound.
+
+This suggests introducing an admissible ecosystem region
+\[
+\Omega :=
+\Big\{
+\mathcal{Y} :
+\mathcal{A} \geq \underline{A},\;
+\mathcal{D} \geq \underline{D},\;
+\mathcal{S} \geq \underline{S},\;
+\mathcal{O} \leq \overline{O}
+\Big\},
+\]
+where the thresholds \(\underline{A}, \underline{D}, \underline{S}, \overline{O}\) remain to be specified in later layers.
+
+Under this interpretation, the central question is not whether the ecosystem reaches a static point, but whether its trajectory remains inside, returns to, or drifts away from \(\Omega\).
+
 \subsection{Interpretive note}
 
 The formal model is intentionally being built in stages. The present layer introduces state variables and transition language without yet fixing their complete analytical form. This preserves interpretability while making the future mathematical direction explicit.
 
 The same holds for utility. The purpose of introducing a preliminary utility representation is not to force all behavior into a narrow economic model, but to provide a bridge between structural rules and rational response. Without such a bridge, claims about opportunism, compliance, and developmental incentives remain underspecified.
+
+The same caution applies to stability. The region \(\Omega\) is not yet a theorem-level object. At this stage it is a conceptual placeholder that organizes later questions about persistence, resilience, and degradation.
 
 \section{Structural Properties}
 
@@ -586,6 +609,8 @@ This dependence can already be stated schematically. If the transition map \(\Ph
 More precisely, the ecosystem-level functions \(G_A, G_D, G_S, G_O\) should later be read as induced by the transition architecture of the system. A change in admissible actions, event structure, reputation effects, or bounded commitments may therefore alter the evolution of \(\mathcal{Y}(t)\) even if the participant set remains unchanged.
 
 This dependence also operates through rational response. If the structure of transitions and consequences changes, then the utility landscape of agents changes as well. Thus system properties are shaped both by transition equations and by the strategic choices that those equations make attractive or unattractive.
+
+For the same reason, ecosystem stability is not purely mechanical. A trajectory may leave the admissible region \(\Omega\) because local transition rules change, because aggregate exposure grows, because continuation value collapses, or because strategic response shifts behavior in ways that amplify degradation.
 
 \subsection{First candidate propositions}
 
@@ -661,6 +686,22 @@ If effective economic exposure associated with ecosystem commitments becomes str
 Economic sustainability requires that the ecosystem can recurrently support its incentive structure. If obligations or effective exposure grow without a corresponding bounded support base, then continuation depends on increasingly fragile conditions. In such a regime, short-term operation may persist, but structural sustainability degrades.
 \end{proof}
 
+\begin{proposition}[Admissible Region Preservation as Stability Criterion]
+If the ecosystem trajectory \(\mathcal{Y}(t)\) remains within the admissible region \(\Omega\) over a relevant horizon, then the ecosystem preserves its structural identity over that horizon.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+The region \(\Omega\) is constructed precisely to encode lower bounds on accessibility, developmental capacity, and sustainability, together with an upper bound on opportunism pressure. Remaining inside \(\Omega\) therefore means that the defining system-level properties remain within admissible ranges. Hence the ecosystem retains its intended structural character over the horizon considered.
+\end{proof}
+
+\begin{proposition}[Drift Outside the Admissible Region Indicates Structural Degradation]
+If the ecosystem trajectory exits \(\Omega\) for sustained intervals, then at least one defining system-level property has fallen outside its admissible range, indicating structural degradation.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+By construction, leaving \(\Omega\) means that at least one threshold constraint on \(\mathcal{A}, \mathcal{D}, \mathcal{S}, \mathcal{O}\) is violated. Since those thresholds encode admissible developmental conditions, sustained exit corresponds to loss of structural integrity in at least one defining dimension.
+\end{proof}
+
 \section{Degradation Modes}
 
 \paragraph{Purpose of this section.}
@@ -709,6 +750,12 @@ In utility terms, this mode is associated with collapse in the future-oriented v
 This degradation mode is therefore closely related to the distinction between nominal and meaningful participation. A system may preserve activity, event flow, and formal openness while steadily reducing the share of agents for whom participation remains a rational developmental pathway.
 
 In the language introduced above, loss of developmental value can be read as progressive shrinkage, inaccessibility, or weakening of valuable future state sets across relevant classes of agents.
+
+\subsection{Instability}
+
+Instability occurs when the ecosystem persistently drifts outside the admissible region required to preserve its developmental identity. This need not imply immediate collapse. It may take the form of repeated excursions in which one or more structural properties fail to recover.
+
+Under this interpretation, instability should eventually be studied not only as threshold violation but also as loss of resilience: the system may continue to move, but no longer returns reliably to developmentally acceptable conditions.
 
 \section{Discussion}
 
