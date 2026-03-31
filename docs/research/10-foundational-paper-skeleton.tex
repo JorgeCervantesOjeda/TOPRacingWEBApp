@@ -476,6 +476,37 @@ V_i^{\mathrm{future}}(t)
 \]
 as a function of expected reachable states under the transition system. In a simplified reading, this value should increase when current compliance or participation improves future attainability of desirable states, and decrease when current behavior damages reputation or continuation paths.
 
+Using the language introduced later in this section, continuation value should ultimately depend on expected reachability of future states that remain developmentally valuable for the agent.
+
+\subsection{Valuable future states}
+
+The notion of meaningful participation depends on the idea of a valuable future state, so it is useful to introduce a preliminary interpretation. A future state should be considered valuable if it preserves or improves the agent's developmental position in at least one relevant dimension.
+
+At a minimum, valuable future states may include states in which the agent:
+\begin{itemize}
+  \item retains access to continued participation,
+  \item improves skill or technological capability,
+  \item preserves or improves reputation,
+  \item gains access to richer roles or broader opportunity sets,
+  \item remains economically able to continue without prohibitive degradation.
+\end{itemize}
+
+This suggests that value should not be reduced to immediate payoff. In a developmental ecosystem, a future state may be valuable because it expands future reachability, not merely because it increases short-term return.
+
+One may therefore later define a valuable-state set for agent \(i\) at time \(t\) as
+\[
+\mathcal{V}_i(t) \subseteq \mathcal{Z},
+\]
+where \(\mathcal{Z}\) denotes the relevant state space and membership in \(\mathcal{V}_i(t)\) depends on thresholds for continuation, capability, reputation, role, or economic viability.
+
+At a schematic level, one may say that a future state \(z'\) is valuable for agent \(i\) if it satisfies a condition of the form
+\[
+z' \in \mathcal{V}_i(t)
+\quad \Longleftrightarrow \quad
+W_i(z') \geq \kappa_i(t),
+\]
+where \(W_i\) is a still-abstract valuation function and \(\kappa_i(t)\) is a minimum threshold of developmental relevance.
+
 \subsection{Meaningful participation}
 
 The paper is now using the expression \emph{meaningful participation} in several places, so it is useful to introduce a preliminary interpretation. Participation should be called meaningful when it gives the agent more than nominal presence; it must provide access to some combination of learning, continuation, role mobility, or non-trivial competitive relevance.
@@ -490,11 +521,11 @@ A schematic condition for meaningful participation at time \(t\) may later take 
 \[
 M_i(t) = 1
 \quad \text{if and only if} \quad
-\Pr\big(\text{reachable valuable future states} \mid z(t), a_i(t)\big) \geq \eta,
+\Pr\big(z(t+\tau) \in \mathcal{V}_i(t) \text{ for some relevant } \tau \mid z(t), a_i(t)\big) \geq \eta,
 \]
 for some threshold \(\eta > 0\).
 
-This does not yet define what counts as a valuable future state. It only establishes the conceptual requirement that participation be evaluated through future developmental reachability and not solely through present inclusion.
+This still does not fix the final content of \(\mathcal{V}_i(t)\), but it makes explicit that meaningful participation depends on developmental reachability rather than formal inclusion alone.
 
 \subsection{Ecosystem transitions}
 
@@ -543,6 +574,8 @@ Using the notation already introduced, one may interpret these properties as fol
 At the ecosystem level, preserving these properties should correspond to keeping \(\mathcal{A}(t)\), \(\mathcal{D}(t)\), and \(\mathcal{S}(t)\) sufficiently high while keeping \(\mathcal{O}(t)\) sufficiently low over time.
 
 In particular, preserving accessibility should eventually mean preserving not only entry counts but the prevalence of meaningful participation among agents with bounded initial resources.
+
+Because meaningful participation and continuation value have now been introduced, these properties may also be interpreted in terms of the reachability and persistence of valuable future state sets \(\mathcal{V}_i(t)\).
 
 \subsection{Why those properties depend on structure}
 
@@ -604,6 +637,14 @@ Suppose bounded-resource agents can enter the ecosystem, but for a non-trivial s
 Formal entry alone does not preserve developmental opportunity. If agents can enter but quickly lose access to valuable continuation states, then their participation is only nominal. In that case the ecosystem may appear open while failing to preserve meaningful bounded-resource access.
 \end{proof}
 
+\begin{proposition}[Continuation Value Depends on Valuable Reachability]
+If the reachable valuable-state set \(\mathcal{V}_i(t)\) becomes negligible for a class of agents under admissible actions, then continuation value for those agents cannot remain structurally high.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Continuation value depends on the expected attainability of future states that preserve developmental relevance. If such states become unreachable or negligible in probability, then future-oriented value collapses even if nominal participation remains possible.
+\end{proof}
+
 \begin{proposition}[System-Level Development Depends on Local Development]
 If, for a non-trivial region of the state space, participant transitions fail to generate expected capability growth under repeated admissible participation, then \(\mathcal{D}(t)\) cannot remain structurally high in that region.
 \end{proposition}
@@ -641,6 +682,8 @@ This suggests that exclusion should eventually be linked not only to \(x_i(t+1)\
 
 Under this interpretation, exclusion is compatible with visible openness. What matters is not only whether agents may enter, but whether they can remain meaningfully present long enough to access developmental value.
 
+In state-space terms, exclusion may therefore be interpreted as a condition in which bounded-resource agents can enter the system but have little or no practical access to valuable future regions \(\mathcal{V}_i(t)\).
+
 \subsection{Plutocratic drift}
 
 Plutocratic drift occurs when prior resource asymmetries progressively dominate competitive relevance and developmental opportunity. This should eventually be modeled as a structural weakening of bounded advantage.
@@ -664,6 +707,8 @@ Loss of developmental value occurs when the ecosystem continues to operate but n
 In utility terms, this mode is associated with collapse in the future-oriented value of participation. The system may remain active in a narrow operational sense while ceasing to function as a rational pathway of growth for many of its agents.
 
 This degradation mode is therefore closely related to the distinction between nominal and meaningful participation. A system may preserve activity, event flow, and formal openness while steadily reducing the share of agents for whom participation remains a rational developmental pathway.
+
+In the language introduced above, loss of developmental value can be read as progressive shrinkage, inaccessibility, or weakening of valuable future state sets across relevant classes of agents.
 
 \section{Discussion}
 
