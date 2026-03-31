@@ -91,6 +91,47 @@ test('authenticated user can create a car from registration flow and select it',
   await expect(page.getByRole('button', { name: 'Save data' })).toBeVisible();
 });
 
+test('authenticated user can create and select a variant for a new event', async ({ page }) => {
+  const email = `codex+variantflow-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+  const variantName = `Browser Variant ${Date.now()}`;
+
+  await createAccount(page, email, password, 'Variant', 'Flow');
+  await createEventFromPenalties(page);
+
+  await page.getByRole('button', { name: 'View Variants' }).click();
+  await expect(page).toHaveURL(/\/faces\/listvariants\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Create new Variant' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editvariant\.xhtml$/);
+  await dismissWaitUi(page);
+
+  const variantInputs = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
+  await variantInputs.nth(0).fill(variantName);
+  await variantInputs.nth(1).fill('1.2');
+  await variantInputs.nth(2).fill('3.4');
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+
+  await expect(page).toHaveURL(/\/faces\/editvariant\.xhtml$/);
+  await page.locator('#contentForm button:has(.fa-arrow-left)').first().click();
+  await expect(page).toHaveURL(/\/faces\/listvariants\.xhtml$/);
+  await dismissWaitUi(page);
+
+  const variantRow = page.locator('tr', { hasText: variantName }).first();
+  await expect(variantRow).toBeVisible();
+  await Promise.all([
+    page.waitForURL(/\/faces\/editregatta\.xhtml$/, { timeout: 60000 }),
+    variantRow.getByRole('button', { name: 'Select' }).click()
+  ]);
+  await dismissWaitUi(page);
+
+  await expect(page.getByRole('heading', { name: 'View/Edit Event' })).toBeVisible();
+  await expect(page.getByText(variantName)).toBeVisible();
+});
+
 async function createAccount(page, email, password, givenNames, familyNames) {
   await page.goto(`${baseUrl}/faces/login.xhtml`);
   await page.locator('#contentForm\\:newParticipantButton').click();
