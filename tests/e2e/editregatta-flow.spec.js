@@ -132,6 +132,102 @@ test('authenticated user can create and select a variant for a new event', async
   await expect(page.getByText(variantName)).toBeVisible();
 });
 
+test('authenticated user can update registration status and save speed-test lap time', async ({ page }) => {
+  const email = `codex+resultsflow-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, email, password, 'Results', 'Flow');
+  await createSavedRegistrationAndReturnToResults(page);
+
+  const statusSelect = page.locator('#contentForm\\:regattaRegistrationsList\\:0\\:inputStatus_input');
+  await statusSelect.selectOption('1', { force: true });
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await expect(page.locator('#contentForm\\:regattaRegistrationsList\\:0\\:inputStatus_label')).toHaveText('OK');
+
+  await page.locator('#contentForm button:has(.fa-arrow-left)').first().click();
+  await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: /Next status: SPEED TEST/i }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page.locator('#contentForm\\:infoMessageOK')).toBeVisible();
+  await page.locator('#contentForm\\:infoMessageOK').click();
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'View/Edit Registrations' }).click();
+  await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
+  await dismissWaitUi(page);
+
+  const lapTimeInput = page.locator('#contentForm\\:regattaRegistrationsList\\:0\\:j_idt36');
+  await lapTimeInput.evaluate((input, value) => {
+    input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }, '12.34');
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+
+  await page.reload();
+  await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
+  await dismissWaitUi(page);
+  await expect(page.locator('#contentForm\\:regattaRegistrationsList\\:0\\:j_idt36')).toHaveValue('12.34');
+});
+
+test('authenticated user can create a venue and inspect it on the map', async ({ page }) => {
+  const email = `codex+venueflow-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+  const venueName = `Browser Venue ${Date.now()}`;
+
+  await createAccount(page, email, password, 'Venue', 'Flow');
+
+  await page.goto(`${baseUrl}/faces/listvenues.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/listvenues\.xhtml$/);
+  await dismissWaitUi(page);
+  await expect(page.getByRole('button', { name: 'Create new Venue' })).toBeVisible();
+
+  await page.getByRole('button', { name: 'Create new Venue' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editvenue\.xhtml$/);
+  await dismissWaitUi(page);
+
+  const venueInputs = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
+  await venueInputs.nth(0).fill(venueName);
+  await venueInputs.nth(2).fill('-99.1332');
+  await venueInputs.nth(3).fill('19.4326');
+  await page.getByRole('button', { name: 'View Province Regions' }).click();
+  await expect(page).toHaveURL(/\/faces\/listprovinceregions\.xhtml$/);
+  await dismissWaitUi(page);
+  await page.getByRole('button', { name: 'Select' }).first().click();
+  await expect(page).toHaveURL(/\/faces\/editvenue\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+
+  await expect(page).toHaveURL(/\/faces\/editvenue\.xhtml$/);
+  await expect(venueInputs.nth(0)).toHaveValue(venueName);
+  await page.locator('#contentForm button:has(.fa-arrow-left)').first().click();
+  await expect(page).toHaveURL(/\/faces\/listvenues\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.locator('#contentForm\\:venues\\:globalFilter').fill(venueName);
+  await page.waitForTimeout(500);
+  const venueRow = page.locator('tr', { hasText: venueName }).first();
+  await expect(venueRow).toBeVisible();
+  await Promise.all([
+    page.waitForURL(/\/faces\/editvenueinmap\.xhtml$/, { timeout: 60000 }),
+    venueRow.getByRole('button', { name: 'View in Map' }).click()
+  ]);
+  await dismissWaitUi(page);
+
+  await expect(page.getByRole('heading', { name: venueName })).toBeVisible();
+  await expect(page.locator('.leaflet-container')).toHaveCount(1);
+  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
+  await expect(page).toHaveURL(/\/faces\/listvenues\.xhtml$/);
+  await dismissWaitUi(page);
+});
+
 async function createAccount(page, email, password, givenNames, familyNames) {
   await page.goto(`${baseUrl}/faces/login.xhtml`);
   await page.locator('#contentForm\\:newParticipantButton').click();
@@ -178,6 +274,15 @@ async function createRegistrationEditor(page) {
   await page.getByRole('button', { name: 'Create new registration' }).click();
   await page.locator('.ui-confirmdialog-yes').click();
   await expect(page).toHaveURL(/\/faces\/editregistration\.xhtml$/);
+  await dismissWaitUi(page);
+}
+
+async function createSavedRegistrationAndReturnToResults(page) {
+  await createRegistrationEditor(page);
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await page.locator('#contentForm button:has(.fa-arrow-left)').first().click();
+  await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
   await dismissWaitUi(page);
 }
 

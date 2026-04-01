@@ -216,8 +216,8 @@ public class ModelBean
           "from Bid as b"
           + " join fetch b.registration as r "
           + " join fetch r.participantByIdBuyer"
-          + " where b.id.id_participant = " + _bidId.getIdParticipant()
-          + " and b.id.id_registration = " + _bidId.getIdRegistration()
+          + " where b.id.idParticipant = " + _bidId.getIdParticipant()
+          + " and b.id.idRegistration = " + _bidId.getIdRegistration()
         );
     List<Bid> bidList = q.list();
 
@@ -1354,7 +1354,7 @@ public class ModelBean
         );
         registration
           .setParticipantByIdBuyer(
-            getParticipantByEmail( winner )
+            getParticipantById( winner )
           );
       }
     }

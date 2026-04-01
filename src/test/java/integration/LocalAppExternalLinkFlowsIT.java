@@ -8,10 +8,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import Controller.RegistrationStatus;
 import Model.ModelBean;
+import Tables.Bid;
+import Tables.BidId;
 import Tables.Car;
 import Tables.Participant;
 import Tables.Regatta;
 import Tables.Registration;
+import Controller.RegattaStatus;
+import java.util.Date;
+import java.util.List;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -145,6 +150,80 @@ class LocalAppExternalLinkFlowsIT {
                   ownerAfter.getDefaulter() );
   }
 
+  @Test
+  void buyerCanReportSellerAsDefaulterFromAuctionComplaintLink() throws IOException,
+                                                                        InterruptedException {
+    AuctionComplaintFixture fixture = createAuctionComplaintFixture();
+    int sellerDefaulterBefore = getParticipantByEmail( fixture.seller()
+      .getEmail() )
+        .getDefaulter();
+
+    HttpResponse<String> response = get(
+      "/faces/complaint.xhtml?key=%27"
+      + fixture.buyer().getEmailKey()
+      + "%27&r1="
+      + fixture.registration().getId()
+      + "&r2="
+      + fixture.regatta().getId()
+      + "&s="
+      + fixture.seller().getId()
+      + "&b="
+      + fixture.buyer().getId() );
+
+    assertEquals( 200,
+                  response.statusCode() );
+    assertTrue( response.body().contains( "You have filed a complaint against:" ) );
+    assertTrue( response.body().contains( fixture.seller().getNamesGiven() ) );
+
+    Participant sellerAfter = getParticipantByEmail( fixture.seller()
+      .getEmail() );
+    assertEquals( sellerDefaulterBefore + 1,
+                  sellerAfter.getDefaulter() );
+
+    Registration refreshedRegistration = MODEL.getRegistrationById( fixture.registration()
+      .getId() );
+    assertEquals( RegistrationStatus.DISQUALIFIED,
+                  refreshedRegistration.getStatus() );
+    assertEquals( fixture.seller().getId(),
+                  refreshedRegistration.getCar().getParticipant().getId() );
+  }
+
+  @Test
+  void sellerCanReportBuyerAsDefaulterFromAuctionComplaintLink() throws IOException,
+                                                                        InterruptedException {
+    AuctionComplaintFixture fixture = createAuctionComplaintFixture();
+    int buyerDefaulterBefore = getParticipantByEmail( fixture.buyer()
+      .getEmail() )
+        .getDefaulter();
+
+    HttpResponse<String> response = get(
+      "/faces/complaint.xhtml?key=%27"
+      + fixture.seller().getEmailKey()
+      + "%27&r1="
+      + fixture.registration().getId()
+      + "&r2="
+      + fixture.regatta().getId()
+      + "&s="
+      + fixture.seller().getId()
+      + "&b="
+      + fixture.buyer().getId() );
+
+    assertEquals( 200,
+                  response.statusCode() );
+    assertTrue( response.body().contains( "You have filed a complaint against:" ) );
+    assertTrue( response.body().contains( fixture.buyer().getNamesGiven() ) );
+
+    Participant buyerAfter = getParticipantByEmail( fixture.buyer()
+      .getEmail() );
+    assertEquals( buyerDefaulterBefore + 1,
+                  buyerAfter.getDefaulter() );
+
+    List<Bid> bids = MODEL.getBids( fixture.registration() );
+    assertTrue( bids.stream().anyMatch( bid
+      -> bid.getParticipant().getId().equals( fixture.buyer().getId() )
+         && bid.getStatus() > 0 ) );
+  }
+
   private BalanceComplaintFixture createBalanceComplaintFixture( double expectedBalanceSign ) {
     Participant promoter = createSavedParticipant( "promoter",
                                                    "Promoter-123",
@@ -185,6 +264,64 @@ class LocalAppExternalLinkFlowsIT {
     return new BalanceComplaintFixture( owner,
                                         promoter,
                                         persistedRegistration );
+  }
+
+  private AuctionComplaintFixture createAuctionComplaintFixture() {
+    Participant seller = createSavedParticipant( "seller",
+                                                 "Seller-123",
+                                                 true );
+    Participant buyer = createSavedParticipant( "buyer",
+                                                "Buyer-123",
+                                                true );
+    Participant promoter = createSavedParticipant( "auction-promoter",
+                                                   "Promoter-123",
+                                                   true );
+
+    Car car = MODEL.createCar( seller );
+    car.setNickname( "auction-car-" + UUID.randomUUID() );
+    car.setWeight( 100.0 );
+    car.setWidth( 10.0 );
+    MODEL.save( car );
+
+    Regatta regatta = MODEL.createRegatta( promoter );
+    regatta.setStatus( RegattaStatus.AUCTION );
+    MODEL.save( regatta );
+
+    Registration registration = MODEL.createRegistration( regatta,
+                                                          seller );
+    registration.setCar( MODEL.getCarById( car.getId() ) );
+    registration.setParticipantByIdOwner( seller );
+    registration.setParticipantByIdDriver( seller );
+    registration.setParticipantByIdBuyer( buyer );
+    registration.setStatus( RegistrationStatus.OK );
+    registration.setValueAuction( 55.5 );
+    MODEL.save( registration );
+
+    Car transferredCar = MODEL.getCarById( car.getId() );
+    transferredCar.setParticipant( buyer );
+    MODEL.save( transferredCar );
+
+    Registration persistedRegistration = MODEL.getRegistrationById(
+      registration.getId() );
+    persistedRegistration.setCar( MODEL.getCarById( transferredCar.getId() ) );
+    persistedRegistration.setParticipantByIdBuyer( buyer );
+    persistedRegistration.setValueAuction( 55.5 );
+    MODEL.save( persistedRegistration );
+
+    Bid bid = new Bid( new BidId( buyer.getId(),
+                                  persistedRegistration.getId() ),
+                       buyer,
+                       persistedRegistration,
+                       60.0,
+                       new Date(),
+                       0 );
+    MODEL.save( List.of( bid ) );
+
+    return new AuctionComplaintFixture( seller,
+                                        buyer,
+                                        MODEL.getRegattaById( regatta.getId() ),
+                                        MODEL.getRegistrationById(
+                                          persistedRegistration.getId() ) );
   }
 
   private Participant createSavedParticipant( String label,
@@ -239,6 +376,40 @@ class LocalAppExternalLinkFlowsIT {
 
     private Participant promoter() {
       return promoter;
+    }
+
+    private Registration registration() {
+      return registration;
+    }
+  }
+
+  private static final class AuctionComplaintFixture {
+
+    private final Participant seller;
+    private final Participant buyer;
+    private final Regatta regatta;
+    private final Registration registration;
+
+    private AuctionComplaintFixture( Participant seller,
+                                     Participant buyer,
+                                     Regatta regatta,
+                                     Registration registration ) {
+      this.seller = seller;
+      this.buyer = buyer;
+      this.regatta = regatta;
+      this.registration = registration;
+    }
+
+    private Participant seller() {
+      return seller;
+    }
+
+    private Participant buyer() {
+      return buyer;
+    }
+
+    private Regatta regatta() {
+      return regatta;
     }
 
     private Registration registration() {
