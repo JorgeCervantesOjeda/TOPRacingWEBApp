@@ -1,0 +1,531 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\geometry{margin=2.5cm}
+\onehalfspacing
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
+
+\title{Subasta Vickrey, precio descubierto y medición de eficiencia monetaria:\
+valoración subjetiva y calidad informativa de la señal de mercado}
+\author{}
+\date{}
+
+\newtheorem{proposicion}{Proposición}
+\newtheorem{teorema}{Teorema}
+\newtheorem{lema}{Lema}
+\theoremstyle{definition}
+\newtheorem{definicion}{Definición}
+\newtheorem{observacion}{Observación}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Este artículo estudia un mecanismo en el que valoraciones privadas subjetivas, subasta Vickrey y premio por eficiencia monetaria quedan enlazados dentro de una misma estructura analítica. El problema central no es describir exhaustivamente una institución competitiva particular, sino formalizar cómo señales observables del desempeño son transformadas en valoraciones privadas, cómo esas valoraciones se expresan en pujas, cómo la subasta produce un precio descubierto y cómo ese precio puede utilizarse como referencia pública para medir desempeño relativo al valor de mercado revelado.
+
+La tesis principal es que, cuando las pujas reflejan de manera suficientemente fiel las valoraciones privadas de los ofertantes, el precio descubierto por la subasta se convierte en una señal más informativa del valor económico atribuido al vehículo por el mercado. En consecuencia, la expectativa de mercado construida a partir de ese precio queda mejor alineada con la valoración revelada por la interacción competitiva, y la medición de eficiencia monetaria resulta más precisa como criterio público de comparación y premio. Sobre esta base, el artículo propone una arquitectura abstracta del mecanismo del evento, formaliza la valoración privada subjetiva, introduce una dinámica de ajuste de pujas, caracteriza el precio observado como valor de mercado descubierto y deriva una regla pública de eficiencia monetaria e implementación reglamentaria del premio.
+\end{abstract}
+
+\section{Introducción}
+
+Las subastas de segundo precio constituyen un mecanismo clásico para asignar bienes bajo información privada. En su formulación estándar, la principal propiedad del mecanismo consiste en que cada postor tiene incentivos para pujar su verdadera disposición a pagar. Sin embargo, cuando el precio descubierto por la subasta no solo asigna un bien, sino que además sirve como insumo para medir desempeño relativo y distribuir un premio posterior, el problema deja de ser puramente asignativo y pasa a involucrar calidad de señal, incentivos de valoración y consecuencias reglamentarias del resultado de mercado.
+
+El presente trabajo se concentra en ese punto preciso. Su propósito no es desarrollar toda la teoría económica de un ecosistema competitivo completo ni agotar la casuística reglamentaria de una liga de carreras. Su alcance es más acotado y, por ello, más nítido: formalizar el mecanismo que conecta valoración privada subjetiva, pujas en subasta Vickrey, precio descubierto y medición pública de eficiencia monetaria. Una liga de carreras con subasta posterior de vehículos sirve aquí como aplicación motivadora natural, pero el interés analítico del artículo recae en la estructura del mecanismo y en el tipo de equilibrio informacional que ese mecanismo favorece.
+
+La hipótesis central del artículo es que existe una cadena de consistencia entre sinceridad de puja, calidad informativa del precio y precisión de la medición de eficiencia. Si las pujas se alinean con las valoraciones privadas de los agentes, el precio descubierto por la subasta resume de manera más fiel la disposición a pagar efectivamente existente entre los participantes. Si el precio resume mejor esa información dispersa, entonces la expectativa de mercado construida a partir de él se ajusta mejor al valor económico revelado por la competencia. Y si dicha expectativa está mejor alineada, la diferencia entre desempeño observado y expectativa de mercado constituye una medida más informativa de eficiencia monetaria.
+
+Sobre esa base, el artículo desarrolla cuatro pasos enlazados. En primer lugar, distingue señales públicas, interpretaciones privadas, decisiones estratégicas y resultados institucionales dentro de una arquitectura abstracta única. En segundo lugar, modela la valoración privada del vehículo como resultado de una interpretación subjetiva del desempeño observado, del pilotaje y del daño económicamente relevante. En tercer lugar, introduce una dinámica de ajuste de pujas que permite estudiar el seguimiento de la valoración privada a lo largo de eventos sucesivos. En cuarto lugar, interpreta el precio observado como valor de mercado descubierto y lo emplea para construir una medida pública de eficiencia monetaria compatible con una regla reglamentaria de premio.
+
+La contribución del trabajo es, por tanto, doble. Por una parte, ofrece una formulación teórica del encadenamiento entre valoración privada, puja y precio descubierto. Por otra, muestra por qué la calidad informativa de ese precio no es un detalle secundario, sino una condición central para que la eficiencia monetaria medida ex post conserve sentido como criterio público de comparación y distribución. Bajo esta lectura, la subasta no solo asigna un activo: también produce la señal sobre la cual descansa la inteligibilidad económica del premio.
+
+\section{Descripción institucional del problema}
+
+La unidad temporal básica del sistema es el evento competitivo. En cada evento participa un conjunto finito de vehículos, cada uno de los cuales genera información deportiva observable, en particular una velocidad de vuelta rápida en sesión de calificación y, potencialmente, un nivel de daño acumulado durante la jornada. Al concluir el evento, los vehículos que participaron en él son ofrecidos en una subasta de segundo precio. Por tanto, el conjunto de bienes subastados puede variar entre eventos: algunos vehículos pueden reaparecer en eventos sucesivos y otros pueden aparecer una sola vez.
+
+Desde el punto de vista informacional, el problema combina variables públicas y variables privadas. Entre las variables públicas se encuentran el desempeño deportivo observado, el hecho de que un vehículo haya participado en el evento y, según el diseño reglamentario, el daño visible o estimado. Entre las variables privadas se encuentran las valoraciones que cada ofertante asigna a cada vehículo, las cuales dependen no sólo de la información pública sino también de la interpretación subjetiva que cada agente hace de dicha información. En particular, la relación entre la vuelta rápida observada y la calidad tecnológica del vehículo no es inmediata, ya que puede estar afectada por la habilidad o los errores del piloto.
+
+La subasta de segundo precio cumple aquí dos funciones institucionales distintas. La primera es asignativa: transfiere el vehículo al ofertante con mayor disposición a pagar. La segunda es informativa: produce un precio de venta observable que, aun cuando no coincide necesariamente con una noción fuerte de valor de mercado pleno, sí constituye una señal pública de valor económico descubierto en el cierre del evento. Esa señal es especialmente relevante porque permite construir comparaciones entre el rendimiento deportivo del vehículo y el valor económico que el mercado le atribuye \emph{ex post}.
+
+Sobre esta base, el problema teórico del artículo consiste en formalizar cómo los ofertantes transforman desempeño, daño y juicio subjetivo sobre el pilotaje en valoraciones privadas; cómo esas valoraciones se relacionan con una dinámica repetida de pujas; y cómo el precio observado al final puede utilizarse para derivar un criterio objetivo de eficiencia monetaria entre vehículos dentro de la liga.
+
+\section{Notación y objetos básicos}
+
+Sea $e\in\mathbb{N}$ el índice del evento, $j$ el índice del vehículo e $i$ el índice del ofertante. Para cada par $(j,e)$ tal que el vehículo $j$ participe en el evento $e$, se observan al menos dos magnitudes de interés:
+\begin{itemize}[leftmargin=1.5cm]
+    \item la velocidad de la vuelta más rápida en calificación, denotada por $V_{j,e}$;
+    \item el precio de venta al cierre de la subasta, denotado por $P_{j,e}$.
+\end{itemize}
+Cuando el reglamento o los datos lo permitan, se incorpora además una variable de daño observada o públicamente inferible, denotada por $D_{j,e}^{\mathrm{obs}}$, que resume el deterioro o desgaste sufrido por el vehículo durante el evento. No obstante, en el modelo de valoración privada la magnitud económicamente relevante no será necesariamente $D_{j,e}^{\mathrm{obs}}$, sino la estimación que cada ofertante construye a partir de su propia experiencia e interpretación de las señales disponibles.
+
+Para cada ofertante $i$ y vehículo $j$ en el evento $e$, se introduce una valoración privada $v_{ij,e}$ y una puja efectiva $b_{ij,e}$. La valoración privada representa la disposición subjetiva a pagar por el vehículo al cierre del evento, mientras que la puja es la expresión estratégica u operativa de esa disposición dentro del mecanismo de subasta. En un modelo idealizado de subasta Vickrey con información privada independiente, la puja veraz coincide con la valoración. No obstante, dado que el interés del presente trabajo recae en la dinámica de eventos sucesivos, se permitirá distinguir entre ambas magnitudes para introducir una ecuación de ajuste intertemporal.
+
+En el nivel institucional, el precio observado $P_{j,e}$ se interpretará como una señal agregada producida por la subasta. En el plano microeconómico, su significado deriva de la regla de segundo precio; en el plano empírico, se usará como proxy del valor de mercado descubierto al final del evento. Esta dualidad exige diferenciar conceptualmente entre la información privada de los agentes y la señal pública emitida por el mercado.
+
+Para ordenar la exposición, conviene clasificar las variables del modelo según el plano analítico al que pertenecen y según su grado de observabilidad.
+
+\begin{definicion}
+El modelo distingue tres planos analíticos.
+\begin{enumerate}
+    \item El \emph{plano de señales públicas del evento}, integrado por magnitudes observables o públicamente inferibles, como $V_{j,e}$, $D_{j,e}^{\mathrm{obs}}$ y, una vez cerrada la subasta, $P_{j,e}$.
+    \item El \emph{plano privado de interpretación y valoración}, integrado por variables que dependen de la lectura subjetiva del ofertante, como $\tau_{ij,e}$, $\widehat D_{ij,e}$ y $v_{ij,e}$.
+    \item El \emph{plano estratégico e institucional}, en el que aparecen las pujas efectivas $b_{ij,e}$ como expresiones operativas de decisión dentro del mecanismo, y el precio observado $P_{j,e}$ como resultado público oficialmente producido por la subasta.
+\end{enumerate}
+\end{definicion}
+
+La clasificación anterior no introduce compartimentos estancos, sino niveles conectados del mismo proceso: las señales públicas alimentan interpretaciones privadas, las interpretaciones privadas orientan las pujas y las pujas producen finalmente una señal pública de mercado.
+
+\begin{definicion}
+Para cada vehículo $j$ vendido al final del evento $e$, se denomina \emph{valor de mercado descubierto} a la magnitud observable $P_{j,e}$ generada por la subasta de segundo precio.
+\end{definicion}
+La definición anterior no implica que el precio observado coincida con una noción exhaustiva o absoluta del valor económico del vehículo. Sólo fija la convención analítica según la cual el precio de venta se utilizará como señal pública del valor que el mercado efectivamente revela al cierre del evento.
+
+\section{Estructura abstracta del mecanismo del evento}
+
+La exposición precedente ya distingue variables públicas, variables privadas y resultados institucionales. Conviene ahora condensar esa distinción en una arquitectura abstracta única del evento, de modo que las secciones posteriores puedan entenderse como especificaciones particulares de un mismo mecanismo compuesto.
+
+Para cada evento $e$, considérese un sistema analítico formado por cinco componentes enlazados:
+\[
+\mathcal E_e=(S_e,\Phi_e,\mathcal B_e,\Pi_e,\mathcal R_e).
+\]
+Aquí, $S_e$ representa el conjunto de señales públicas del evento; $\Phi_e$ representa el mecanismo, distribuido entre ofertantes, mediante el cual esas señales públicas son transformadas en interpretaciones y valoraciones privadas; $\mathcal B_e$ representa la regla mediante la cual las valoraciones privadas se traducen en pujas efectivas; $\Pi_e$ representa la regla institucional de la subasta que transforma el perfil de pujas en un precio observado y en una adjudicación; y $\mathcal R_e$ representa la regla pública que transforma desempeño observado y señal de mercado en un resultado de eficiencia y, en último término, en premio.
+
+De manera esquemática, la arquitectura completa puede resumirse como
+\[
+S_e\xrightarrow{\ \Phi_e\ }\text{valoraciones privadas}\xrightarrow{\ \mathcal B_e\ }\text{pujas}\xrightarrow{\ \Pi_e\ }P_{j,e}\xrightarrow{\ \mathcal R_e\ }(EM_{j,e},R_{j,e}).
+\]
+La primera transición pertenece al plano privado de interpretación; la segunda, al plano estratégico de decisión; la tercera, al plano institucional del mercado; y la cuarta, al plano reglamentario del premio.
+
+\begin{definicion}
+Se dirá que el mecanismo del evento está \emph{estratificado} cuando satisface las siguientes propiedades:
+\begin{enumerate}
+    \item las señales públicas del evento pueden ser observadas o inferidas públicamente antes del cierre de la subasta;
+    \item las valoraciones privadas no necesitan ser observables por el reglamento ni por los demás agentes;
+    \item el precio observado y la adjudicación se determinan institucionalmente a partir de las pujas válidas según la regla de subasta vigente;
+    \item el premio del evento se determina únicamente a partir de variables públicas u oficialmente capturadas, sin requerir observación directa de valoraciones privadas.
+\end{enumerate}
+\end{definicion}
+
+La utilidad de esta estratificación es doble. Por una parte, impide confundir la explicación microeconómica del comportamiento de los ofertantes con la regla institucional que efectivamente determina el premio. Por otra, permite que distintas especificaciones concretas convivan dentro de la misma arquitectura: pueden variar la forma de la valoración privada, la dinámica de ajuste de pujas o la función de expectativa de mercado, sin que por ello se altere la separación fundamental entre interpretación privada, descubrimiento público del precio y cálculo reglamentario del premio.
+
+\begin{observacion}
+Las secciones siguientes deben leerse precisamente como especificaciones parciales de los componentes de $\mathcal E_e$. La valoración privada precisa una forma para $\Phi_e$; la dinámica de pujas especifica una forma para $\mathcal B_e$; la subasta Vickrey determina $\Pi_e$; y la eficiencia monetaria junto con la implementación operativa del premio especifican $\mathcal R_e$.
+\end{observacion}
+\section{Supuestos globales del modelo}
+
+Antes de especificar cada componente del mecanismo, conviene fijar los supuestos globales mínimos que garantizan la coherencia analítica del modelo.
+
+\begin{definicion}
+Para cada evento $e$, se dirá que el entorno analítico es \emph{admisible} cuando se cumplen las siguientes condiciones:
+\begin{enumerate}
+    \item existe un conjunto finito de vehículos computables y un conjunto finito de ofertantes potenciales;
+    \item para cada vehículo computable se dispone de una velocidad observada de clasificación $V_{j,e}$ y, al cierre de la subasta correspondiente, de un precio observado $P_{j,e}>0$;
+    \item las señales públicas del evento relevantes para la valoración pueden ser observadas o inferidas públicamente con suficiente estabilidad como para formar creencias privadas sobre ellas;
+    \item las valoraciones privadas y las pujas están bien definidas en el sentido de que cada ofertante puede asociar a cada vehículo una disposición a pagar finita y una respuesta estratégica operativa;
+    \item la regla institucional de subasta produce, para cada vehículo adjudicado, un resultado oficial de adjudicación y un precio final públicamente observable;
+    \item la regla reglamentaria del premio se aplica solo a participantes o vehículos que satisfacen las condiciones oficiales de cómputo del evento.
+\end{enumerate}
+\end{definicion}
+
+Estos supuestos no fijan todavía una teoría fuerte de equilibrio ni una estructura probabilística completa. Su función es más elemental: identificar las condiciones mínimas bajo las cuales las transformaciones entre señales públicas, valoraciones privadas, pujas, precio descubierto y premio pueden tratarse como objetos bien definidos del mismo sistema analítico.
+
+\section{Estructura informacional}
+
+La arquitectura del evento no solo separa planos funcionales; también separa niveles de información. Esta distinción es importante porque la subasta, el descubrimiento del precio y el premio no operan sobre el mismo conjunto de datos para todos los agentes en el mismo momento.
+
+En el instante previo al cierre de la subasta, las señales públicas del evento incluyen al menos el desempeño observable en clasificación y, cuando exista, el daño visible o públicamente inferible del vehículo. A partir de esas señales, cada ofertante forma una interpretación privada del peso relativo del pilotaje, del estado económico del vehículo y de su conveniencia estratégica. Esa interpretación privada no necesita ser observada por otros agentes ni por el reglamento.
+
+Las pujas constituyen una capa intermedia: son decisiones privadas mientras la subasta permanece cerrada, pero su agregación institucional produce un resultado oficial público al cierre del mecanismo. En consecuencia, el precio final de la subasta no es una creencia privada más, sino una señal pública producida por una regla institucional sobre información estratégicamente emitida por los agentes.
+
+\begin{definicion}
+La estructura informacional del evento se resume del siguiente modo:
+\begin{enumerate}
+    \item $V_{j,e}$, $D_{j,e}^{\mathrm{obs}}$ y las demás señales observables del evento pertenecen al conjunto de información pública previa al cierre de la subasta;
+    \item $\tau_{ij,e}$, $\widehat D_{ij,e}$ y $v_{ij,e}$ pertenecen a la información privada del ofertante $i$;
+    \item las pujas $b_{ij,e}$ pertenecen al plano estratégico privado mientras la subasta está abierta, aunque su resultado institucional agregado se hace público al cierre;
+    \item el precio observado $P_{j,e}$, la expectativa de mercado aplicada por el reglamento y el resultado del premio pertenecen al plano público posterior al cierre.
+\end{enumerate}
+\end{definicion}
+
+La secuencia temporal implícita en esta clasificación es parte del contenido del modelo: primero se observan señales públicas, luego se forman valoraciones privadas, después se emiten pujas, más tarde se descubre públicamente el precio y solo al final se calcula el premio.
+
+\section{Separación entre planos privados y reglamentarios}
+
+La utilidad principal de la estratificación y de la estructura informacional consiste en que permiten enunciar con precisión una propiedad central del sistema: el premio reglamentario puede apoyarse en el mercado sin por ello depender directamente de magnitudes privadas no observables.
+
+\begin{proposicion}\label{prop:separacion-planos}
+Supóngase que el evento $e$ es admisible en el sentido anterior y que el mecanismo está estratificado. Entonces el resultado reglamentario del premio puede expresarse como una función de variables públicas u oficialmente capturadas del evento, aunque las pujas que determinan el precio observado provengan de valoraciones privadas no observables.
+\end{proposicion}
+
+\begin{proof}
+Por definición de estratificación, las valoraciones privadas pertenecen al plano de interpretación y no necesitan ser observadas por el reglamento. La regla institucional de subasta transforma el perfil de pujas válidas en una adjudicación y en un precio observado públicamente determinables. A su vez, la regla reglamentaria del premio opera únicamente sobre variables públicas u oficialmente capturadas, entre ellas el desempeño observado y la señal de mercado producida por la subasta. En consecuencia, aunque el precio observado sea consecuencia de decisiones privadas previas, el premio no requiere acceso reglamentario a las valoraciones privadas mismas, sino solo al resultado público institucionalmente producido por la subasta y a las demás magnitudes públicas del evento.
+\end{proof}
+
+\begin{observacion}
+La proposición anterior no elimina la relevancia analítica de las valoraciones privadas. Su papel es explicar cómo se generan las pujas y, por esa vía, cómo el mercado produce el precio observado. Lo que establece es algo distinto: que la legitimidad operativa del premio no depende de observar psicológicamente a los ofertantes, sino de una cadena institucional en la que una variable pública final resume competitivamente información privada previa.
+\end{observacion}
+\begin{proposicion}\label{prop:composicion-mecanismo}
+Supóngase que el evento $e$ es admisible y que los componentes $\Phi_e$, $\mathcal B_e$, $\Pi_e$ y $\mathcal R_e$ están bien definidos en sus respectivos dominios. Entonces el mecanismo completo del evento induce una aplicación compuesta desde las señales públicas iniciales del evento hasta el resultado público final del premio.
+\end{proposicion}
+
+\begin{proof}
+A partir de las señales públicas iniciales $S_e$, el componente $\Phi_e$ produce un perfil de interpretaciones y valoraciones privadas. Sobre ese perfil, el componente $\mathcal B_e$ produce un perfil de pujas admisibles. La regla institucional $\Pi_e$ transforma ese perfil de pujas en un resultado oficial de adjudicación y precio observado. Finalmente, la regla reglamentaria $\mathcal R_e$, aplicada sobre el desempeño público del evento y la señal pública de mercado resultante, produce el resultado de eficiencia y premio. En consecuencia, puede definirse el mecanismo compuesto
+\[
+\mathcal M_e(S_e):=\mathcal R_e\big(S_e,\Pi_e(\mathcal B_e(\Phi_e(S_e)))\big),
+\]
+que asocia al conjunto de señales públicas iniciales del evento un resultado público final. La afirmación no depende de que los componentes intermedios sean observables por el reglamento, sino únicamente de que estén bien definidos y encadenados en el sentido anterior.
+\end{proof}
+
+\section{Estatus epistemológico de las capas del modelo}
+
+La composición anterior articula capas de naturaleza distinta. Conviene explicitar ese punto para evitar que una especificación analítica sea confundida con una regla institucional, o que una convención reglamentaria sea tratada como si fuese una verdad microeconómica necesaria.
+
+\begin{definicion}
+En el presente artículo, las capas del modelo tienen el siguiente estatus epistemológico:
+\begin{enumerate}
+    \item las funciones y variables del plano privado, en particular las que especifican $\Phi_e$ y $\mathcal B_e$, cumplen una función \emph{microfundacional y explicativa}: describen cómo pueden formarse valoraciones y pujas;
+    \item la regla de subasta, que especifica $\Pi_e$, cumple una función \emph{institucional}: determina públicamente adjudicación y precio a partir de pujas válidas;
+    \item la función que transforma precio observado y desempeño en eficiencia y premio, esto es, $\mathcal R_e$, cumple una función \emph{reglamentaria}: fija el criterio público de comparación y distribución económica;
+    \item las definiciones que identifican magnitudes como valor de mercado descubierto, eficiencia monetaria o premio del evento cumplen una función \emph{analítico-operativa}: sirven para mantener trazabilidad conceptual entre la teoría y la implementación del sistema.
+\end{enumerate}
+\end{definicion}
+
+La distinción anterior implica que no toda afirmación del artículo tiene la misma pretensión. Algunas describen una posible explicación del comportamiento de los agentes; otras fijan el modo en que el sistema produce públicamente un resultado; y otras establecen la convención mediante la cual ese resultado será interpretado y utilizado dentro del ecosistema.
+
+\begin{observacion}
+Esta aclaración permite leer correctamente las especificaciones concretas posteriores. La valoración privada lineal, la dinámica contractiva de pujas y la regresión logarítmica no se presentan todas con la misma fuerza ontológica: algunas son elecciones analíticas útiles, mientras que otras reflejan reglas institucionales o reglamentarias efectivamente adoptadas por el sistema.
+\end{observacion}
+\section{Valoración privada con atribución subjetiva de pilotaje y tecnología}
+
+La premisa conceptual de esta sección es que la velocidad de la vuelta más rápida observada en calificación no se identifica inmediatamente con la calidad tecnológica del vehículo. Cada ofertante interpreta ese dato a la luz de una creencia propia sobre la influencia del pilotaje. Tal creencia puede ser favorable al piloto, neutral o incluso adversa, en el sentido de que el ofertante puede considerar que errores de conducción redujeron la velocidad que el vehículo habría sido capaz de alcanzar bajo una ejecución más eficiente. En consecuencia, la relación entre desempeño observado y valoración del vehículo es necesariamente subjetiva.
+
+Esta subjetividad no afecta únicamente a la atribución entre pilotaje y tecnología. En el presente modelo se asume que, aun cuando ciertas señales del evento sean públicamente observables ---por ejemplo, la vuelta rápida, la presencia de piezas identificables o el estado visible del vehículo---, su traducción a valor económico no es determinista. Cada ofertante interpreta dichas señales según su experiencia previa, su conocimiento técnico, su liquidez y su disposición a asumir riesgos. Por ello, la valoración privada se construye a partir de magnitudes subjetivamente procesadas, aunque partan de información comúnmente observable.
+
+Para representar esta idea de manera parsimoniosa, se introduce un coeficiente de atribución subjetiva $\tau_{ij,e}>0$, que resume la proporción del desempeño observado que el ofertante $i$ atribuye al vehículo $j$ en el evento $e$. Valores de $\tau_{ij,e}$ cercanos a uno indican que el ofertante considera que la vuelta observada refleja aproximadamente el aporte tecnológico del vehículo. Valores menores que uno sugieren que una fracción relevante del resultado debe imputarse al piloto. Por el contrario, valores mayores que uno representan la situación en la que el ofertante juzga que el piloto perjudicó la vuelta y que el potencial del vehículo excedía el desempeño efectivamente observado. No se impone una cota rígida sobre $\tau_{ij,e}$, aunque se asume que, en aplicaciones, toma valores razonables determinados por la experiencia del ofertante.
+
+La interpretación de $\tau_{ij,e}$ no es puramente arbitraria. Se asume que combina, de manera no determinista, señales observables del evento con la lectura subjetiva que hace el ofertante. En términos generales, puede pensarse como el resultado de una regla privada de evaluación de la forma
+\[
+\tau_{ij,e}=\psi_i(Z_{j,e})+\xi_{ij,e},
+\]
+donde $Z_{j,e}$ agrupa información observable o públicamente inferible sobre el desempeño y el estado del vehículo, mientras que $\xi_{ij,e}$ recoge el componente idiosincrático de interpretación del ofertante $i$.
+
+De modo análogo, el daño relevante para valorar económicamente el vehículo no se identifica con una magnitud objetiva única, sino con la estimación privada que cada ofertante realiza a partir de la evidencia disponible. Se denotará por $\widehat D_{ij,e}$ a la estimación privada del daño económicamente relevante para el ofertante $i$. Esta variable puede depender del daño visible, del conocimiento del ofertante sobre costos de reparación, de la rareza de las piezas comprometidas y de su experiencia acumulada en eventos anteriores.
+
+Bajo esta interpretación, la velocidad atribuida al vehículo por el ofertante $i$ se modela como $\tau_{ij,e}V_{j,e}$. La valoración privada se construirá entonces como una función creciente de dicha velocidad atribuida y decreciente de la estimación privada del daño. En el nivel más abstracto, basta asumir la existencia de una función de valoración
+\[
+v_{ij,e}=f_i\big(\tau_{ij,e}V_{j,e},\widehat D_{ij,e}\big),
+\]
+donde $f_i$ es creciente en su primer argumento y decreciente en el segundo.
+
+Para facilitar el análisis algebraico, en lo que sigue se utilizará una especificación lineal.
+
+\begin{definicion}
+La valoración privada del ofertante $i$ por el vehículo $j$ al cierre del evento $e$ se modela como
+\begin{equation}\label{eq:valoracion-lineal}
+v_{ij,e}=\alpha_i+\beta_i\tau_{ij,e}V_{j,e}-\gamma_i \widehat D_{ij,e},
+\end{equation}
+donde $\alpha_i\in\mathbb{R}$, $\beta_i>0$ y $\gamma_i>0$.
+\end{definicion}
+
+La constante $\alpha_i$ recoge el componente base de la valoración asociado a liquidez, presupuesto y disposición general a comprar del ofertante. El parámetro $\beta_i$ mide la sensibilidad de la valoración frente a la velocidad atribuida al vehículo, mientras que $\gamma_i$ cuantifica la penalización asociada al daño estimado por el propio ofertante. Así, un mayor desempeño tecnológicamente atribuido incrementa la valoración, mientras que una mayor estimación privada de deterioro la reduce.
+
+\begin{observacion}
+La especificación \eqref{eq:valoracion-lineal} no presupone que exista una descomposición objetiva y observada del desempeño entre piloto y vehículo, ni que exista una medición única y pública del daño económicamente relevante. Lo que exige es que cada agente forme una creencia privada sobre ambos componentes a partir de señales observables interpretadas según su experiencia.
+\end{observacion}
+
+\section{Dinámica discreta de ajuste de pujas}
+
+La teoría estática de la subasta Vickrey establece la optimalidad de pujar verazmente, pero no proporciona por sí misma una dinámica temporal. Si el objetivo es sostener que las pujas tienden a la valoración privada, debe postularse una ecuación de actualización que traduzca esa propiedad normativa en un mecanismo de aprendizaje o de ajuste.
+
+En el nivel más simple, se asumirá que la puja del ofertante $i$ por el vehículo $j$ en el evento siguiente depende de la discrepancia entre su puja actual y su valoración privada actual. Es decir, la puja se corrige en la dirección del error de valoración según una regla contractiva. Esta idea puede interpretarse como un aprendizaje adaptativo: el agente no necesariamente puja de manera perfectamente veraz en cada instante, pero ajusta su conducta aproximándola progresivamente a su propia disposición a pagar.
+
+En el nivel más abstracto, basta postular una regla de actualización de la forma
+\[
+b_{ij,e+1}=T_{ij}(b_{ij,e},v_{ij,e}),
+\]
+donde $T_{ij}$ es un operador de ajuste que deja fijo el punto de sinceridad, en el sentido de que $T_{ij}(x,x)=x$, y que reduce la discrepancia entre puja y valoración. Una manera natural de expresar esta propiedad es exigir la existencia de un coeficiente $\rho_{ij}\in[0,1)$ tal que
+\[
+|T_{ij}(b,v)-v|\leq \rho_{ij}|b-v|.
+\]
+Bajo esta formulación, la sinceridad perfecta aparece como punto fijo y la dinámica concreta de pujas se interpreta como una especificación particular de una familia más general de mecanismos de aprendizaje o ajuste.
+\begin{definicion}
+La dinámica discreta de ajuste de pujas se define por
+\begin{equation}\label{eq:ajuste-pujas}
+b_{ij,e+1}=b_{ij,e}+\lambda_{ij}\big(v_{ij,e}-b_{ij,e}\big),
+\qquad 0<\lambda_{ij}\leq 1.
+\end{equation}
+\end{definicion}
+
+Equivalentemente,
+\[
+b_{ij,e+1}=(1-\lambda_{ij})b_{ij,e}+\lambda_{ij}v_{ij,e}.
+\]
+La puja del siguiente evento es, por tanto, una combinación convexa entre la puja anterior y la valoración privada actual. El parámetro $\lambda_{ij}$ mide la velocidad de ajuste: cuanto mayor es, más rápidamente responde la puja a la valoración.
+
+Para estudiar la convergencia, conviene introducir el error de valoración
+\[
+r_{ij,e}:=b_{ij,e}-v_{ij,e}.
+\]
+
+\begin{lema}\label{lema:error}
+Si la dinámica de pujas está dada por \eqref{eq:ajuste-pujas}, entonces el error satisface
+\begin{equation}\label{eq:dinamica-error}
+r_{ij,e+1}=(1-\lambda_{ij})r_{ij,e}-\big(v_{ij,e+1}-v_{ij,e}\big).
+\end{equation}
+\end{lema}
+
+\begin{proof}
+Por definición,
+\[
+r_{ij,e+1}=b_{ij,e+1}-v_{ij,e+1}.
+\]
+Sustituyendo \eqref{eq:ajuste-pujas},
+\[
+r_{ij,e+1}=b_{ij,e}+\lambda_{ij}(v_{ij,e}-b_{ij,e})-v_{ij,e+1}.
+\]
+Reordenando,
+\[
+r_{ij,e+1}=(1-\lambda_{ij})(b_{ij,e}-v_{ij,e})-(v_{ij,e+1}-v_{ij,e}),
+\]
+lo que equivale a \eqref{eq:dinamica-error}.
+\end{proof}
+
+El lema muestra dos fuerzas contrapuestas. El término $(1-\lambda_{ij})r_{ij,e}$ contrae el error heredado, mientras que el término $-(v_{ij,e+1}-v_{ij,e})$ introduce perturbaciones debidas a cambios en la valoración privada entre eventos.
+
+\begin{proposicion}\label{prop:convergencia-constante}
+Supóngase que existe $v_{ij}^\ast\in\mathbb{R}$ tal que
+\[
+v_{ij,e}=v_{ij}^\ast
+\qquad\text{para todo } e\geq e_0,
+\]
+y que la puja evoluciona según \eqref{eq:ajuste-pujas}. Entonces
+\[
+\lim_{e\to\infty} b_{ij,e}=v_{ij}^\ast.
+\]
+\end{proposicion}
+
+\begin{proof}
+Si $v_{ij,e}=v_{ij}^\ast$ para todo $e\geq e_0$, entonces de \eqref{eq:dinamica-error} se obtiene
+\[
+r_{ij,e+1}=(1-\lambda_{ij})r_{ij,e}.
+\]
+Por iteración,
+\[
+r_{ij,e}=(1-\lambda_{ij})^{e-e_0}r_{ij,e_0}.
+\]
+Como $0<\lambda_{ij}\leq 1$, se tiene $|1-\lambda_{ij}|<1$, y por tanto
+\[
+r_{ij,e}\to 0.
+\]
+Esto implica $b_{ij,e}-v_{ij}^\ast\to 0$, es decir, $b_{ij,e}\to v_{ij}^\ast$.
+\end{proof}
+
+\begin{proposicion}\label{prop:seguimiento}
+Supóngase que la valoración privada converge, esto es,
+\[
+v_{ij,e}\to v_{ij}^\ast
+\qquad\text{cuando } e\to\infty.
+\]
+Entonces, bajo la dinámica \eqref{eq:ajuste-pujas}, se tiene
+\[
+b_{ij,e}-v_{ij,e}\to 0
+\qquad\text{y}\qquad
+b_{ij,e}\to v_{ij}^\ast.
+\]
+\end{proposicion}
+
+\begin{proof}
+Defínase
+\[
+\eta_{ij,e}:=v_{ij,e+1}-v_{ij,e}.
+\]
+Como $v_{ij,e}\to v_{ij}^\ast$, se tiene $\eta_{ij,e}\to 0$. A partir de \eqref{eq:dinamica-error},
+\[
+r_{ij,e+1}=(1-\lambda_{ij})r_{ij,e}-\eta_{ij,e}.
+\]
+Iterando desde un índice fijo $e_0$, se obtiene
+\[
+r_{ij,e}=(1-\lambda_{ij})^{e-e_0}r_{ij,e_0}-\sum_{k=e_0}^{e-1}(1-\lambda_{ij})^{e-1-k}\eta_{ij,k}.
+\]
+El primer término converge a cero porque $|1-\lambda_{ij}|<1$. Para el segundo, fíjese $\varepsilon>0$. Como $\eta_{ij,k}\to 0$, existe $K\geq e_0$ tal que $|\eta_{ij,k}|<\varepsilon\lambda_{ij}/2$ para todo $k\geq K$. Entonces, para $e>K$,
+\[
+\sum_{k=K}^{e-1}(1-\lambda_{ij})^{e-1-k}|\eta_{ij,k}|
+\leq \frac{\varepsilon\lambda_{ij}}{2}\sum_{m=0}^{e-1-K}(1-\lambda_{ij})^m
+\leq \frac{\varepsilon}{2}.
+\]
+Por otra parte, la suma finita de índices $k< K$ queda multiplicada por potencias de $(1-\lambda_{ij})$ cuyo exponente tiende a infinito, de modo que existe $E$ tal que para todo $e\geq E$ se cumple
+\[
+\sum_{k=e_0}^{K-1}(1-\lambda_{ij})^{e-1-k}|\eta_{ij,k}|<\frac{\varepsilon}{2}.
+\]
+En consecuencia, el término sumatorio completo converge a cero y, por tanto, $r_{ij,e}\to 0$. Finalmente, como
+\[
+b_{ij,e}=v_{ij,e}+r_{ij,e},
+\]
+y $v_{ij,e}\to v_{ij}^\ast$, se concluye que $b_{ij,e}\to v_{ij}^\ast$.
+\end{proof}
+
+Las proposiciones anteriores precisan el sentido exacto en que las pujas tienden a la valoración privada. En general, la convergencia a una constante requiere que la propia valoración se estabilice. Cuando la valoración sigue cambiando, la afirmación correcta no es convergencia a un valor fijo, sino seguimiento asintótico de una señal que varía cada vez menos.
+
+\section{Precio observado como valor de mercado descubierto}
+
+El precio de venta al cierre de la subasta ocupa en este trabajo un papel distinto al de la valoración privada individual. Mientras que las valoraciones pertenecen al espacio de las creencias y preferencias de los agentes, el precio es una magnitud pública, observable y producida institucionalmente por el mecanismo de asignación. En una subasta Vickrey ideal, el precio coincide con la segunda puja más alta.
+
+\begin{definicion}
+En el nivel más abstracto, una \emph{regla institucional de subasta} para el vehículo $j$ en el evento $e$ es una aplicación
+\[
+\Pi_{j,e}:\mathcal{B}_{j,e}\longrightarrow (g_{j,e},P_{j,e}),
+\]
+que transforma el perfil de pujas válidas admisibles en un adjudicatario oficial $g_{j,e}$ y en un precio observado $P_{j,e}$.
+\end{definicion}
+
+La definición anterior no impone todavía una forma concreta para la regla de adjudicación ni para la regla de precio. Solo fija el papel institucional de $\Pi_{j,e}$ dentro del mecanismo del evento: convertir decisiones estratégicas privadas en un resultado público oficial.
+Sea $\mathcal{B}_{j,e}$ el conjunto de pujas admisibles por el vehículo $j$ en el evento $e$, y denótese por
+\[
+b_{(1)j,e}\geq b_{(2)j,e}\geq \cdots
+\]
+las pujas ordenadas de mayor a menor. Entonces la regla de la subasta establece que el ganador es el ofertante que presenta $b_{(1)j,e}$ y el precio pagado es
+\begin{equation}\label{eq:precio-vickrey}
+P_{j,e}=b_{(2)j,e}.
+\end{equation}
+
+La ecuación \eqref{eq:precio-vickrey} muestra que el precio observado no coincide, en general, con la valoración máxima existente en el mercado, sino con la segunda disposición a pagar más alta entre los participantes efectivos en esa subasta. Por ello, no debe interpretarse como una medida exhaustiva o absoluta del valor económico del bien, sino como una señal de mercado descubierta a partir de la interacción competitiva de los ofertantes presentes en ese evento.
+
+La expresión \emph{valor de mercado descubierto} destaca dos propiedades. La primera es que el precio no se impone externamente, sino que emerge del propio proceso de subasta. La segunda es que el precio resume, de forma agregada y observable, información dispersa contenida en las valoraciones privadas de los agentes. En consecuencia, el precio observado puede funcionar como proxy empírica del valor económico que el mercado atribuye al vehículo al cierre del evento, aun cuando no coincida con una noción metafísicamente fuerte de valor verdadero.
+
+\begin{observacion}
+La interpretación del precio como valor de mercado descubierto es suficiente para los fines del presente trabajo. El precio observado no se usa para reconstruir exactamente las valoraciones individuales ni para identificar toda la distribución de pujas. Se usa, más modestamente, como una referencia pública y comparable entre vehículos.
+\end{observacion}
+
+\begin{proposicion}\label{prop:senal-informativa}
+Supóngase que, para un vehículo dado, las pujas válidas reflejan de manera suficientemente fiel las valoraciones privadas de los ofertantes. Entonces el precio descubierto por la subasta constituye una señal más informativa del valor económico revelado por el mercado y, en consecuencia, la expectativa de mercado construida a partir de ese precio proporciona una referencia más adecuada para medir eficiencia monetaria.
+\end{proposicion}
+
+\begin{proof}
+Si las pujas se alinean con las valoraciones privadas, la regla institucional de subasta opera sobre una representación más fiel de la disposición efectiva a pagar de los participantes. Bajo esa condición, el precio descubierto sintetiza con menor distorsión la información dispersa incorporada en dichas valoraciones. Como la medición de eficiencia monetaria utiliza precisamente ese precio descubierto para construir la expectativa de mercado aplicable, una señal de mercado más fiel mejora la alineación entre expectativa y valor económico revelado. Por tanto, el residual que compara desempeño observado y expectativa de mercado se vuelve más informativo como criterio de eficiencia relativa.
+\end{proof}
+
+\begin{observacion}
+La proposición anterior no afirma que el precio descubierto elimine todo error, ruido o heterogeneidad interpretativa. Su afirmación es comparativa: cuanto más fiel sea la traducción de valoración privada a puja, más informativa será la señal pública de mercado y mejor fundada quedará la medición pública de eficiencia.
+\end{observacion}
+
+\section{Eficiencia monetaria y regla del premio}
+
+Una vez fijado el precio observado como señal de valor de mercado descubierto, el problema reglamentario consiste en comparar el desempeño deportivo del vehículo con lo que cabría esperar de un activo de ese valor. La idea de eficiencia monetaria se refiere precisamente a esa comparación: un vehículo es monetariamente eficiente si su desempeño observado excede el nivel que su precio de mercado haría razonable esperar. Bajo esta interpretación, el premio no debe basarse en una razón mecánica entre velocidad y precio, sino en una medición del excedente de desempeño con respecto a una referencia empírica.
+
+En el nivel más abstracto, basta postular una función de expectativa de mercado del evento,
+\[
+m_e:\mathbb{R}_{+}\to\mathbb{R},
+\]
+que asigne a cada precio observado una velocidad esperada compatible con la señal de mercado producida por la subasta. Bajo esta formulación, la referencia empírica relevante para el vehículo $j$ en el evento $e$ puede escribirse como
+\[
+\widehat V_{j,e}=m_e(P_{j,e}),
+\]
+y la eficiencia monetaria adopta la forma abstracta
+\[
+EM_{j,e}=V_{j,e}-m_e(P_{j,e}).
+\]
+Lo único que se requiere en este nivel es que $m_e$ traduzca la señal pública de mercado a una expectativa comparable de desempeño dentro del mismo evento.
+
+Para obtener una especificación empírica tratable, se postula a continuación una relación creciente y cóncava entre la velocidad de vuelta rápida y el precio observado. La especificación concreta que se propone es la siguiente:
+\begin{equation}\label{eq:regresion-log}
+V_{j,e}=a_e+\beta \log P_{j,e}+u_{j,e},
+\qquad \beta>0.
+\end{equation}
+Aquí $a_e$ es un efecto específico del evento, destinado a capturar diferencias sistemáticas entre pistas, condiciones climáticas o configuraciones reglamentarias; $\beta$ mide la sensibilidad promedio de la velocidad respecto del logaritmo del precio; y $u_{j,e}$ es un término residual.
+
+La velocidad esperada condicional al precio observado se define entonces como
+\begin{equation}\label{eq:vel-esp}
+\widehat{V}_{j,e}=\widehat{a}_e+\widehat{\beta}\log P_{j,e},
+\end{equation}
+donde $\widehat{a}_e$ y $\widehat{\beta}$ son los estimadores de los parámetros del modelo.
+
+\begin{definicion}
+La \emph{eficiencia monetaria} del vehículo $j$ en el evento $e$ se define como el residual
+\begin{equation}\label{eq:eficiencia}
+EM_{j,e}:=V_{j,e}-\widehat{V}_{j,e}.
+\end{equation}
+\end{definicion}
+
+La variable $EM_{j,e}$ mide el exceso de velocidad observada con respecto a la velocidad esperada dada la valoración de mercado descubierta por la subasta. Valores positivos indican que el vehículo rindió por encima de lo esperable para su precio, mientras que valores negativos indican un rendimiento inferior a la expectativa asociada a su valor de mercado.
+
+\begin{definicion}
+La regla del premio de eficiencia monetaria consiste en ordenar los vehículos de un evento de mayor a menor según el valor de $EM_{j,e}$. El premio se asigna al vehículo que maximiza dicho residual.
+\end{definicion}
+
+La forma funcional logarítmica en \eqref{eq:regresion-log} refleja la hipótesis de rendimientos decrecientes del gasto: incrementos del precio generan aumentos esperados de velocidad, pero dichos aumentos tienden a ser marginalmente menores a niveles altos de valor de mercado. Esta propiedad resulta especialmente adecuada para evitar que el criterio de eficiencia se reduzca a una penalización lineal excesiva sobre vehículos de alto precio.
+
+\begin{observacion}
+El premio definido por \eqref{eq:eficiencia} es un criterio \emph{ex post}. La velocidad observada contribuye tanto a la formación del precio descubierto como a la evaluación final de la eficiencia. Por ello, el indicador no debe interpretarse como una herramienta predictiva previa al evento, sino como una regla comparativa posterior al cierre de la competencia y de la subasta.
+\end{observacion}
+
+\section{Implementación operativa del premio}
+
+La formulación microeconómica desarrollada en las secciones anteriores explica cómo pueden formarse las valoraciones privadas y cómo pueden ajustarse las pujas en un entorno repetido. Sin embargo, el premio del evento no debe depender de magnitudes privadas no observables por el reglamento, sino únicamente de variables públicas u oficialmente capturadas dentro del propio evento. En la especificación documental vigente del proyecto, la implementación operativa del premio de eficiencia monetaria se apoya exclusivamente en la velocidad de clasificación observada, los precios válidos de subasta del propio evento, la contribución de eficiencia computable de cada participante y las reglas públicas de ordenamiento y distribución.
+
+En consecuencia, la capa reglamentaria puede resumirse del siguiente modo:
+\begin{enumerate}
+    \item Se determina, para cada inscripción computable del evento, la velocidad oficial de clasificación que servirá como rendimiento observado para eficiencia. Esta magnitud es pública y se toma del resultado oficial de velocidad del propio evento.
+    \item Se determina la señal de mercado del evento a partir de los precios finales válidos de las subastas de vehículos del propio evento. En esta etapa no intervienen valoraciones privadas individuales, sino únicamente precios oficialmente producidos por la subasta.
+    \item Con los pares válidos $(P_{j,e},V_{j,e})$ del propio evento se estima la regresión logarítmica
+    \[
+    V_{j,e}=a_e+\beta\log P_{j,e}+u_{j,e},
+    \]
+    y se obtiene para cada participante la expectativa de mercado aplicable
+    \[
+    \widehat V_{j,e}=\widehat a_e+\widehat\beta\log P_{j,e}.
+    \]
+    La documentación del proyecto fija, por tanto, que la referencia empírica del premio se estima con datos del mismo evento y no mediante una media histórica externa.
+    \item Se calcula la eficiencia monetaria individual como
+    \[
+    EM_{j,e}=V_{j,e}-\widehat V_{j,e}.
+    \]
+    Esta diferencia mide cuánto excede o cuánto queda por debajo el rendimiento observado respecto de la expectativa derivada del mercado del propio evento.
+    \item Se ordenan los participantes en sentido descendente según $EM_{j,e}$. Si dos participantes empatan exactamente en dicha diferencia, el desempate se resuelve favoreciendo a quien se haya inscrito antes en el evento.
+    \item Del ordenamiento anterior se deriva una base de puntos de eficiencia, siguiendo la secuencia base del dominio, que comienza en $100$, $63$, $40$, $25$ y $16$, y continúa con sus valores sucesivos. Denotando por $B_{j,e}$ la base de puntos asignada al participante $j$ y por $C^{\mathrm{eff}}_{j,e}$ su contribución total de eficiencia computable, se define el coeficiente operativo de premio como
+    \[
+    K_{j,e}:=B_{j,e}C^{\mathrm{eff}}_{j,e}.
+    \]
+    \item Si $M_e$ denota el pozo económico oficial del evento, la parte del premio basada en eficiencia correspondiente al participante $j$ queda dada por
+    \[
+    R_{j,e}:=M_e\frac{K_{j,e}}{\sum_h K_{h,e}},
+    \]
+    conservando todos los decimales del cálculo y sin introducir redondeo reglamentario.
+    \item Cuando existan aportantes asociados a la contribución de eficiencia de un participante, la distribución posterior de $R_{j,e}$ se realiza en proporción a las cantidades que integran dicha contribución computable. Esta fase pertenece ya a la liquidación económica posterior del premio y no altera el ordenamiento de eficiencia previamente determinado.
+\end{enumerate}
+
+\begin{observacion}
+La implementación operativa del premio confirma la separación entre tres planos distintos. Las valoraciones privadas $(v_{ij,e})$ y sus determinantes subjetivos sirven para modelar el comportamiento de los ofertantes; el precio observado $P_{j,e}$ funciona como señal pública de mercado; y el premio del evento se determina únicamente con variables públicas u oficialmente capturadas. Por ello, el reglamento no necesita observar $\tau_{ij,e}$ ni $\widehat D_{ij,e}$ para calcular el premio, aunque tales variables sigan siendo útiles para explicar la lógica microeconómica de la subasta.
+\end{observacion}
+\section{Discusión conceptual y limitaciones}
+
+El enfoque propuesto combina deliberadamente elementos normativos y empíricos. En el plano normativo, la subasta Vickrey proporciona la justificación para interpretar la puja veraz como referencia conductual de los agentes. En el plano empírico, la valoración privada se construye a partir de variables observables y de una atribución subjetiva del peso relativo del pilotaje y la tecnología. Esta combinación es adecuada para el problema institucional estudiado, pero exige reconocer ciertas limitaciones conceptuales.
+
+La primera limitación es que el precio observado no identifica una valoración de mercado completa en sentido fuerte. Su interpretación como valor de mercado descubierto es pragmática y depende del conjunto de participantes efectivos en la subasta de cada evento. La segunda es que la atribución subjetiva entre pilotaje y vehículo no es directamente observable para el analista ni para el reglamento, por lo que su incorporación cumple sobre todo una función microfundacional: explica cómo podrían formarse las valoraciones privadas, pero no pretende ser medida públicamente en forma exacta. La tercera es que el criterio de eficiencia monetaria es \emph{ex post}: utiliza como referencia un precio descubierto después de observar el desempeño, por lo que debe entenderse como una regla de comparación relativa dentro del evento y no como una herramienta predictiva previa a la competencia.
+
+A pesar de estas limitaciones, el marco conserva una ventaja importante: separa con claridad el nivel de las creencias privadas, el nivel del mecanismo de mercado y el nivel del criterio reglamentario. Esa separación evita identificar indebidamente la velocidad observada con la calidad tecnológica del vehículo, evita tratar el precio como verdad absoluta del mercado y, al mismo tiempo, permite construir una regla de premio transparente y replicable.
+
+Desde un punto de vista metodológico, el modelo también deja abiertas varias extensiones. Entre ellas se encuentran la posible incorporación explícita del número de ofertantes por vehículo, la modelación de heterogeneidad en los parámetros de ajuste $\lambda_{ij}$, el tratamiento del daño como variable endógena y la estimación empírica del modelo de eficiencia monetaria con controles adicionales por tipo de vehículo o circuito. Estas extensiones no alteran la arquitectura conceptual central del artículo, pero podrían refinarla en aplicaciones futuras.
+
+\section{Conclusiones}
+
+Este trabajo ha propuesto un marco analítico para estudiar una liga de carreras con subastas Vickrey repetidas al cierre de cada evento. El punto de partida ha sido distinguir entre desempeño deportivo observado, valoración privada de los ofertantes y precio de venta observado. Sobre esa base, se ha argumentado que la velocidad de la vuelta más rápida en calificación constituye una medida relevante del desempeño, pero que su traducción a valor económico requiere una interpretación subjetiva sobre la influencia relativa del pilotaje y la tecnología, así como una corrección por daño.
+
+A continuación, se ha planteado que la dinámica de las pujas puede modelarse mediante una regla discreta de ajuste hacia la valoración privada. Esa especificación permite formalizar de manera precisa dos resultados: cuando la valoración privada se estabiliza, la puja converge a ella; y cuando la valoración evoluciona de forma cada vez más suave, la puja la sigue asintóticamente. Con ello se dota de contenido dinámico a la intuición de sinceridad asociada al mecanismo Vickrey.
+
+Finalmente, se ha justificado el uso del precio observado como señal de valor de mercado descubierto y se ha establecido la base conceptual para construir un premio de eficiencia monetaria a partir de la diferencia entre la velocidad observada y la velocidad esperada condicional al precio. Esta construcción permite conectar la racionalidad microeconómica de los ofertantes, la información revelada por la subasta y una regla de evaluación comparativa dentro de la liga.
+
+El desarrollo presentado en este documento ya no se limita a una capa intermedia puramente conceptual. Además de la estructura teórica, las definiciones principales y los resultados básicos de convergencia, el artículo incorpora una traducción operativa del premio de eficiencia monetaria compatible con la documentación reglamentaria vigente del proyecto. A partir de aquí, los siguientes pasos naturales consisten en contrastar empíricamente el comportamiento de la regresión logarítmica del propio evento, explorar simulaciones numéricas que ilustren la formación de valoraciones y el ajuste de pujas, y refinar, cuando sea necesario, el tratamiento económico del daño relevante para la valoración privada.
+
+\end{document}

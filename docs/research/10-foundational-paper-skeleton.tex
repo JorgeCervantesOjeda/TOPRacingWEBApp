@@ -646,6 +646,32 @@ This distinction is important because it gives formal meaning to the idea that t
 
 Accordingly, admissible responses should eventually be constrained not only by operational feasibility but also by preservation of \(\theta^{S}\). In that sense, the space \(\Phi_{\mathrm{adm}}\) should later be read as the class of responses that act through \(\theta^{G}\) without violating \(\theta^{S}\).
 
+\subsection{Hierarchy of structural commitments}
+
+The structural commitments collected in \(\theta^{S}\) need not all play exactly the same role. Some may function as core identity conditions, while others may be derivative, supporting, or conditionally rigid. A useful next step is therefore to introduce a hierarchy among commitments.
+
+At a preliminary level, one may distinguish at least three layers:
+\begin{itemize}
+  \item \textbf{core commitments}, whose violation changes the identity of the ecosystem,
+  \item \textbf{supporting commitments}, whose weakening may not immediately destroy identity but can undermine its preservation over time,
+  \item \textbf{implementation commitments}, which shape the way structural principles are realized without necessarily defining them at the highest level.
+\end{itemize}
+
+In the present framework, open entry, progressive opportunity, bounded advantage, and durable consequence are plausible candidates for core commitments. Bounded commitments and role multiplicity may initially be interpreted as strongly supporting commitments, though later layers may refine that classification.
+
+This hierarchy matters because it helps distinguish between three kinds of change:
+\begin{enumerate}
+  \item changes that are compatible with the same ecosystem type,
+  \item changes that weaken the ecosystem while preserving its nominal identity,
+  \item changes that transform the system into a different kind of mechanism.
+\end{enumerate}
+
+One may later formalize this with a partition of \(\theta^{S}\):
+\[
+\theta^{S} = \theta^{C} \cup \theta^{U} \cup \theta^{I},
+\]
+where \(\theta^{C}\) denotes core commitments, \(\theta^{U}\) denotes supporting commitments, and \(\theta^{I}\) denotes implementation-level commitments. This partition is still provisional, but it provides a useful structure for later arguments.
+
 \subsection{Interpretive note}
 
 The formal model is intentionally being built in stages. The present layer introduces state variables and transition language without yet fixing their complete analytical form. This preserves interpretability while making the future mathematical direction explicit.
@@ -659,6 +685,8 @@ The same is true of resilience. Recovery should not be interpreted as a generic 
 The same caution also applies to perturbations and responses. Their present role is to organize future analysis, not yet to define a closed formal taxonomy.
 
 The same applies to the mechanism layer. The decomposition \(\theta = (\theta^{G}, \theta^{S})\) is introduced as a conceptual bridge between governance and identity. Later layers should refine this distinction more explicitly.
+
+The same is true of the hierarchy within \(\theta^{S}\). The present classification is an organizing tool that will later need sharper criteria.
 
 \section{Structural Properties}
 
@@ -825,6 +853,22 @@ If recovery, adaptation, or local correction is possible while preserving \(\the
 By construction, \(\theta^{G}\) contains the tunable part of the mechanism whereas \(\theta^{S}\) contains the defining commitments. Therefore any structurally legitimate correction must act through the governance layer rather than through the abandonment of structural principles.
 \end{proof}
 
+\begin{proposition}[Core-Commitment Violation Implies Identity Transformation]
+If an adjustment violates an element of \(\theta^{C}\), then the resulting system cannot be treated as preserving the same core ecosystem type.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Core commitments are introduced precisely to encode the conditions that define the ecosystem at the highest level. Therefore, violating an element of \(\theta^{C}\) is not merely a weakening of implementation quality, but a change in the defining structure of the system.
+\end{proof}
+
+\begin{proposition}[Supporting-Commitment Weakening Can Induce Progressive Degradation]
+If elements of \(\theta^{U}\) are weakened while core commitments remain nominally intact, then the ecosystem may retain formal identity while suffering progressive structural degradation.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Supporting commitments are not introduced as superficial details. They stabilize the practical preservation of the core structure over time. Their weakening may therefore leave the system formally recognizable while reducing accessibility, sustainability, or resilience in a cumulative way.
+\end{proof}
+
 \section{Degradation Modes}
 
 \paragraph{Purpose of this section.}
@@ -899,6 +943,8 @@ Its role is to define the object of study, establish a common language, and iden
 
 At the same time, the paper now makes explicit that the system should be understood as a mechanism-design problem. The central issue is not only whether the ecosystem can be described, but which parts of it may be tuned and which parts must remain fixed if the developmental object is to be preserved.
 
+The new hierarchy of commitments also clarifies that preservation is not binary. Some changes destroy identity immediately, while others produce slower but still important forms of degradation.
+
 Because of this foundational role, the paper should be readable by more than one community. A reader from applied mathematics should be able to see where the formal development is heading. A reader from socio-technical systems should be able to understand the institutional and developmental meaning of the framework. A reader from competition, sport, or technology studies should be able to recognize the practical relevance of the problem.
 
 This multi-audience ambition is not incidental. It follows from the object itself. The ecosystem under study is simultaneously mathematical, institutional, technological, and developmental.
@@ -925,6 +971,8 @@ The present article should be read as the opening move of a larger research prog
 The most natural continuations concern reputation, bounded incentives, accessibility under resource asymmetry, dynamic evolution, and empirical observation. Each of these topics can become a paper in its own right.
 
 Another natural continuation is a dedicated paper on mechanism design and governance, centered on the distinction between tunable variables and structural commitments, and on the limits of legitimate adaptation within the ecosystem.
+
+That paper should also develop the hierarchy among structural commitments and analyze how different classes of modification affect identity, degradation, and recoverability.
 
 The order of that agenda matters. Reputation and bounded commitments should likely be addressed early because they are closely connected to enforceability and economic credibility. Accessibility under asymmetry should also appear early because it bears directly on the anti-exclusionary identity of the ecosystem. Simulation can then serve as a bridge between conceptual-formal reasoning and domain-level plausibility.
 
