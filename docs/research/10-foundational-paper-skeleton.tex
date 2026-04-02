@@ -571,6 +571,48 @@ At an abstract level, one may define a recovery horizon \(R\) and say that the e
 
 This concept is useful because developmental ecosystems need not be shock-free to be viable. What matters is whether temporary degradation becomes persistent drift or recoverable disturbance.
 
+\subsection{Perturbations}
+
+To make resilience analytically useful, the paper must eventually specify what counts as a perturbation. At a preliminary level, a perturbation may be understood as an event or parameter shift that changes the current trajectory of the ecosystem without necessarily redefining the system itself.
+
+Relevant perturbations may include:
+\begin{itemize}
+  \item temporary economic shortfalls,
+  \item spikes in opportunistic behavior,
+  \item temporary reductions in continuation value,
+  \item asymmetric entry of unusually resource-rich or resource-poor agents,
+  \item temporary failures of enforcement or organizational capacity.
+\end{itemize}
+
+At a schematic level, one may represent a perturbation by a map
+\[
+\pi_t : z(t) \mapsto z'(t),
+\]
+or more generally by a shock to the transition structure itself, for example through temporary change in parameters \(\theta\), admissible actions, or event conditions.
+
+This distinction matters. Some perturbations move the state while preserving the governing structure. Others affect the structure through which future states are generated.
+
+\subsection{Admissible responses}
+
+Resilience also depends on what kinds of responses are available after perturbation. A recovery claim is incomplete unless it specifies which adjustments the ecosystem is allowed to use in order to return to admissible conditions.
+
+At a first approximation, admissible responses may include:
+\begin{itemize}
+  \item reputation updates,
+  \item bounded adjustment of commitments or incentives,
+  \item temporary restriction of some actions,
+  \item rebalancing of opportunity conditions,
+  \item structural but bounded adaptation of event rules.
+\end{itemize}
+
+One may later represent a response policy by
+\[
+\varphi_t \in \Phi_{\mathrm{adm}},
+\]
+where \(\Phi_{\mathrm{adm}}\) denotes the class of responses that preserve the identity of the ecosystem while allowing bounded correction.
+
+This is important because not every return to \(\Omega\) should count as legitimate recovery. If the system can recover only by abandoning openness, destroying developmental opportunity, or imposing unbounded external support, then the return may be operational but not structurally acceptable.
+
 \subsection{Interpretive note}
 
 The formal model is intentionally being built in stages. The present layer introduces state variables and transition language without yet fixing their complete analytical form. This preserves interpretability while making the future mathematical direction explicit.
@@ -580,6 +622,8 @@ The same holds for utility. The purpose of introducing a preliminary utility rep
 The same caution applies to stability. The region \(\Omega\) is not yet a theorem-level object. At this stage it is a conceptual placeholder that organizes later questions about persistence, resilience, and degradation.
 
 The same is true of resilience. Recovery should not be interpreted as a generic slogan about robustness, but as a later object of formal analysis tied to admissible perturbations, horizons, and return conditions.
+
+The same caution also applies to perturbations and responses. Their present role is to organize future analysis, not yet to define a closed formal taxonomy.
 
 \section{Structural Properties}
 
@@ -722,6 +766,14 @@ If a perturbation displaces the ecosystem outside \(\Omega\) but the induced tra
 The role of \(\Omega\) is to encode admissible developmental conditions. Temporary exit followed by bounded re-entry indicates disturbance without sustained loss of structural identity. Persistent degradation requires not merely displacement, but failure to recover over relevant horizons.
 \end{proof}
 
+\begin{proposition}[Recovery Depends on Admissible Response Structure]
+If recovery from a perturbation is possible only through responses outside \(\Phi_{\mathrm{adm}}\), then the perturbation cannot be said to preserve structural resilience in the intended sense.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Admissible responses are introduced to distinguish genuine structural recovery from recovery achieved by violating the ecosystem's defining commitments. If return to \(\Omega\) requires abandoning those commitments, then the system has not preserved resilience as an open developmental ecosystem, even if some aggregate indicators temporarily improve.
+\end{proof}
+
 \section{Degradation Modes}
 
 \paragraph{Purpose of this section.}
@@ -782,6 +834,8 @@ Under this interpretation, instability should eventually be studied not only as 
 Loss of resilience occurs when shocks, asymmetries, or temporary degradations cease to be recoverable within acceptable horizons. This mode is important because some ecosystems fail not by immediate collapse, but by progressively losing the capacity to return to admissible developmental conditions.
 
 In this sense, resilience is a second-order property of the ecosystem. It concerns not only where the system is, but whether the system can come back from adverse displacement without losing its developmental character.
+
+This degradation mode should therefore be linked not only to perturbation size, but also to the narrowing of admissible response capacity. A system may become fragile not merely because shocks get larger, but because the space of structurally legitimate recovery actions becomes too weak or too narrow.
 
 \section{Discussion}
 
