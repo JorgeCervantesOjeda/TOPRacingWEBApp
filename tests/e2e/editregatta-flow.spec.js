@@ -228,6 +228,165 @@ test('authenticated user can create a venue and inspect it on the map', async ({
   await dismissWaitUi(page);
 });
 
+test('authenticated user can build the geographic chain from variant to planet region', async ({ page }) => {
+  const email = `codex+geochain-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+  const suffix = `${Date.now()}`;
+  const variantName = `Geo Variant ${suffix}`;
+  const venueName = `Geo Venue ${suffix}`;
+  const provinceRegionName = `Geo Province Region ${suffix}`;
+  const provinceName = `Geo Province ${suffix}`;
+  const countryRegionName = `Geo Country Region ${suffix}`;
+  const countryName = `Geo Country ${suffix}`;
+  const planetRegionName = `Geo Planet Region ${suffix}`;
+
+  await createAccount(page, email, password, 'Geo', 'Chain');
+
+  await page.goto(`${baseUrl}/faces/listvariants.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/listvariants\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Create new Variant' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editvariant\.xhtml$/);
+  await dismissWaitUi(page);
+
+  const variantInputs = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
+  await variantInputs.nth(0).fill(variantName);
+  await variantInputs.nth(1).fill('1.1');
+  await variantInputs.nth(2).fill('2.2');
+  await page.getByRole('button', { name: 'View Venues' }).click();
+  await expect(page).toHaveURL(/\/faces\/listvenues\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Create new Venue' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editvenue\.xhtml$/);
+  await dismissWaitUi(page);
+
+  const venueInputs = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
+  await venueInputs.nth(0).fill(venueName);
+  await venueInputs.nth(2).fill('-99.1000');
+  await venueInputs.nth(3).fill('19.4000');
+  await page.getByRole('button', { name: 'View Province Regions' }).click();
+  await expect(page).toHaveURL(/\/faces\/listprovinceregions\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Create new Province Region' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editprovinceregion\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await fillFirstTextInput(page, provinceRegionName);
+  await page.getByRole('button', { name: 'View Provinces' }).click();
+  await expect(page).toHaveURL(/\/faces\/listprovinces\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Create new Province' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editprovince\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await fillFirstTextInput(page, provinceName);
+  await page.getByRole('button', { name: 'View Country Regions' }).click();
+  await expect(page).toHaveURL(/\/faces\/listcountryregions\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Create new Country Region' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editcountryregion\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await fillFirstTextInput(page, countryRegionName);
+  await page.getByRole('button', { name: 'View Countries' }).click();
+  await expect(page).toHaveURL(/\/faces\/listcountries\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Create new Country' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editcountry\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await fillFirstTextInput(page, countryName);
+  await page.getByRole('button', { name: 'View Planet Regions' }).click();
+  await expect(page).toHaveURL(/\/faces\/listplanetregions\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await page.getByRole('button', { name: 'Create new Planet Region' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editplanetregion\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await fillFirstTextInput(page, planetRegionName);
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await expect(page).toHaveURL(/\/faces\/editplanetregion\.xhtml$/);
+  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
+  await expect(page).toHaveURL(/\/faces\/listplanetregions\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await selectRowByText(page, 'planetregions', planetRegionName);
+  await expect(page).toHaveURL(/\/faces\/editcountry\.xhtml$/);
+  await dismissWaitUi(page);
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
+  await expect(page).toHaveURL(/\/faces\/listcountries\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await selectRowByText(page, 'countries', countryName);
+  await expect(page).toHaveURL(/\/faces\/editcountryregion\.xhtml$/);
+  await dismissWaitUi(page);
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
+  await expect(page).toHaveURL(/\/faces\/listcountryregions\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await selectRowByText(page, 'countryregions', countryRegionName);
+  await expect(page).toHaveURL(/\/faces\/editprovince\.xhtml$/);
+  await dismissWaitUi(page);
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
+  await expect(page).toHaveURL(/\/faces\/listprovinces\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await selectRowByText(page, 'provinces', provinceName);
+  await expect(page).toHaveURL(/\/faces\/editprovinceregion\.xhtml$/);
+  await dismissWaitUi(page);
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
+  await expect(page).toHaveURL(/\/faces\/listprovinceregions\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await selectRowByText(page, 'provinceregions', provinceRegionName);
+  await expect(page).toHaveURL(/\/faces\/editvenue\.xhtml$/);
+  await dismissWaitUi(page);
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
+  await expect(page).toHaveURL(/\/faces\/listvenues\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await selectRowByText(page, 'venues', venueName);
+  await expect(page).toHaveURL(/\/faces\/editvariant\.xhtml$/);
+  await dismissWaitUi(page);
+  const variantInputsAfterVenueSelection = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
+  await variantInputsAfterVenueSelection.nth(0).fill(variantName);
+  await variantInputsAfterVenueSelection.nth(1).fill('1.1');
+  await variantInputsAfterVenueSelection.nth(2).fill('2.2');
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+
+  await expect(page).toHaveURL(/\/faces\/editvariant\.xhtml$/);
+  await expect(page.locator('#contentForm')).toContainText(venueName);
+  await expect(variantInputsAfterVenueSelection.nth(0)).toHaveValue(variantName);
+  await expect(variantInputsAfterVenueSelection.nth(1)).toHaveValue('1.1');
+  await expect(variantInputsAfterVenueSelection.nth(2)).toHaveValue('2.2');
+});
+
 async function createAccount(page, email, password, givenNames, familyNames) {
   await page.goto(`${baseUrl}/faces/login.xhtml`);
   await page.locator('#contentForm\\:newParticipantButton').click();
@@ -287,20 +446,39 @@ async function createSavedRegistrationAndReturnToResults(page) {
 }
 
 async function dismissWaitUi(page) {
-  await page.evaluate(() => {
-    try {
-      if (window.PF) {
-        const waitDialog = PF('dlgWait');
-        if (waitDialog && typeof waitDialog.hide === 'function') {
-          waitDialog.hide();
+  try {
+    await page.evaluate(() => {
+      try {
+        if (window.PF) {
+          const waitDialog = PF('dlgWait');
+          if (waitDialog && typeof waitDialog.hide === 'function') {
+            waitDialog.hide();
+          }
         }
+      } catch (error) {
+        // Ignore missing PrimeFaces widget state in tests.
       }
-    } catch (error) {
-      // Ignore missing PrimeFaces widget state in tests.
-    }
 
-    document
-      .querySelectorAll('.ui-widget-overlay, .ui-dialog-mask')
-      .forEach((node) => node.remove());
-  });
+      document
+        .querySelectorAll('.ui-widget-overlay, .ui-dialog-mask')
+        .forEach((node) => node.remove());
+    });
+  } catch (error) {
+    if (!String(error).includes('Execution context was destroyed')) {
+      throw error;
+    }
+  }
+}
+
+async function fillFirstTextInput(page, value) {
+  const inputs = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
+  await inputs.nth(0).fill(value);
+}
+
+async function selectRowByText(page, tableId, text) {
+  await page.locator(`#contentForm\\:${tableId}\\:globalFilter`).fill(text);
+  await page.waitForTimeout(500);
+  const row = page.locator('tr', { hasText: text }).first();
+  await expect(row).toBeVisible();
+  await row.getByRole('button', { name: 'Select' }).click();
 }
