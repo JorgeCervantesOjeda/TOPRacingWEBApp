@@ -110,11 +110,29 @@ public class ResetPasswordBean {
 
   public String getResetPasswordMsg() {
     if( currentParticipant == null ) {
-      return "Error: null pointer at getResetPasswordMsg()";
+      return "Password reset request is invalid or expired.";
     }
 
     return "Your Password has been reset. "
            + "Please wait for your new password in your e-mail.";
+  }
+
+  public String getParticipantName() {
+    if( currentParticipant == null ) {
+      return "Guest";
+    }
+
+    return currentParticipant.getNamesGiven()
+           + " "
+           + currentParticipant.getNamesFamily();
+  }
+
+  public String getParticipantEmail() {
+    if( currentParticipant == null ) {
+      return "";
+    }
+
+    return currentParticipant.getEmail();
   }
 
 }

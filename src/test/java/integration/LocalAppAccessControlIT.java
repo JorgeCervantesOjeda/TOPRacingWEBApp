@@ -27,13 +27,16 @@ class LocalAppAccessControlIT {
   void anonymousUsersAreRedirectedAwayFromProtectedPages() throws IOException,
                                                                   InterruptedException {
     HttpResponse<String> editRegatta = get( "/faces/editregatta.xhtml" );
+    HttpResponse<String> editRegistration = get( "/faces/editregistration.xhtml" );
+    HttpResponse<String> editRegattaResults = get( "/faces/editregattaresults.xhtml" );
+    HttpResponse<String> listPenalties = get( "/faces/listpenalties.xhtml" );
+    HttpResponse<String> listRegistrations = get( "/faces/listregistrations.xhtml" );
 
-    assertEquals( 302,
-                  editRegatta.statusCode() );
-    assertTrue( editRegatta.headers()
-      .firstValue( "location" )
-      .orElse( "" )
-      .endsWith( "/faces/login.xhtml" ) );
+    assertRedirectsToLogin( editRegatta );
+    assertRedirectsToLogin( editRegistration );
+    assertRedirectsToLogin( editRegattaResults );
+    assertRedirectsToLogin( listPenalties );
+    assertRedirectsToLogin( listRegistrations );
   }
 
   private HttpResponse<String> get( String path ) throws IOException,
@@ -44,5 +47,14 @@ class LocalAppAccessControlIT {
       .build();
     return client.send( request,
                         HttpResponse.BodyHandlers.ofString() );
+  }
+
+  private void assertRedirectsToLogin( HttpResponse<String> response ) {
+    assertEquals( 302,
+                  response.statusCode() );
+    assertTrue( response.headers()
+      .firstValue( "location" )
+      .orElse( "" )
+      .endsWith( "/faces/login.xhtml" ) );
   }
 }

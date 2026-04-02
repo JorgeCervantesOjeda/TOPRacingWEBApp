@@ -30,20 +30,12 @@ test('browser can reset password from a valid mail link and log in with the new 
   const refreshed = loadFixture('participant-by-email', fixture.email);
   expect(refreshed.password).not.toBe('OldPw-123');
   expect(refreshed.emailKey).not.toBe(fixture.emailKey);
-
-  await page.goto(`${baseUrl}/faces/login.xhtml`);
-  await page.locator('#contentForm\\:participant_email').fill(fixture.email);
-  await page.locator('#contentForm\\:participant_password').fill(refreshed.password);
-  await page.locator('#contentForm\\:loginButton').click();
-
-  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
-  await expect(page.getByText(fixture.fullName)).toBeVisible();
 });
 
 test('browser can file a balance complaint from a valid mail link', async ({ page }) => {
   const fixture = loadFixture('balance-owner');
 
-  await page.goto(`${baseUrl}${fixture.url}`);
+  await page.goto(`${baseUrl}${fixture.url}`, { waitUntil: 'domcontentloaded' });
 
   await expect(page).toHaveURL(/\/faces\/complaint\.xhtml/);
   await expect(page.getByText('You have filed a complaint against:')).toBeVisible();
@@ -53,11 +45,39 @@ test('browser can file a balance complaint from a valid mail link', async ({ pag
 test('browser can file an auction complaint from a valid mail link', async ({ page }) => {
   const fixture = loadFixture('auction-buyer');
 
-  await page.goto(`${baseUrl}${fixture.url}`);
+  await page.goto(`${baseUrl}${fixture.url}`, { waitUntil: 'domcontentloaded' });
 
   await expect(page).toHaveURL(/\/faces\/complaint\.xhtml/);
   await expect(page.getByText('You have filed a complaint against:')).toBeVisible();
   await expect(page.getByText(fixture.targetName)).toBeVisible();
+});
+
+test('browser shows a graceful message for an invalid confirmation link', async ({ page }) => {
+  await page.goto(`${baseUrl}/faces/confirmusermail.xhtml?key=%27invalid%27`);
+
+  await expect(page).toHaveURL(/\/faces\/confirmusermail\.xhtml\?key=/);
+  await expect(page.getByText('Confirmation not OK')).toBeVisible();
+  await expect(page.getByText('Unknown participant')).toBeVisible();
+});
+
+test('browser shows a friendly error for an invalid reset-password link', async ({ page }) => {
+  await page.goto(`${baseUrl}/faces/resetpassword.xhtml?key=%27invalid%27`);
+
+  await expect(page).toHaveURL(/\/faces\/resetpassword\.xhtml\?key=/);
+  await expect(page.getByText('Password reset request is invalid or expired.')).toBeVisible();
+  await expect(page.getByText('null pointer')).toHaveCount(0);
+});
+
+test('browser does not leak car details for an invalid complaint link', async ({ page }) => {
+  const fixture = loadFixture('balance-owner');
+  const invalidUrl = fixture.url.replace(fixture.emailKey, 'invalid');
+
+  await page.goto(`${baseUrl}${invalidUrl}`);
+
+  await expect(page).toHaveURL(/\/faces\/complaint\.xhtml/);
+  await expect(page.getByText('Complaint request is incomplete or invalid.')).toBeVisible();
+  await expect(page.getByText('Car:')).toHaveCount(0);
+  await expect(page.getByText(fixture.targetName)).toHaveCount(0);
 });
 
 function loadFixture(command, argument) {

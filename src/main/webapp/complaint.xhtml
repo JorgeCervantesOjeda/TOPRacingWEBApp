@@ -11,11 +11,10 @@
       <p:panel
         style="align-content: center; background-color: whitesmoke; border-color: black; width: 80%; height: 200px;" >
 
-        <h2>Hello #{complaintBean.participant.namesGiven} #{complaintBean.participant.namesFamily}</h2>
+        <h2>Hello #{complaintBean.participantName}</h2>
         <h2>#{complaintBean.getComplaintMsg()}</h2>
 
-        Car: #{complaintBean.registration.car.id}
-        #{complaintBean.registration.car.nickname}
+        #{complaintBean.registrationSummary}
 
       </p:panel>
     </div>

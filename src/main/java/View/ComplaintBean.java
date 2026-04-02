@@ -316,5 +316,29 @@ public class ComplaintBean {
     return getComplaintMsg();
   }
 
+  public String getParticipantName() {
+    if( currentParticipant == null ) {
+      return "";
+    }
+
+    return currentParticipant.getNamesGiven()
+           + " "
+           + currentParticipant.getNamesFamily();
+  }
+
+  public String getRegistrationSummary() {
+    if( defaulter == null
+        || currentParticipant == null
+        || currentRegistration == null
+        || currentRegistration.getCar() == null ) {
+      return "";
+    }
+
+    return "Car: "
+           + currentRegistration.getCar().getId()
+           + " "
+           + currentRegistration.getCar().getNickname();
+  }
+
 }
 

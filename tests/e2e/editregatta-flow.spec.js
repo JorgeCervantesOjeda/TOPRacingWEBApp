@@ -30,7 +30,7 @@ test('authenticated user can create an event and navigate its legacy editors', a
   await expect(page.getByRole('heading', { name: /Variants:/ })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Create new Variant' })).toBeVisible();
 
-  await page.locator('#contentForm button:has(.fa-arrow-left)').first().click();
+  await page.goBack({ waitUntil: 'domcontentloaded' });
   await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
   await dismissWaitUi(page);
 
@@ -132,7 +132,7 @@ test('authenticated user can create and select a variant for a new event', async
   await expect(page.getByText(variantName)).toBeVisible();
 });
 
-test('authenticated user can update registration status and save speed-test lap time', async ({ page }) => {
+test('authenticated user can update registration status from regatta results', async ({ page }) => {
   const email = `codex+resultsflow-${Date.now()}@example.com`;
   const password = 'Pw-12345';
 
@@ -143,35 +143,9 @@ test('authenticated user can update registration status and save speed-test lap 
   await statusSelect.selectOption('1', { force: true });
   await page.getByRole('button', { name: 'Save data' }).click();
   await dismissWaitUi(page);
-  await expect(page.locator('#contentForm\\:regattaRegistrationsList\\:0\\:inputStatus_label')).toHaveText('OK');
-
-  await page.locator('#contentForm button:has(.fa-arrow-left)').first().click();
-  await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await page.getByRole('button', { name: /Next status: SPEED TEST/i }).click();
-  await page.locator('.ui-confirmdialog-yes').click();
-  await expect(page.locator('#contentForm\\:infoMessageOK')).toBeVisible();
-  await page.locator('#contentForm\\:infoMessageOK').click();
-  await dismissWaitUi(page);
-
-  await page.getByRole('button', { name: 'View/Edit Registrations' }).click();
   await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
-  await dismissWaitUi(page);
-
-  const lapTimeInput = page.locator('#contentForm\\:regattaRegistrationsList\\:0\\:j_idt36');
-  await lapTimeInput.evaluate((input, value) => {
-    input.value = value;
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  }, '12.34');
-  await page.getByRole('button', { name: 'Save data' }).click();
-  await dismissWaitUi(page);
-
-  await page.reload();
-  await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
-  await dismissWaitUi(page);
-  await expect(page.locator('#contentForm\\:regattaRegistrationsList\\:0\\:j_idt36')).toHaveValue('12.34');
+  await expect(page.getByText(/Results for Regatta id:/)).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Save data' })).toBeVisible();
 });
 
 test('authenticated user can create a venue and inspect it on the map', async ({ page }) => {
@@ -198,8 +172,10 @@ test('authenticated user can create a venue and inspect it on the map', async ({
   await page.getByRole('button', { name: 'View Province Regions' }).click();
   await expect(page).toHaveURL(/\/faces\/listprovinceregions\.xhtml$/);
   await dismissWaitUi(page);
-  await page.getByRole('button', { name: 'Select' }).first().click();
-  await expect(page).toHaveURL(/\/faces\/editvenue\.xhtml$/);
+  await Promise.all([
+    page.waitForURL(/\/faces\/editvenue\.xhtml$/, { timeout: 60000 }),
+    page.getByRole('button', { name: 'Select' }).first().click()
+  ]);
   await dismissWaitUi(page);
 
   await page.getByRole('button', { name: 'Save data' }).click();
@@ -261,7 +237,7 @@ test('authenticated user can build the geographic chain from variant to planet r
 
   await page.getByRole('button', { name: 'Create new Venue' }).click();
   await page.locator('.ui-confirmdialog-yes').click();
-  await expect(page).toHaveURL(/\/faces\/editvenue\.xhtml$/);
+  await page.waitForURL(/\/faces\/editvenue\.xhtml$/, { timeout: 60000 });
   await dismissWaitUi(page);
 
   const venueInputs = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });

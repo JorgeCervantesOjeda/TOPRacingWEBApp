@@ -224,6 +224,51 @@ class LocalAppExternalLinkFlowsIT {
          && bid.getStatus() > 0 ) );
   }
 
+  @Test
+  void invalidConfirmationKeyShowsGracefulMessage() throws IOException,
+                                                           InterruptedException {
+    HttpResponse<String> response = get(
+      "/faces/confirmusermail.xhtml?key=%27invalid%27" );
+
+    assertEquals( 200,
+                  response.statusCode() );
+    assertTrue( response.body().contains( "Confirmation not OK" ) );
+    assertTrue( response.body().contains( "Unknown participant" ) );
+  }
+
+  @Test
+  void invalidResetPasswordKeyShowsFriendlyError() throws IOException,
+                                                          InterruptedException {
+    HttpResponse<String> response = get(
+      "/faces/resetpassword.xhtml?key=%27invalid%27" );
+
+    assertEquals( 200,
+                  response.statusCode() );
+    assertTrue( response.body().contains(
+      "Password reset request is invalid or expired." ) );
+    assertTrue( !response.body().contains( "null pointer" ) );
+  }
+
+  @Test
+  void invalidComplaintLinkDoesNotLeakRegistrationDetails() throws IOException,
+                                                                   InterruptedException {
+    BalanceComplaintFixture fixture = createBalanceComplaintFixture( 10.0 );
+
+    HttpResponse<String> response = get(
+      "/faces/complaint.xhtml?mode=balance&key=%27invalid%27&r1="
+      + fixture.registration().getId()
+      + "&target="
+      + fixture.promoter().getId() );
+
+    assertEquals( 200,
+                  response.statusCode() );
+    assertTrue( response.body().contains(
+      "Complaint request is incomplete or invalid." ) );
+    assertTrue( !response.body().contains( "Car:" ) );
+    assertTrue( !response.body().contains(
+      fixture.registration().getCar().getNickname() ) );
+  }
+
   private BalanceComplaintFixture createBalanceComplaintFixture( double expectedBalanceSign ) {
     Participant promoter = createSavedParticipant( "promoter",
                                                    "Promoter-123",

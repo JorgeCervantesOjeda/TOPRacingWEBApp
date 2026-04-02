@@ -52,3 +52,50 @@ test('browser respects anonymous access policy', async ({ page }) => {
   await expect(page).toHaveURL(/\/faces\/complaint\.xhtml$/);
   await expect(page.getByText('TOP-Racing')).toBeVisible();
 });
+
+test('logout invalidates access to protected editors', async ({ page }) => {
+  const email = `codex+logout-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, email, password, 'Logout', 'Guard');
+
+  await page.goto(`${baseUrl}/faces/listpenalties.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/listpenalties\.xhtml$/);
+  await page.getByRole('button', { name: 'Create Event' }).click();
+  await page.locator('.ui-confirmdialog-yes').click();
+  await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
+
+  const protectedRegattaUrl = page.url();
+
+  await page.goto(`${baseUrl}/faces/welcome.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
+  await page.locator('[id$="logoutButton"]').click();
+  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
+
+  await page.goto(protectedRegattaUrl);
+  await expect(page).toHaveURL(/\/faces\/login\.xhtml$/);
+
+  await page.goto(`${baseUrl}/faces/listpenalties.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/login\.xhtml$/);
+
+  await page.goto(`${baseUrl}/faces/editregistration.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/login\.xhtml$/);
+});
+
+async function createAccount(page, email, password, givenNames, familyNames) {
+  await page.goto(`${baseUrl}/faces/login.xhtml`);
+  await page.locator('#contentForm\\:newParticipantButton').click();
+
+  await expect(page).toHaveURL(/\/faces\/editparticipant\.xhtml$/);
+  await expect(page.locator('#contentForm\\:saveParticipantButton')).toBeVisible();
+
+  await page.locator('#contentForm\\:passwordInput').fill(password);
+  await page.locator('#contentForm\\:givenNamesInput').fill(givenNames);
+  await page.locator('#contentForm\\:familyNamesInput').fill(familyNames);
+  await page.locator('#contentForm\\:emailInput').fill(email);
+  await page.locator('#contentForm\\:phoneInput').fill('5555555555');
+  await page.locator('#contentForm\\:saveParticipantButton').click();
+
+  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
+  await expect(page.getByText('Logout').first()).toBeVisible();
+}

@@ -94,6 +94,9 @@ public final class BrowserFixtureCli {
     printLine( "reporterEmail",
                fixture.owner()
                  .getEmail() );
+    printLine( "emailKey",
+               fixture.owner()
+                 .getEmailKey() );
     printLine( "targetEmail",
                fixture.promoter()
                  .getEmail() );
@@ -128,6 +131,9 @@ public final class BrowserFixtureCli {
     printLine( "reporterEmail",
                fixture.buyer()
                  .getEmail() );
+    printLine( "emailKey",
+               fixture.buyer()
+                 .getEmailKey() );
     printLine( "targetEmail",
                fixture.seller()
                  .getEmail() );
