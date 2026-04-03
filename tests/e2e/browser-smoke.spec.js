@@ -2,6 +2,10 @@ const { test, expect } = require('@playwright/test');
 
 const baseUrl = process.env.TOPRACING_BASE_URL || 'http://localhost:8080/topracingwebapp';
 
+test.afterEach(async ({ page }) => {
+  await logoutIfVisible(page);
+});
+
 test('login page renders public auth controls', async ({ page }) => {
   await page.goto(`${baseUrl}/faces/login.xhtml`);
 
@@ -82,6 +86,30 @@ test('logout invalidates access to protected editors', async ({ page }) => {
   await expect(page).toHaveURL(/\/faces\/login\.xhtml$/);
 });
 
+test('authenticated user can access core authenticated lists', async ({ page }) => {
+  const email = `codex+menu-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, email, password, 'Menu', 'Navigator');
+
+  await page.goto(`${baseUrl}/faces/listpointscounts.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/listpointscounts\.xhtml$/);
+  await expect(page.locator('[id$="PenaltiesButton"]')).toBeVisible();
+
+  await page.goto(`${baseUrl}/faces/listpenalties.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/listpenalties\.xhtml$/);
+  await expect(page.locator('#contentForm\\:penaltiesList')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Create Event' })).toBeVisible();
+
+  await page.goto(`${baseUrl}/faces/listregistrations.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/listregistrations\.xhtml$/);
+  await expect(page.locator('#contentForm\\:registrationsList')).toBeVisible();
+
+  await page.goto(`${baseUrl}/faces/welcome.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
+  await expect(page.getByText('Logout').first()).toBeVisible();
+});
+
 async function createAccount(page, email, password, givenNames, familyNames) {
   await page.goto(`${baseUrl}/faces/login.xhtml`);
   await page.locator('#contentForm\\:newParticipantButton').click();
@@ -98,4 +126,20 @@ async function createAccount(page, email, password, givenNames, familyNames) {
 
   await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
   await expect(page.getByText('Logout').first()).toBeVisible();
+}
+
+async function logoutIfVisible(page) {
+  if (page.isClosed()) {
+    return;
+  }
+
+  try {
+    const logoutButton = page.locator('[id$="logoutButton"]').first();
+    if (await logoutButton.isVisible({ timeout: 1500 }).catch(() => false)) {
+      await logoutButton.click({ timeout: 5000 });
+      await page.waitForTimeout(300);
+    }
+  } catch (error) {
+    // Best-effort session cleanup for local GlassFish stability.
+  }
 }

@@ -73,5 +73,7 @@ public interface ViewForController {
 
   public void setProgress( double p );
 
+  public void invalidateSessionAndShowUI( int ui );
+
 }
 

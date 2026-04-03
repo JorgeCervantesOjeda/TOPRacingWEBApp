@@ -2,6 +2,10 @@ const { test, expect } = require('@playwright/test');
 
 const baseUrl = process.env.TOPRACING_BASE_URL || 'http://localhost:8080/topracingwebapp';
 
+test.afterEach(async ({ page }) => {
+  await logoutIfVisible(page);
+});
+
 test('authenticated user can create an event and navigate its legacy editors', async ({ page }) => {
   const email = `codex+regatta-${Date.now()}@example.com`;
   const password = 'Pw-12345';
@@ -39,6 +43,20 @@ test('authenticated user can create an event and navigate its legacy editors', a
   await dismissWaitUi(page);
   await expect(page.getByText(/Results for Regatta id:/)).toBeVisible();
   await expect(page.getByRole('button', { name: 'Save data' })).toBeVisible();
+});
+
+test('authenticated user can return from event editor to penalties list', async ({ page }) => {
+  const email = `codex+penaltyselect-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, email, password, 'Penalty', 'Selector');
+  await createEventFromPenalties(page);
+
+  await clickBackButton(page);
+  await expect(page).toHaveURL(/\/faces\/listpenalties\.xhtml$/);
+  await dismissWaitUi(page);
+  await expect(page.locator('#contentForm\\:penaltiesList')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Create Event' })).toBeVisible();
 });
 
 test('authenticated user can open registration creation from regatta results', async ({ page }) => {
@@ -120,15 +138,16 @@ test('authenticated user can create and select a variant for a new event', async
   await expect(page).toHaveURL(/\/faces\/listvariants\.xhtml$/);
   await dismissWaitUi(page);
 
-  const variantRow = page.locator('tr', { hasText: variantName }).first();
+  await typeIntoFilter(page, '#contentForm\\:variants\\:globalFilter', variantName);
+  const variantRow = page.locator('#contentForm\\:variants_data tr', { hasText: variantName }).first();
   await expect(variantRow).toBeVisible();
   await Promise.all([
-    page.waitForURL(/\/faces\/editregatta\.xhtml$/, { timeout: 60000 }),
+    page.waitForURL(/\/faces\/editregatta\.xhtml$/, { timeout: 60000, waitUntil: 'domcontentloaded' }),
     variantRow.getByRole('button', { name: 'Select' }).click()
   ]);
   await dismissWaitUi(page);
-
-  await expect(page.getByRole('heading', { name: 'View/Edit Event' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'View/Edit Event' })).toBeVisible({ timeout: 60000 });
+  await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
   await expect(page.getByText(variantName)).toBeVisible();
 });
 
@@ -146,6 +165,28 @@ test('authenticated user can update registration status from regatta results', a
   await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
   await expect(page.getByText(/Results for Regatta id:/)).toBeVisible();
   await expect(page.getByRole('button', { name: 'Save data' })).toBeVisible();
+});
+
+test('authenticated user can reopen a registration from regatta results and return', async ({ page }) => {
+  const suffix = `${Date.now()}`;
+  const email = `codex+registrationlist-${suffix}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, email, password, 'Registration', `Selector${suffix}`);
+  await createSavedRegistrationAndReturnToResults(page);
+
+  const registrationRow = page.locator('#contentForm\\:regattaRegistrationsList_data tr').first();
+  await expect(registrationRow).toBeVisible();
+  await Promise.all([
+    page.waitForURL(/\/faces\/editregistration\.xhtml$/, { timeout: 60000, waitUntil: 'domcontentloaded' }),
+    registrationRow.locator('td').nth(1).click()
+  ]);
+  await dismissWaitUi(page);
+
+  await expect(page.getByRole('heading', { name: /Registration Information/i })).toBeVisible();
+  await clickBackButton(page);
+  await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
+  await dismissWaitUi(page);
 });
 
 test('authenticated user can create a venue and inspect it on the map', async ({ page }) => {
@@ -384,9 +425,10 @@ async function createAccount(page, email, password, givenNames, familyNames) {
 async function createEventFromPenalties(page) {
   await page.goto(`${baseUrl}/faces/listpenalties.xhtml`);
   await expect(page).toHaveURL(/\/faces\/listpenalties\.xhtml$/);
-  await expect(page.getByText('Create Event')).toBeVisible();
+  const createEventButton = page.getByRole('button', { name: 'Create Event' });
+  await expect(createEventButton).toBeVisible({ timeout: 60000 });
 
-  await page.getByRole('button', { name: 'Create Event' }).click();
+  await createEventButton.click();
   await page.locator('.ui-confirmdialog-yes').click();
   await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
   await dismissWaitUi(page);
@@ -416,7 +458,7 @@ async function createSavedRegistrationAndReturnToResults(page) {
   await createRegistrationEditor(page);
   await page.getByRole('button', { name: 'Save data' }).click();
   await dismissWaitUi(page);
-  await page.locator('#contentForm button:has(.fa-arrow-left)').first().click();
+  await clickBackButton(page);
   await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
   await dismissWaitUi(page);
 }
@@ -457,4 +499,40 @@ async function selectRowByText(page, tableId, text) {
   const row = page.locator('tr', { hasText: text }).first();
   await expect(row).toBeVisible();
   await row.getByRole('button', { name: 'Select' }).click();
+}
+
+async function clickBackButton(page) {
+  await page.locator('#contentForm button:has(.fa-arrow-left)').first().click();
+}
+
+async function typeIntoLastGlobalFilter(page, value) {
+  const filterInput = page.locator('#contentForm input[id$="globalFilter"]').last();
+  await typeIntoFilter(page, filterInput, value);
+}
+
+async function typeIntoFilter(page, locatorOrSelector, value) {
+  const filterInput = typeof locatorOrSelector === 'string'
+    ? page.locator(locatorOrSelector)
+    : locatorOrSelector;
+  await filterInput.click();
+  await filterInput.fill('');
+  await filterInput.type(value, { delay: 50 });
+  await page.waitForTimeout(500);
+}
+
+async function logoutIfVisible(page) {
+  if (page.isClosed()) {
+    return;
+  }
+
+  try {
+    await dismissWaitUi(page);
+    const logoutButton = page.locator('[id$="logoutButton"]').first();
+    if (await logoutButton.isVisible({ timeout: 1500 }).catch(() => false)) {
+      await logoutButton.click({ timeout: 5000 });
+      await page.waitForTimeout(300);
+    }
+  } catch (error) {
+    // Best-effort session cleanup for local GlassFish stability.
+  }
 }

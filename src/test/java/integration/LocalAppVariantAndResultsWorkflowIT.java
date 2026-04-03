@@ -278,5 +278,10 @@ class LocalAppVariantAndResultsWorkflowIT {
     @Override
     public void setProgress( double p ) {
     }
+
+    @Override
+    public void invalidateSessionAndShowUI( int ui ) {
+      lastUi = ui;
+    }
   }
 }

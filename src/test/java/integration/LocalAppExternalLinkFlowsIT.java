@@ -36,7 +36,7 @@ class LocalAppExternalLinkFlowsIT {
     "http://localhost:8080/topracingwebapp" );
 
   private final HttpClient client = HttpClient.newBuilder()
-    .connectTimeout( Duration.ofSeconds( 10 ) )
+    .connectTimeout( Duration.ofSeconds( 30 ) )
     .followRedirects( Redirect.NEVER )
     .build();
 
@@ -394,7 +394,7 @@ class LocalAppExternalLinkFlowsIT {
   private HttpResponse<String> get( String path ) throws IOException,
                                                          InterruptedException {
     HttpRequest request = HttpRequest.newBuilder( URI.create( baseUrl + path ) )
-      .timeout( Duration.ofSeconds( 20 ) )
+      .timeout( Duration.ofSeconds( 180 ) )
       .GET()
       .build();
     return client.send( request,

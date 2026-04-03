@@ -111,6 +111,30 @@ class ControllerTest {
   }
 
   @Test
+  void clickLogoutInvalidatesSessionAndRedirectsToWelcome() throws Exception {
+    Participant current = participant( 12L,
+                                       true );
+    setPrivateField( controller,
+                     "currentParticipant",
+                     current );
+    when( modelBean.decNumUsuariosActivos() ).thenReturn( 0L );
+    FacesContext facesContext = mock( FacesContext.class );
+    ExternalContext externalContext = mock( ExternalContext.class );
+    Map<String, Object> sessionMap = new HashMap<>();
+    when( facesContext.getExternalContext() ).thenReturn( externalContext );
+    when( externalContext.getSessionMap() ).thenReturn( sessionMap );
+
+    try( MockedStatic<FacesContext> facesContextMock = mockStatic( FacesContext.class ) ) {
+      facesContextMock.when( FacesContext::getCurrentInstance )
+        .thenReturn( facesContext );
+
+      controller.clickLogout();
+    }
+
+    verify( view ).invalidateSessionAndShowUI( UI.WELCOME );
+  }
+
+  @Test
   void promoterBalanceComplaintMarksPromoterAndRequestsRecalculation() {
     Registration registration = registration( 55L,
                                               21L,

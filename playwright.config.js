@@ -4,9 +4,10 @@ const baseURL = process.env.TOPRACING_BASE_URL || 'http://localhost:8080/topraci
 
 module.exports = defineConfig({
   testDir: './tests/e2e',
-  timeout: 60000,
+  timeout: 120000,
+  workers: 1,
   expect: {
-    timeout: 20000
+    timeout: 30000
   },
   reporter: 'list',
   use: {

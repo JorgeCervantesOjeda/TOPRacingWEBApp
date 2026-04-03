@@ -181,6 +181,25 @@ public class ViewBean
     theController.clickLogout();
   }
 
+  @Override
+  public void invalidateSessionAndShowUI( int ui ) {
+    FacesContext instance = FacesContext.getCurrentInstance();
+    if( instance == null ) {
+      return;
+    }
+
+    ExternalContext context = instance.getExternalContext();
+    String target = resolveTargetForUi( context,
+                                        ui );
+    try {
+      context.invalidateSession();
+      context.redirect( target );
+      instance.responseComplete();
+    } catch( IOException e ) {
+      throw new RuntimeException( "Unable to invalidate session and redirect.", e );
+    }
+  }
+
   public void clickOK() {
     theController.clickOK();
   }
@@ -652,6 +671,19 @@ public class ViewBean
       return context.getRequestContextPath() + target;
     }
     return context.getRequestContextPath() + "/faces/" + target;
+  }
+
+  private String resolveTargetForUi( ExternalContext context,
+                                     int ui ) {
+    switch( ui ) {
+      case UI.LOGIN:
+        return resolveNavigationTarget( context,
+                                        "login.xhtml" );
+      case UI.WELCOME:
+      default:
+        return resolveNavigationTarget( context,
+                                        "welcome.xhtml" );
+    }
   }
 
   public String getMessage() {

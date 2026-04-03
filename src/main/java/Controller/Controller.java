@@ -134,8 +134,7 @@ public class Controller {
     System.out.println(
       "---- Quedan " + numUsuariosActivos + " usuarios activos. ----" );
 
-    theView.showUI( UI.WELCOME,
-                    this.currentParticipant );
+    theView.invalidateSessionAndShowUI( UI.WELCOME );
   }
 
   public void clickLogin( Participant user ) {
