@@ -309,7 +309,15 @@ public class Controller {
 
   public void clickEditRegatta( Regatta regatta,
                                 int ui ) {
-    regatta = modelBean.getRegattaById( regatta.getId() );
+    if( !isValidParticipant() ) {
+      return;
+    }
+
+    regatta = getOwnedRegatta( regatta,
+                               UI.ERROR_REGATTA_NOT_OWNED );
+    if( regatta == null ) {
+      return;
+    }
 
     this.previousUI.push( ui );
     theView.showUI( UI.EDIT_REGATTA,
@@ -456,6 +464,12 @@ public class Controller {
       return;
     }
 
+    regatta = getOwnedRegatta( regatta,
+                               UI.ERROR_REGATTA_NOT_OWNED );
+    if( regatta == null ) {
+      return;
+    }
+
     regatta.setPrizeFinishing( regatta.getPrizeFinishing() + 100 );
     modelBean.save( regatta );
     modelBean.requestRecalculateRegattaPenalties(
@@ -468,6 +482,12 @@ public class Controller {
 
   public void clickAddToEfficiencyPrize( Regatta regatta ) {
     if( !isValidParticipant() ) {
+      return;
+    }
+
+    regatta = getOwnedRegatta( regatta,
+                               UI.ERROR_REGATTA_NOT_OWNED );
+    if( regatta == null ) {
       return;
     }
 
@@ -485,6 +505,13 @@ public class Controller {
       return;
     }
 
+    Regatta persistedRegatta = getOwnedRegatta( regatta,
+                                                UI.ERROR_REGATTA_NOT_OWNED );
+    if( persistedRegatta == null ) {
+      return;
+    }
+
+    regatta.setParticipant( persistedRegatta.getParticipant() );
     modelBean.save( regatta );
     modelBean.requestRecalculateRegattaPenalties(
       ( p )
@@ -539,6 +566,15 @@ public class Controller {
 
   public void clickEditRegistration( Registration registration,
                                      int from_ui ) {
+    if( !isValidParticipant() ) {
+      return;
+    }
+
+    registration = getOwnedRegistration( registration,
+                                         UI.ERROR_EDIT_REGISTRATION_USER );
+    if( registration == null ) {
+      return;
+    }
 
     this.previousUI.push( from_ui );
 
@@ -569,6 +605,13 @@ public class Controller {
       return;
     }
 
+    Registration persistedRegistration = getOwnedRegistration(
+                   registration,
+                   UI.ERROR_EDIT_REGISTRATION_USER );
+    if( persistedRegistration == null ) {
+      return;
+    }
+
     if( this.currentParticipant.getId().longValue()
         != registration.getCar().getParticipant().getId().longValue() ) {
 
@@ -581,8 +624,7 @@ public class Controller {
     registration.setStatus( RegistrationStatus.INCOMPLETE );
 
     registration.setParticipantByIdOwner(
-      registration.getCar()
-        .getParticipant()
+      persistedRegistration.getParticipantByIdOwner()
     );
     modelBean.save( registration );
     modelBean.sendEmail(
@@ -629,6 +671,12 @@ public class Controller {
       return;
     }
 
+    car = getOwnedCar( car,
+                       UI.ERROR_EDIT_CAR );
+    if( car == null ) {
+      return;
+    }
+
     theView.showUI( UI.EDIT_CAR,
                     car );
   }
@@ -638,6 +686,13 @@ public class Controller {
       return;
     }
 
+    Car persistedCar = getOwnedCar( car,
+                                    UI.ERROR_EDIT_CAR );
+    if( persistedCar == null ) {
+      return;
+    }
+
+    car.setParticipant( persistedCar.getParticipant() );
     modelBean.save( car );
     modelBean.sendEmail(
       currentParticipant,
@@ -678,6 +733,15 @@ public class Controller {
   }
 
   public void clickEditVariant( Variant variant ) {
+    if( !isValidParticipant() ) {
+      return;
+    }
+
+    variant = getOwnedVariant( variant,
+                               UI.ERROR_EDIT_VARIANT );
+    if( variant == null ) {
+      return;
+    }
 
     theView.showUI( UI.EDIT_VARIANT,
                     variant );
@@ -688,6 +752,13 @@ public class Controller {
       return;
     }
 
+    Variant persistedVariant = getOwnedVariant( variant,
+                                                UI.ERROR_EDIT_VARIANT );
+    if( persistedVariant == null ) {
+      return;
+    }
+
+    variant.setIdCreator( persistedVariant.getIdCreator() );
     modelBean.save( variant );
     modelBean.sendEmail(
       this.currentParticipant,
@@ -723,6 +794,15 @@ public class Controller {
   }
 
   public void clickEditVenue( Venue venue ) {
+    if( !isValidParticipant() ) {
+      return;
+    }
+
+    venue = getOwnedVenue( venue,
+                           UI.ERROR_EDIT_VENUE );
+    if( venue == null ) {
+      return;
+    }
 
     theView.showUI( UI.EDIT_VENUE,
                     venue );
@@ -733,6 +813,14 @@ public class Controller {
       return;
     }
 
+    Venue persistedVenue = getOwnedVenue( venue,
+                                          UI.ERROR_EDIT_VENUE );
+    if( persistedVenue == null ) {
+      return;
+    }
+
+    venue.setIdCreator( persistedVenue.getIdCreator() );
+    venue.setParticipant( persistedVenue.getParticipant() );
     modelBean.save( venue );
     modelBean.sendEmail(
       currentParticipant,
@@ -1090,6 +1178,12 @@ public class Controller {
     if( !isValidParticipant() ) {
       return;
     }
+    Registration persistedRegistration = getOwnedRegistration(
+                   registration,
+                   UI.ERROR_EDIT_REGISTRATION_USER );
+    if( persistedRegistration == null ) {
+      return;
+    }
     if( currentParticipant.getId().longValue()
         != car.getParticipant().getId().longValue() ) {
 
@@ -1097,11 +1191,16 @@ public class Controller {
       return;
     }
 
+    persistedRegistration.setCar( car );
+    persistedRegistration.setParticipantByIdBuyer( // just to have a default buyer
+      car.getParticipant()
+    );
+    modelBean.save( persistedRegistration );
+
     registration.setCar( car );
     registration.setParticipantByIdBuyer( // just to have a default buyer
       car.getParticipant()
     );
-    modelBean.save( registration );
 
     theView.showUI( UI.EDIT_REGISTRATION );
   }
@@ -1112,8 +1211,17 @@ public class Controller {
       return;
     }
 
+    Registration persistedRegistration = getOwnedRegistration(
+                   registration,
+                   UI.ERROR_EDIT_REGISTRATION_USER );
+    if( persistedRegistration == null ) {
+      return;
+    }
+
+    persistedRegistration.setParticipantByIdDriver( driver );
+    modelBean.save( persistedRegistration );
+
     registration.setParticipantByIdDriver( driver );
-    modelBean.save( registration );
 
     theView.showUI( UI.EDIT_REGISTRATION );
   }
@@ -1123,10 +1231,9 @@ public class Controller {
     if( !isValidParticipant() ) {
       return;
     }
-    if( !Objects.equals( currentParticipant.getId(),
-                         regatta
-                           .getParticipant()
-                           .getId() ) ) {
+    regatta = getOwnedRegatta( regatta,
+                               UI.LIST_VARIANTS );
+    if( regatta == null ) {
       theView.showUI( UI.LIST_VARIANTS );
       return;
     }
@@ -1151,8 +1258,9 @@ public class Controller {
 
     switch( previousUi ) {
       case UI.EDIT_VARIANT:
-
-        if( currentParticipant.getId() != variant.getIdCreator() ) {
+        variant = getOwnedVariant( variant,
+                                   UI.LIST_VENUES );
+        if( variant == null ) {
           theView.showUI( UI.LIST_VENUES );
           return;
         }
@@ -1179,7 +1287,9 @@ public class Controller {
     if( !isValidParticipant() ) {
       return;
     }
-    if( currentParticipant.getId() != venue.getIdCreator() ) {
+    venue = getOwnedVenue( venue,
+                           UI.LIST_PROVINCEREGIONS );
+    if( venue == null ) {
       theView.showUI( UI.LIST_PROVINCEREGIONS );
       return;
     }
@@ -1195,7 +1305,9 @@ public class Controller {
     if( !isValidParticipant() ) {
       return;
     }
-    if( currentParticipant.getId() != provinceregion.getIdCreator() ) {
+    provinceregion = getOwnedProvinceregion( provinceregion,
+                                             UI.LIST_PROVINCES );
+    if( provinceregion == null ) {
       theView.showUI( UI.LIST_PROVINCES );
       return;
     }
@@ -1211,7 +1323,9 @@ public class Controller {
     if( !isValidParticipant() ) {
       return;
     }
-    if( currentParticipant.getId() != province.getIdCreator() ) {
+    province = getOwnedProvince( province,
+                                 UI.LIST_COUNTRYREGIONS );
+    if( province == null ) {
       theView.showUI( UI.LIST_COUNTRYREGIONS );
       return;
     }
@@ -1227,7 +1341,9 @@ public class Controller {
     if( !isValidParticipant() ) {
       return;
     }
-    if( currentParticipant.getId() != countryregion.getIdCreator() ) {
+    countryregion = getOwnedCountryregion( countryregion,
+                                           UI.LIST_COUNTRIES );
+    if( countryregion == null ) {
       theView.showUI( UI.LIST_COUNTRIES );
       return;
     }
@@ -1243,7 +1359,9 @@ public class Controller {
     if( !isValidParticipant() ) {
       return;
     }
-    if( currentParticipant.getId() != country.getIdCreator() ) {
+    country = getOwnedCountry( country,
+                               UI.LIST_PLANETREGIONS );
+    if( country == null ) {
       theView.showUI( UI.LIST_PLANETREGIONS );
       return;
     }
@@ -1257,6 +1375,160 @@ public class Controller {
   public void clickOK() {
     // TemplateBasic.xhtml has dlgInfo button OK
     // no action is necessary, only close window
+  }
+
+  private Regatta getOwnedRegatta( Regatta regatta,
+                                   int errorUi ) {
+    if( regatta == null || regatta.getId() == null ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    Regatta persistedRegatta = modelBean.getRegattaById( regatta.getId() );
+    if( persistedRegatta == null
+        || persistedRegatta.getParticipant() == null
+        || currentParticipant == null
+        || !Objects.equals( persistedRegatta.getParticipant().getId(),
+                            currentParticipant.getId() ) ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    return persistedRegatta;
+  }
+
+  private Registration getOwnedRegistration( Registration registration,
+                                             int errorUi ) {
+    if( registration == null || registration.getId() == null ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    Registration persistedRegistration = modelBean.getRegistrationById(
+                   registration.getId() );
+    if( persistedRegistration == null
+        || persistedRegistration.getParticipantByIdOwner() == null
+        || currentParticipant == null
+        || !Objects.equals(
+          persistedRegistration.getParticipantByIdOwner().getId(),
+          currentParticipant.getId() ) ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    return persistedRegistration;
+  }
+
+  private Car getOwnedCar( Car car,
+                           int errorUi ) {
+    if( car == null || car.getId() == null ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    Car persistedCar = modelBean.getCarById( car.getId() );
+    if( persistedCar == null
+        || persistedCar.getParticipant() == null
+        || currentParticipant == null
+        || !Objects.equals( persistedCar.getParticipant().getId(),
+                            currentParticipant.getId() ) ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    return persistedCar;
+  }
+
+  private Variant getOwnedVariant( Variant variant,
+                                   int errorUi ) {
+    if( variant == null || variant.getId() == null ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    Variant persistedVariant = modelBean.getVariantById( variant.getId() );
+    if( persistedVariant == null
+        || currentParticipant == null
+        || persistedVariant.getIdCreator() != currentParticipant.getId() ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    return persistedVariant;
+  }
+
+  private Venue getOwnedVenue( Venue venue,
+                               int errorUi ) {
+    if( venue == null || venue.getId() == null ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    Venue persistedVenue = modelBean.getVenueById( venue.getId() );
+    if( persistedVenue == null
+        || currentParticipant == null
+        || persistedVenue.getIdCreator() != currentParticipant.getId() ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    return persistedVenue;
+  }
+
+  private Provinceregion getOwnedProvinceregion( Provinceregion provinceregion,
+                                                 int errorUi ) {
+    if( provinceregion == null || provinceregion.getId() == null ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    Provinceregion persistedProvinceregion = modelBean.getProvinceregionById(
+      provinceregion.getId() );
+    if( persistedProvinceregion == null
+        || currentParticipant == null
+        || persistedProvinceregion.getIdCreator() != currentParticipant.getId() ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    return persistedProvinceregion;
+  }
+
+  private Province getOwnedProvince( Province province,
+                                     int errorUi ) {
+    if( province == null || province.getId() == null ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    Province persistedProvince = modelBean.getProvinceById( province.getId() );
+    if( persistedProvince == null
+        || currentParticipant == null
+        || persistedProvince.getIdCreator() != currentParticipant.getId() ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    return persistedProvince;
+  }
+
+  private Countryregion getOwnedCountryregion( Countryregion countryregion,
+                                               int errorUi ) {
+    if( countryregion == null || countryregion.getId() == null ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    Countryregion persistedCountryregion = modelBean.getCountryregionById(
+      countryregion.getId() );
+    if( persistedCountryregion == null
+        || currentParticipant == null
+        || persistedCountryregion.getIdCreator() != currentParticipant.getId() ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    return persistedCountryregion;
+  }
+
+  private Country getOwnedCountry( Country country,
+                                   int errorUi ) {
+    if( country == null || country.getId() == null ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    Country persistedCountry = modelBean.getCountryById( country.getId() );
+    if( persistedCountry == null
+        || currentParticipant == null
+        || persistedCountry.getIdCreator() != currentParticipant.getId() ) {
+      theView.showUI( errorUi );
+      return null;
+    }
+    return persistedCountry;
   }
 
   public void buyerComplaint( Registration r ) {

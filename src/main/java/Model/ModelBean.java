@@ -1323,14 +1323,19 @@ public class ModelBean
         -> compareBids( a,
                         b ) );
 
-      // find highest and second highest bids for this registration
-      Bid highestBid_1 = bids.get( 0 );
-      Bid highestBid_2 = bids.get( 0 );
+      // Auction recalc must also work when no valid bids were ever placed.
+      Bid highestBid_1 = null;
+      Bid highestBid_2 = null;
 
       for( Bid bid
            : bids ) {
         if( bid.getStatus() != 0 ) {
           continue; // discard not-OK bids
+        }
+        if( highestBid_1 == null ) {
+          highestBid_1 = bid;
+          highestBid_2 = bid;
+          continue;
         }
         if( bid.getAmmount() >= highestBid_2.getAmmount() ) {
           if( bid.getAmmount() >= highestBid_1.getAmmount() ) {
@@ -1340,6 +1345,9 @@ public class ModelBean
             highestBid_2 = bid;
           }
         }
+      }
+      if( highestBid_1 == null ) {
+        continue;
       }
       // assign auction value and buyer id
       registration.setValueAuction( highestBid_2.getAmmount() );
@@ -1718,6 +1726,7 @@ public class ModelBean
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
   public synchronized void recalculateRegattaPenalties( ProgressBar p ) {
+    long startedAt = System.currentTimeMillis();
     System.out.println(
       new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" )
         .format( new Date() )
@@ -1728,6 +1737,12 @@ public class ModelBean
     p.setProgress( 0 );
 
     regattas = getRegattas();
+    System.out.println(
+      new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" )
+        .format( new Date() )
+      + " Penalties init: loading "
+      + regattas.size()
+      + " regattas" );
     PenaltiesplId pId;
     for( Regatta r
          : regattas ) {
@@ -1741,8 +1756,25 @@ public class ModelBean
                            penaltiesplList.size() );
       }
     }
+    System.out.println(
+      new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" )
+        .format( new Date() )
+      + " Penalties init: prepared "
+      + penaltiesplList.size()
+      + " regatta-period entries in "
+      + ( System.currentTimeMillis() - startedAt )
+      + " ms" );
     boolean sorted;
+    int pass = 0;
     do {
+      pass++;
+      long passStartedAt = System.currentTimeMillis();
+      System.out.println(
+        new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" )
+          .format( new Date() )
+        + " Penalties pass "
+        + pass
+        + " started" );
       sorted = true;
       for( int tsl = LevelTrackset.VENUE;
            tsl >= LevelTrackset.PLANET;
@@ -1752,9 +1784,6 @@ public class ModelBean
              pl-- ) {
           do {
             regattasSorted = true;
-            int tsl_ = tsl;
-            int pl_ = pl;
-
             roundRobin( tsl,
                         pl );
             //if( !regattasSorted ) {
@@ -1773,6 +1802,16 @@ public class ModelBean
           } while( !regattasSorted );
         }
       }
+      System.out.println(
+        new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" )
+          .format( new Date() )
+        + " Penalties pass "
+        + pass
+        + " finished; sorted="
+        + sorted
+        + "; elapsed="
+        + ( System.currentTimeMillis() - passStartedAt )
+        + " ms" );
     } while( !sorted );
     p.setProgress( 100 );
 
