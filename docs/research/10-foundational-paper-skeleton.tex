@@ -672,6 +672,26 @@ One may later formalize this with a partition of \(\theta^{S}\):
 \]
 where \(\theta^{C}\) denotes core commitments, \(\theta^{U}\) denotes supporting commitments, and \(\theta^{I}\) denotes implementation-level commitments. This partition is still provisional, but it provides a useful structure for later arguments.
 
+\subsection{Admissible and forbidden mechanisms}
+
+Once the distinction between \(\theta^{G}\) and \(\theta^{S}\), and the hierarchy within \(\theta^{S}\), has been introduced, it becomes possible to classify whole mechanism variants rather than isolated parameter changes.
+
+At a preliminary level, one may call a mechanism \emph{admissible} if it preserves all core commitments, weakens no supporting commitments beyond admissible tolerance, and operates through governance adjustments that remain compatible with the developmental identity of the ecosystem.
+
+Conversely, one may call a mechanism \emph{forbidden} if it requires violation of core commitments, or if it systematically weakens supporting commitments to the point that the ecosystem's defining properties can no longer be preserved over time.
+
+This distinction is useful because it reframes redesign as a constrained design problem rather than an unconstrained optimization problem. Not every high-performing mechanism should count as a legitimate variant of the ecosystem.
+
+One may later write this schematically as
+\[
+\mathfrak{M}_{\mathrm{adm}} \subseteq \mathfrak{M},
+\qquad
+\mathfrak{M}_{\mathrm{forb}} := \mathfrak{M} \setminus \mathfrak{M}_{\mathrm{adm}},
+\]
+where \(\mathfrak{M}\) denotes the family of mechanism variants under consideration.
+
+At a later stage, admissibility should be linked to preservation of the admissible ecosystem region \(\Omega\), of core commitments \(\theta^{C}\), and of bounded degradation in supporting commitments \(\theta^{U}\).
+
 \subsection{Interpretive note}
 
 The formal model is intentionally being built in stages. The present layer introduces state variables and transition language without yet fixing their complete analytical form. This preserves interpretability while making the future mathematical direction explicit.
@@ -869,6 +889,22 @@ If elements of \(\theta^{U}\) are weakened while core commitments remain nominal
 Supporting commitments are not introduced as superficial details. They stabilize the practical preservation of the core structure over time. Their weakening may therefore leave the system formally recognizable while reducing accessibility, sustainability, or resilience in a cumulative way.
 \end{proof}
 
+\begin{proposition}[Admissible Mechanisms Preserve Core Identity]
+If a mechanism variant belongs to \(\mathfrak{M}_{\mathrm{adm}}\), then it preserves the ecosystem's core identity by construction.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+The set \(\mathfrak{M}_{\mathrm{adm}}\) is introduced precisely to denote mechanism variants that preserve core commitments and remain within the acceptable governance space. Hence membership in \(\mathfrak{M}_{\mathrm{adm}}\) entails preservation of the defining structural object.
+\end{proof}
+
+\begin{proposition}[Forbidden Mechanisms Are Not Legitimate Variants]
+If a mechanism variant belongs to \(\mathfrak{M}_{\mathrm{forb}}\), then it cannot be treated as a legitimate variant of the same developmental ecosystem.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+By definition, forbidden mechanisms either violate core commitments or degrade supporting commitments beyond acceptable tolerance. Therefore they may define operating systems of some kind, but not admissible realizations of the developmental ecosystem studied here.
+\end{proof}
+
 \section{Degradation Modes}
 
 \paragraph{Purpose of this section.}
@@ -945,6 +981,8 @@ At the same time, the paper now makes explicit that the system should be underst
 
 The new hierarchy of commitments also clarifies that preservation is not binary. Some changes destroy identity immediately, while others produce slower but still important forms of degradation.
 
+The additional distinction between admissible and forbidden mechanisms clarifies that redesign itself is part of the theory. The relevant question is not only how the ecosystem works, but which redesigns should still count as faithful implementations of the same object.
+
 Because of this foundational role, the paper should be readable by more than one community. A reader from applied mathematics should be able to see where the formal development is heading. A reader from socio-technical systems should be able to understand the institutional and developmental meaning of the framework. A reader from competition, sport, or technology studies should be able to recognize the practical relevance of the problem.
 
 This multi-audience ambition is not incidental. It follows from the object itself. The ecosystem under study is simultaneously mathematical, institutional, technological, and developmental.
@@ -973,6 +1011,8 @@ The most natural continuations concern reputation, bounded incentives, accessibi
 Another natural continuation is a dedicated paper on mechanism design and governance, centered on the distinction between tunable variables and structural commitments, and on the limits of legitimate adaptation within the ecosystem.
 
 That paper should also develop the hierarchy among structural commitments and analyze how different classes of modification affect identity, degradation, and recoverability.
+
+It should further characterize admissible and forbidden mechanisms, and explain how governance may adapt the system without converting it into a different object.
 
 The order of that agenda matters. Reputation and bounded commitments should likely be addressed early because they are closely connected to enforceability and economic credibility. Accessibility under asymmetry should also appear early because it bears directly on the anti-exclusionary identity of the ecosystem. Simulation can then serve as a bridge between conceptual-formal reasoning and domain-level plausibility.
 
