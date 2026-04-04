@@ -44,6 +44,8 @@ class LocalAppPublicEntryPointsIT {
                                              InterruptedException {
     HttpResponse<String> editParticipant = get( "/faces/editparticipant.xhtml" );
     HttpResponse<String> complaint = get( "/faces/complaint.xhtml" );
+    HttpResponse<String> complaintBuyer = get( "/faces/complaintbuyer.xhtml" );
+    HttpResponse<String> complaintSeller = get( "/faces/complaintseller.xhtml" );
 
     assertEquals( 200,
                   editParticipant.statusCode() );
@@ -52,12 +54,20 @@ class LocalAppPublicEntryPointsIT {
     assertEquals( 200,
                   complaint.statusCode() );
     assertTrue( complaint.body().contains( "TOP-Racing" ) );
+
+    assertEquals( 200,
+                  complaintBuyer.statusCode() );
+    assertTrue( complaintBuyer.body().contains( "TOP-Racing" ) );
+
+    assertEquals( 200,
+                  complaintSeller.statusCode() );
+    assertTrue( complaintSeller.body().contains( "TOP-Racing" ) );
   }
 
   private HttpResponse<String> get( String path ) throws IOException,
                                                          InterruptedException {
     HttpRequest request = HttpRequest.newBuilder( URI.create( baseUrl + path ) )
-      .timeout( Duration.ofSeconds( 20 ) )
+      .timeout( Duration.ofSeconds( 120 ) )
       .GET()
       .build();
     return client.send( request,

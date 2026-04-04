@@ -130,6 +130,35 @@ test('authenticated user can access core authenticated lists', async ({ page }) 
   await expect(page.getByText('Logout').first()).toBeVisible();
 });
 
+test('authenticated user can edit profile data and see it persisted', async ({ page }) => {
+  const suffix = `${Date.now()}`;
+  const email = `codex+profile-${suffix}@example.com`;
+  const password = 'Pw-12345';
+  const updatedFamilyName = `Edited${suffix}`;
+  const updatedPhone = '5555555511';
+
+  await createAccount(page, email, password, 'Profile', `Original${suffix}`);
+
+  await page.goto(`${baseUrl}/faces/welcome.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
+  await page.locator('#j_idt13\\:EditProfileButton').click();
+
+  await expect(page).toHaveURL(/\/faces\/editparticipant\.xhtml$/);
+  await expect(page.locator('#contentForm\\:familyNamesInput')).toHaveValue(`Original${suffix}`);
+  await page.locator('#contentForm\\:passwordInput').fill(password);
+  await page.locator('#contentForm\\:familyNamesInput').fill(updatedFamilyName);
+  await page.locator('#contentForm\\:phoneInput').fill(updatedPhone);
+  await page.locator('#contentForm\\:saveParticipantButton').click();
+
+  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
+  await expect(page.getByText(`Profile ${updatedFamilyName}`)).toBeVisible();
+
+  await page.locator('#j_idt13\\:EditProfileButton').click();
+  await expect(page).toHaveURL(/\/faces\/editparticipant\.xhtml$/);
+  await expect(page.locator('#contentForm\\:familyNamesInput')).toHaveValue(updatedFamilyName);
+  await expect(page.locator('#contentForm\\:phoneInput')).toHaveValue(updatedPhone);
+});
+
 async function createAccount(page, email, password, givenNames, familyNames) {
   await page.goto(`${baseUrl}/faces/login.xhtml`);
   await page.locator('#contentForm\\:newParticipantButton').click();

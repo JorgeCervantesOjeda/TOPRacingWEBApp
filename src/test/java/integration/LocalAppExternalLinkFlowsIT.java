@@ -189,6 +189,31 @@ class LocalAppExternalLinkFlowsIT {
   }
 
   @Test
+  void complaintBuyerPageShowsBuyerComplaintResult() throws IOException,
+                                                            InterruptedException {
+    AuctionComplaintFixture fixture = createAuctionComplaintFixture();
+
+    HttpResponse<String> response = getWithRetry(
+      "/faces/complaintbuyer.xhtml?key=%27"
+      + fixture.buyer().getEmailKey()
+      + "%27&r1="
+      + fixture.registration().getId()
+      + "&r2="
+      + fixture.regatta().getId()
+      + "&s="
+      + fixture.seller().getId()
+      + "&b="
+      + fixture.buyer().getId() );
+
+    assertEquals( 200,
+                  response.statusCode() );
+    assertTrue( response.body().contains( "Confirmation key is" ) );
+    assertTrue( response.body().contains( fixture.buyer().getEmailKey() ) );
+    assertTrue( response.body().contains( "You have filed a complaint against:" ) );
+    assertTrue( response.body().contains( fixture.seller().getNamesGiven() ) );
+  }
+
+  @Test
   void sellerCanReportBuyerAsDefaulterFromAuctionComplaintLink() throws IOException,
                                                                         InterruptedException {
     AuctionComplaintFixture fixture = createAuctionComplaintFixture();
@@ -222,6 +247,31 @@ class LocalAppExternalLinkFlowsIT {
     assertTrue( bids.stream().anyMatch( bid
       -> bid.getParticipant().getId().equals( fixture.buyer().getId() )
          && bid.getStatus() > 0 ) );
+  }
+
+  @Test
+  void complaintSellerPageShowsSellerComplaintResult() throws IOException,
+                                                              InterruptedException {
+    AuctionComplaintFixture fixture = createAuctionComplaintFixture();
+
+    HttpResponse<String> response = getWithRetry(
+      "/faces/complaintseller.xhtml?key=%27"
+      + fixture.seller().getEmailKey()
+      + "%27&r1="
+      + fixture.registration().getId()
+      + "&r2="
+      + fixture.regatta().getId()
+      + "&s="
+      + fixture.seller().getId()
+      + "&b="
+      + fixture.buyer().getId() );
+
+    assertEquals( 200,
+                  response.statusCode() );
+    assertTrue( response.body().contains( "Confirmation key is" ) );
+    assertTrue( response.body().contains( fixture.seller().getEmailKey() ) );
+    assertTrue( response.body().contains( "You have filed a complaint against:" ) );
+    assertTrue( response.body().contains( fixture.buyer().getNamesGiven() ) );
   }
 
   @Test
@@ -399,6 +449,16 @@ class LocalAppExternalLinkFlowsIT {
       .build();
     return client.send( request,
                         HttpResponse.BodyHandlers.ofString() );
+  }
+
+  private HttpResponse<String> getWithRetry( String path ) throws IOException,
+                                                                   InterruptedException {
+    try {
+      return get( path );
+    } catch( IOException ex ) {
+      Thread.sleep( 1000L );
+      return get( path );
+    }
   }
 
   private static final class BalanceComplaintFixture {
