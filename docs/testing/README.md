@@ -9,6 +9,24 @@ The practical target is a layered suite:
 - HTTP or browser tests for login, account creation, confirmation, reset password, protected-page access, regatta editing, and complaint links.
 - Deployment smoke tests for server boot, WAR deploy, and health checks.
 
+## Methodology
+
+Each automated test should verify both:
+
+- the visible outcome of the flow
+- the final state the system is left in
+
+In this application, a flow is not fully covered just because navigation succeeds.
+The test should also assert the postconditions that matter underneath:
+
+- `logout` invalidates the real HTTP session, not only the visible UI state
+- `logout -> login` leaves a single active account context in the browser session
+- after switching accounts, session-scoped state belongs only to the present account
+- protected pages do not inherit stale objects from a previous user
+- cleanup actions leave the server stable for the next test
+
+This became a formal rule after the session-accumulation bug: the browser suite exposed that a logout could look correct in the UI while still leaving orphaned server state behind.
+
 ## What Is Easy Today
 
 These areas can be covered with low refactor cost:
@@ -48,22 +66,20 @@ Recommended approach:
 - Playwright for end-to-end browser flows against a deployed WAR.
 - a repeatable local start script for GlassFish 6 + database + deploy.
 
-## First Slice To Build
+## Current Regression Priorities
 
-The first automated slice should prove the pipeline end to end:
+1. authentication, logout, and account switching
+2. complaint and mail-link entry points
+3. regatta status transitions and recalculation
+4. flows that create or reuse session-scoped working objects
+5. browser paths that traverse multiple legacy editors
 
-1. Unit tests for controller login/logout and anonymous-access decisions.
-2. Integration tests for participant save/load and regatta/registration persistence.
-3. Browser flow for `welcome -> login -> create account -> confirm mail -> login`.
-4. Browser flow for protected-page redirects and complaint-link entry points.
+## Remaining Gaps
 
-## Current Blockers
-
-- No `src/test` tree exists yet.
-- `pom.xml` has no JUnit, Mockito, Surefire, or Failsafe configuration.
-- No Maven wrapper is present, so automatic execution depends on machine-specific Maven setup.
-- Mail sending is tied to live Gmail OAuth credentials.
-- JSF request beans depend on container state instead of injected adapters.
+- Mail delivery itself is still tied to live Gmail OAuth credentials.
+- JSF request beans still depend heavily on container state and are easier to cover through live tests than isolated unit tests.
+- Administrative coverage is broad but not exhaustive across every screen.
+- Local automation still depends on the machine-specific GlassFish and database setup because there is no disposable stack or Maven wrapper yet.
 
 ## Local Execution On This Machine
 

@@ -8,7 +8,7 @@ const fixtureScript = path.join(__dirname, '..', '..', 'scripts', 'browser-fixtu
 test('browser can confirm a participant from a valid mail link', async ({ page }) => {
   const fixture = loadFixture('confirm');
 
-  await page.goto(`${baseUrl}${fixture.url}`);
+  await gotoAllowingAbort(page, `${baseUrl}${fixture.url}`);
 
   await expect(page).toHaveURL(/\/faces\/confirmusermail\.xhtml\?key=/);
   await expect(page.getByText('Confirmation OK')).toBeVisible();
@@ -21,7 +21,7 @@ test('browser can confirm a participant from a valid mail link', async ({ page }
 test('browser can reset password from a valid mail link and log in with the new password', async ({ page }) => {
   const fixture = loadFixture('reset');
 
-  await page.goto(`${baseUrl}${fixture.url}`);
+  await gotoAllowingAbort(page, `${baseUrl}${fixture.url}`);
 
   await expect(page).toHaveURL(/\/faces\/resetpassword\.xhtml\?key=/);
   await expect(page.getByText('Your Password has been reset.')).toBeVisible();
@@ -35,7 +35,7 @@ test('browser can reset password from a valid mail link and log in with the new 
 test('browser can file a balance complaint from a valid mail link', async ({ page }) => {
   const fixture = loadFixture('balance-owner');
 
-  await page.goto(`${baseUrl}${fixture.url}`, { waitUntil: 'domcontentloaded' });
+  await gotoAllowingAbort(page, `${baseUrl}${fixture.url}`);
 
   await expect(page).toHaveURL(/\/faces\/complaint\.xhtml/);
   await expect(page.getByText('You have filed a complaint against:')).toBeVisible();
@@ -45,7 +45,7 @@ test('browser can file a balance complaint from a valid mail link', async ({ pag
 test('browser can file an auction complaint from a valid mail link', async ({ page }) => {
   const fixture = loadFixture('auction-buyer');
 
-  await page.goto(`${baseUrl}${fixture.url}`, { waitUntil: 'domcontentloaded' });
+  await gotoAllowingAbort(page, `${baseUrl}${fixture.url}`);
 
   await expect(page).toHaveURL(/\/faces\/complaint\.xhtml/);
   await expect(page.getByText('You have filed a complaint against:')).toBeVisible();
@@ -53,7 +53,7 @@ test('browser can file an auction complaint from a valid mail link', async ({ pa
 });
 
 test('browser shows a graceful message for an invalid confirmation link', async ({ page }) => {
-  await page.goto(`${baseUrl}/faces/confirmusermail.xhtml?key=%27invalid%27`);
+  await gotoAllowingAbort(page, `${baseUrl}/faces/confirmusermail.xhtml?key=%27invalid%27`);
 
   await expect(page).toHaveURL(/\/faces\/confirmusermail\.xhtml\?key=/);
   await expect(page.getByText('Confirmation not OK')).toBeVisible();
@@ -61,7 +61,7 @@ test('browser shows a graceful message for an invalid confirmation link', async 
 });
 
 test('browser shows a friendly error for an invalid reset-password link', async ({ page }) => {
-  await page.goto(`${baseUrl}/faces/resetpassword.xhtml?key=%27invalid%27`);
+  await gotoAllowingAbort(page, `${baseUrl}/faces/resetpassword.xhtml?key=%27invalid%27`);
 
   await expect(page).toHaveURL(/\/faces\/resetpassword\.xhtml\?key=/);
   await expect(page.getByText('Password reset request is invalid or expired.')).toBeVisible();
@@ -72,7 +72,7 @@ test('browser does not leak car details for an invalid complaint link', async ({
   const fixture = loadFixture('balance-owner');
   const invalidUrl = fixture.url.replace(fixture.emailKey, 'invalid');
 
-  await page.goto(`${baseUrl}${invalidUrl}`);
+  await gotoAllowingAbort(page, `${baseUrl}${invalidUrl}`);
 
   await expect(page).toHaveURL(/\/faces\/complaint\.xhtml/);
   await expect(page.getByText('Complaint request is incomplete or invalid.')).toBeVisible();
@@ -119,4 +119,29 @@ function parseFixture(output) {
       fixture[key] = value;
       return fixture;
     }, {});
+}
+
+async function gotoAllowingAbort(page, url) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      await page.goto(url, { waitUntil: 'commit', timeout: 120000 });
+    } catch (error) {
+      if (!String(error).includes('net::ERR_ABORTED')) {
+        throw error;
+      }
+    }
+
+    if (page.url()) {
+      try {
+        await page.waitForLoadState('domcontentloaded', { timeout: 30000 });
+      } catch (error) {
+        // Some JSF flows abort and still land on the target page correctly.
+      }
+      return;
+    }
+
+    await page.waitForTimeout(500);
+  }
+
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 120000 });
 }

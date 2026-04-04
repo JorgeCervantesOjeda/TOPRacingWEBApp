@@ -19,33 +19,53 @@ test('create account, logout, and login again', async ({ page }) => {
   const email = `codex+${Date.now()}@example.com`;
   const password = 'Pw-12345';
 
-  await page.goto(`${baseUrl}/faces/login.xhtml`);
-  await page.locator('#contentForm\\:newParticipantButton').click();
-
-  await expect(page).toHaveURL(/\/faces\/editparticipant\.xhtml$/);
-  await expect(page.locator('#contentForm\\:saveParticipantButton')).toBeVisible();
-
-  await page.locator('#contentForm\\:passwordInput').fill(password);
-  await page.locator('#contentForm\\:givenNamesInput').fill('Codex');
-  await page.locator('#contentForm\\:familyNamesInput').fill('BrowserTest');
-  await page.locator('#contentForm\\:emailInput').fill(email);
-  await page.locator('#contentForm\\:phoneInput').fill('5555555555');
-  await page.locator('#contentForm\\:saveParticipantButton').click();
+  await createAccount(page, email, password, 'Codex', 'BrowserTest');
 
   await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
   await expect(page.getByText('Logout').first()).toBeVisible();
   await expect(page.getByText('Codex BrowserTest')).toBeVisible();
 
-  await page.getByText('Logout').first().click();
-  await page.goto(`${baseUrl}/faces/login.xhtml`);
-
-  await page.locator('#contentForm\\:participant_email').fill(email);
-  await page.locator('#contentForm\\:participant_password').fill(password);
-  await page.locator('#contentForm\\:loginButton').click();
+  await logout(page);
+  await login(page, email, password);
 
   await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
   await expect(page.getByText('Logout').first()).toBeVisible();
   await expect(page.getByText('Codex BrowserTest')).toBeVisible();
+});
+
+test('logout and relogin switch to a single active account without stale identity state', async ({ page, context }) => {
+  const suffix = `${Date.now()}`;
+  const firstName = `Alpha ${suffix}`;
+  const secondName = `Beta ${suffix}`;
+  const firstEmail = `codex+alpha-${suffix}@example.com`;
+  const secondEmail = `codex+beta-${suffix}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, firstEmail, password, 'Codex', firstName);
+  await expect(page.getByText(`Codex ${firstName}`)).toBeVisible();
+  await logout(page);
+
+  await createAccount(page, secondEmail, password, 'Codex', secondName);
+  await expect(page.getByText(`Codex ${secondName}`)).toBeVisible();
+  await expect(page.getByText(`Codex ${firstName}`)).toHaveCount(0);
+  await logout(page);
+
+  await login(page, firstEmail, password);
+  await expect(page.getByText(`Codex ${firstName}`)).toBeVisible();
+  await expect(page.getByText(`Codex ${secondName}`)).toHaveCount(0);
+  await logout(page);
+
+  await login(page, secondEmail, password);
+  await expect(page.getByText(`Codex ${secondName}`)).toBeVisible();
+  await expect(page.getByText(`Codex ${firstName}`)).toHaveCount(0);
+
+  const sessionCookies = (await context.cookies()).filter((cookie) => cookie.name === 'JSESSIONID');
+  expect(sessionCookies).toHaveLength(1);
+
+  await page.goto(`${baseUrl}/faces/welcome.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
+  await expect(page.getByText(`Codex ${secondName}`)).toBeVisible();
+  await expect(page.getByText(`Codex ${firstName}`)).toHaveCount(0);
 });
 
 test('browser respects anonymous access policy', async ({ page }) => {
@@ -126,6 +146,23 @@ async function createAccount(page, email, password, givenNames, familyNames) {
 
   await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
   await expect(page.getByText('Logout').first()).toBeVisible();
+}
+
+async function login(page, email, password) {
+  await page.goto(`${baseUrl}/faces/login.xhtml`);
+  await expect(page.locator('#contentForm\\:loginButton')).toBeVisible();
+  await page.locator('#contentForm\\:participant_email').fill(email);
+  await page.locator('#contentForm\\:participant_password').fill(password);
+  await page.locator('#contentForm\\:loginButton').click();
+  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
+  await expect(page.getByText('Logout').first()).toBeVisible();
+}
+
+async function logout(page) {
+  await page.goto(`${baseUrl}/faces/welcome.xhtml`);
+  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
+  await page.locator('[id$="logoutButton"]').click();
+  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
 }
 
 async function logoutIfVisible(page) {
