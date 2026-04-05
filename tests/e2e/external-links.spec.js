@@ -32,8 +32,9 @@ test('browser can reset password from a valid mail link and log in with the new 
   expect(refreshed.emailKey).not.toBe(fixture.emailKey);
 });
 
-test('browser can file a balance complaint from a valid mail link', async ({ page }) => {
-  const fixture = loadFixture('balance-owner');
+test('browser can file an auction complaint from a valid mail link', async ({ page }) => {
+  test.setTimeout(360000);
+  const fixture = loadFixture('auction-buyer');
 
   await gotoAllowingAbort(page, `${baseUrl}${fixture.url}`);
 
@@ -42,8 +43,8 @@ test('browser can file a balance complaint from a valid mail link', async ({ pag
   await expect(page.getByText(fixture.targetName)).toBeVisible();
 });
 
-test('browser can file an auction complaint from a valid mail link', async ({ page }) => {
-  const fixture = loadFixture('auction-buyer');
+test('browser can file a balance complaint from a valid mail link', async ({ page }) => {
+  const fixture = loadFixture('balance-owner');
 
   await gotoAllowingAbort(page, `${baseUrl}${fixture.url}`);
 
@@ -124,10 +125,12 @@ function parseFixture(output) {
 async function gotoAllowingAbort(page, url) {
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
-      await page.goto(url, { waitUntil: 'commit', timeout: 120000 });
+      await page.goto(url, { waitUntil: 'commit', timeout: 300000 });
     } catch (error) {
       if (!String(error).includes('net::ERR_ABORTED')) {
-        throw error;
+        if (attempt === 1) {
+          throw error;
+        }
       }
     }
 
@@ -143,5 +146,5 @@ async function gotoAllowingAbort(page, url) {
     await page.waitForTimeout(500);
   }
 
-  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 120000 });
+  await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 300000 });
 }

@@ -807,6 +807,7 @@ public class ModelBean
             + " join fetch r.car as c"
             + " join fetch c.participant as ow"
             + " join fetch r.regatta as rega"
+            + " join fetch rega.currency"
             + " join fetch rega.participant"
             + " join fetch r.participantByIdOwner"
             + " join fetch r.participantByIdDriver"

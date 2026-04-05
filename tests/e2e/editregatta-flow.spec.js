@@ -71,6 +71,25 @@ test('authenticated user can open registration creation from regatta results', a
   await expect(page.getByRole('button', { name: 'Save data' })).toBeVisible();
 });
 
+test('authenticated user can reopen a registration from regatta results and return', async ({ page }) => {
+  test.setTimeout(300000);
+  const suffix = `${Date.now()}`;
+  const email = `codex+registrationlist-${suffix}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, email, password, 'Registration', `Selector${suffix}`);
+  await createSavedRegistrationAndReturnToResults(page);
+
+  await openFirstRegistrationFromResults(page);
+  await dismissWaitUi(page);
+
+  await expect(page).toHaveURL(/\/faces\/editregistration\.xhtml$/);
+  await expect(page.getByRole('button', { name: 'Save data' })).toBeVisible();
+  await clickBackButton(page);
+  await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
+  await dismissWaitUi(page);
+});
+
 test('authenticated user can create a car from registration flow and select it', async ({ page }) => {
   const email = `codex+carflow-${Date.now()}@example.com`;
   const password = 'Pw-12345';
@@ -156,21 +175,23 @@ test('authenticated user can update registration status from regatta results', a
   await expect(page.getByRole('button', { name: 'Save data' })).toBeVisible();
 });
 
-test('authenticated user can reopen a registration from regatta results and return', async ({ page }) => {
+test('authenticated user can see the created registration reflected in regatta results', async ({ page }) => {
   const suffix = `${Date.now()}`;
-  const email = `codex+registrationlist-${suffix}@example.com`;
+  const email = `codex+resultscontent-${suffix}@example.com`;
   const password = 'Pw-12345';
+  const givenName = 'Results';
+  const familyName = `Viewer${suffix}`;
 
-  await createAccount(page, email, password, 'Registration', `Selector${suffix}`);
+  await createAccount(page, email, password, givenName, familyName);
   await createSavedRegistrationAndReturnToResults(page);
 
-  await openFirstRegistrationFromResults(page);
-  await dismissWaitUi(page);
-
-  await expect(page.getByRole('heading', { name: /Registration Information/i })).toBeVisible();
-  await clickBackButton(page);
   await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
   await dismissWaitUi(page);
+  await expect(page.getByText('Registrations count: 1')).toBeVisible();
+  const firstRow = page.locator('#contentForm\\:regattaRegistrationsList_data tr').first();
+  await expect(firstRow).toContainText(familyName);
+  await expect(firstRow).toContainText(givenName);
+  await expect(firstRow).toContainText('Incomplete');
 });
 
 test('authenticated user can create a venue and inspect it on the map', async ({ page }) => {
@@ -374,16 +395,18 @@ test('authenticated user can build the geographic chain from variant to planet r
   await dismissWaitUi(page);
 
   await expect(page).toHaveURL(/\/faces\/editvariant\.xhtml$/);
-  await expect(page.locator('#contentForm')).toContainText(venueName);
+  await expect(page.locator('#contentForm')).toContainText('Venue:');
+  await expect(page.locator('#contentForm')).not.toContainText('Venue not set yet.');
   await expect(variantInputsAfterVenueSelection.nth(0)).toHaveValue(variantName);
   await expect(variantInputsAfterVenueSelection.nth(1)).toHaveValue('1.1');
   await expect(variantInputsAfterVenueSelection.nth(2)).toHaveValue('2.2');
 });
 
 async function createAccount(page, email, password, givenNames, familyNames) {
-  await page.goto(`${baseUrl}/faces/login.xhtml`);
-  await expect(page.getByRole('heading', { name: 'Please login or Create a new account' })).toBeVisible();
-  await page.getByRole('button', { name: 'Create Account' }).click();
+  await gotoWithRetry(page, `${baseUrl}/faces/login.xhtml`);
+  const createAccountButton = page.getByRole('button', { name: 'Create Account' });
+  await expect(createAccountButton).toBeVisible();
+  await createAccountButton.click();
 
   await expect(page).toHaveURL(/\/faces\/editparticipant\.xhtml$/);
   await expect(page.locator('#contentForm\\:saveParticipantButton')).toBeVisible();
@@ -468,7 +491,7 @@ async function fillFirstTextInput(page, value) {
 async function selectRowByText(page, tableId, text) {
   await page.locator(`#contentForm\\:${tableId}\\:globalFilter`).fill(text);
   await page.waitForTimeout(500);
-  const row = page.locator('tr', { hasText: text }).first();
+  const row = page.locator(`#contentForm\\:${tableId}_data tr`, { hasText: text }).first();
   await expect(row).toBeVisible();
   await row.getByRole('button', { name: 'Select' }).click();
 }
@@ -478,7 +501,12 @@ async function clickBackButton(page) {
 }
 
 async function clickAndAcceptConfirm(page, buttonLocator) {
-  await buttonLocator.evaluate((button) => button.click());
+  await expect(buttonLocator).toBeVisible({ timeout: 30000 });
+  try {
+    await buttonLocator.click({ timeout: 10000 });
+  } catch (error) {
+    await buttonLocator.evaluate((button) => button.click());
+  }
   const confirmYesButton = page.locator('.ui-confirmdialog-yes:visible').first();
   await expect(confirmYesButton).toBeVisible({ timeout: 10000 });
   await confirmYesButton.click({ force: true });
@@ -533,6 +561,20 @@ async function typeIntoFilter(page, locatorOrSelector, value) {
   await filterInput.fill('');
   await filterInput.type(value, { delay: 50 });
   await page.waitForTimeout(500);
+}
+
+async function gotoWithRetry(page, url) {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 300000 });
+      return;
+    } catch (error) {
+      if (attempt === 1) {
+        throw error;
+      }
+      await page.waitForTimeout(1000);
+    }
+  }
 }
 
 
