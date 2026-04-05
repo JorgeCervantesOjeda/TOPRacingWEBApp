@@ -1,6 +1,9 @@
 const { test, expect } = require('@playwright/test');
+const { execFileSync } = require('node:child_process');
+const path = require('node:path');
 
 const baseUrl = process.env.TOPRACING_BASE_URL || 'http://localhost:8080/topracingwebapp';
+const fixtureScript = path.join(__dirname, '..', '..', 'scripts', 'browser-fixture.ps1');
 
 test.afterEach(async ({ page }) => {
   await logoutIfVisible(page);
@@ -69,6 +72,30 @@ test('authenticated user can open registration creation from regatta results', a
   await expect(page.getByRole('button', { name: /View (Cars|Vehicles)/i })).toBeVisible();
   await expect(page.getByRole('button', { name: /View Drivers/i })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Save data' })).toBeVisible();
+});
+
+test('authenticated user can select a driver from the drivers list', async ({ page }) => {
+  const suffix = `${Date.now()}`;
+  const email = `codex+driver-${suffix}@example.com`;
+  const password = 'Pw-12345';
+  const fixture = loadBrowserFixture('confirmed-participant');
+
+  await createAccount(page, email, password, 'Driver', `Selector${suffix}`);
+  await createRegistrationEditor(page);
+
+  await page.getByRole('button', { name: /View Drivers/i }).click();
+  await expect(page).toHaveURL(/\/faces\/listdrivers\.xhtml$/);
+  await dismissWaitUi(page);
+
+  await typeIntoLastGlobalFilter(page, fixture.familyName);
+  const driverRow = page.locator('#contentForm\\:driversList_data tr', { hasText: fixture.familyName }).first();
+  await expect(driverRow).toBeVisible();
+  await driverRow.getByRole('button', { name: 'Select' }).click();
+
+  await expect(page).toHaveURL(/\/faces\/editregistration\.xhtml$/);
+  await dismissWaitUi(page);
+  await expect(page.locator('#contentForm')).toContainText(fixture.fullName.split(' ')[0]);
+  await expect(page.locator('#contentForm')).toContainText(fixture.familyName);
 });
 
 test('authenticated user can reopen a registration from regatta results and return', async ({ page }) => {
@@ -575,6 +602,39 @@ async function gotoWithRetry(page, url) {
       await page.waitForTimeout(1000);
     }
   }
+}
+
+function loadBrowserFixture(command, argument) {
+  const args = [
+    '-ExecutionPolicy',
+    'Bypass',
+    '-File',
+    fixtureScript,
+    '-Command',
+    command
+  ];
+
+  if (argument) {
+    args.push('-Argument', argument);
+  }
+
+  const output = execFileSync('powershell', args, {
+    cwd: path.join(__dirname, '..', '..'),
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe']
+  });
+
+  return output
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .reduce((fixture, line) => {
+      const separator = line.indexOf('=');
+      if (separator <= 0) {
+        return fixture;
+      }
+      fixture[line.slice(0, separator)] = line.slice(separator + 1);
+      return fixture;
+    }, {});
 }
 
 

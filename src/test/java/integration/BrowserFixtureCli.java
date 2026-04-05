@@ -47,6 +47,9 @@ public final class BrowserFixtureCli {
           }
           emitParticipantByEmail( args[ 1 ] );
           break;
+        case "confirmed-participant":
+          emitConfirmedParticipantFixture();
+          break;
         default:
           fail( "Unknown fixture command: " + args[ 0 ] );
       }
@@ -157,6 +160,17 @@ public final class BrowserFixtureCli {
     printCommonParticipant( participant );
     printLine( "confirmed",
                participant.isConfirmed() ? "true" : "false" );
+    printLine( "password",
+               participant.getPassword() );
+  }
+
+  private static void emitConfirmedParticipantFixture() {
+    Participant participant = createSavedParticipant( "confirmed-driver-browser",
+                                                      "Driver-123",
+                                                      true );
+    printCommonParticipant( participant );
+    printLine( "confirmed",
+               "true" );
     printLine( "password",
                participant.getPassword() );
   }
