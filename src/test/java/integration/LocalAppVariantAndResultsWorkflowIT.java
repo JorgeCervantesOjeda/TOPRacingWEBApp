@@ -77,7 +77,7 @@ class LocalAppVariantAndResultsWorkflowIT {
     Car car = createSavedCar( bidder,
                               "bid-car" );
     Regatta regatta = MODEL.createRegatta( promoter );
-    regatta.setStatus( RegattaStatus.SPEED_TEST );
+    regatta.setStatus( RegattaStatus.AUCTION );
     MODEL.save( regatta );
     Registration registration = MODEL.createRegistration( regatta,
                                                           bidder );
@@ -107,6 +107,104 @@ class LocalAppVariantAndResultsWorkflowIT {
          && Math.abs( saved.getAmmount() - 77.7 ) < 0.0001 ) );
   }
 
+  @Test
+  void promoterCanSaveSpeedTestLapTimeThroughRegattaResultsController() throws Exception {
+    Participant promoter = createSavedParticipant( "speed-promoter",
+                                                   "Promoter-123" );
+    Participant owner = createSavedParticipant( "speed-owner",
+                                                "Owner-123" );
+    Car car = createSavedCar( owner,
+                              "speed-car" );
+    Regatta regatta = MODEL.createRegatta( promoter );
+    regatta.setStatus( RegattaStatus.SPEED_TEST );
+    MODEL.save( regatta );
+    Registration registration = createOwnedRegistration( regatta,
+                                                         owner,
+                                                         car,
+                                                         RegistrationStatus.OK );
+    Registration attackRegistration = MODEL.getRegistrationById(
+      registration.getId() );
+    attackRegistration.setSecondsLap( 12.34 );
+    Bid ownerBid = promoterBid( promoter,
+                                attackRegistration );
+
+    ControllerHarness harness = createHarness( promoter );
+    harness.controller.clickSaveRegattaResults( List.of( ownerBid ) );
+
+    Registration refreshed = MODEL.getRegistrationById( registration.getId() );
+    assertEquals( 12.34,
+                  refreshed.getSecondsLap(),
+                  0.0001 );
+  }
+
+  @Test
+  void promoterCanSaveRaceResultsThroughRegattaResultsController() throws Exception {
+    Participant promoter = createSavedParticipant( "race-promoter",
+                                                   "Promoter-123" );
+    Participant owner = createSavedParticipant( "race-owner",
+                                                "Owner-123" );
+    Car car = createSavedCar( owner,
+                              "race-car" );
+    Regatta regatta = MODEL.createRegatta( promoter );
+    regatta.setStatus( RegattaStatus.RACE_TEST );
+    MODEL.save( regatta );
+    Registration registration = createOwnedRegistration( regatta,
+                                                         owner,
+                                                         car,
+                                                         RegistrationStatus.OK );
+    Registration attackRegistration = MODEL.getRegistrationById(
+      registration.getId() );
+    attackRegistration.setPosRace( (short) 1 );
+    attackRegistration.setLapsRace( (short) 15 );
+    Bid ownerBid = promoterBid( promoter,
+                                attackRegistration );
+
+    ControllerHarness harness = createHarness( promoter );
+    harness.controller.clickSaveRegattaResults( List.of( ownerBid ) );
+
+    Registration refreshed = MODEL.getRegistrationById( registration.getId() );
+    assertEquals( 1,
+                  refreshed.getPosRace() );
+    assertEquals( 15,
+                  refreshed.getLapsRace() );
+  }
+
+  @Test
+  void nonOwnerCannotOverwriteSpeedTestResultThroughRegattaResultsController() throws Exception {
+    Participant promoter = createSavedParticipant( "speed-owner-negative",
+                                                   "Promoter-123" );
+    Participant intruder = createSavedParticipant( "speed-intruder-negative",
+                                                   "Intruder-123" );
+    Participant owner = createSavedParticipant( "speed-owner-driver",
+                                                "Owner-123" );
+    Car car = createSavedCar( owner,
+                              "speed-attack-car" );
+    Regatta regatta = MODEL.createRegatta( promoter );
+    regatta.setStatus( RegattaStatus.SPEED_TEST );
+    MODEL.save( regatta );
+    Registration registration = createOwnedRegistration( regatta,
+                                                         owner,
+                                                         car,
+                                                         RegistrationStatus.OK );
+    registration.setSecondsLap( 45.67 );
+    MODEL.save( registration );
+
+    Registration attackRegistration = MODEL.getRegistrationById(
+      registration.getId() );
+    attackRegistration.setSecondsLap( 9.99 );
+    Bid intruderBid = promoterBid( intruder,
+                                   attackRegistration );
+    intruderBid.setAmmount( 11.0 );
+
+    ControllerHarness harness = createHarness( intruder );
+    harness.controller.clickSaveRegattaResults( List.of( intruderBid ) );
+
+    Registration refreshed = MODEL.getRegistrationById( registration.getId() );
+    assertEquals( 45.67,
+                  refreshed.getSecondsLap(),
+                  0.0001 );
+  }
+
   private Variant createSavedVariant( Participant creator,
                                       String name ) {
     Variant variant = MODEL.createVariant( creator );
@@ -125,6 +223,32 @@ class LocalAppVariantAndResultsWorkflowIT {
     car.setWidth( 10.0 );
     MODEL.save( car );
     return MODEL.getCarById( car.getId() );
+  }
+
+  private Registration createOwnedRegistration( Regatta regatta,
+                                                Participant owner,
+                                                Car car,
+                                                byte status ) {
+    Registration registration = MODEL.createRegistration( regatta,
+                                                          owner );
+    registration.setCar( car );
+    registration.setParticipantByIdOwner( owner );
+    registration.setParticipantByIdDriver( owner );
+    registration.setParticipantByIdBuyer( owner );
+    registration.setStatus( status );
+    MODEL.save( registration );
+    return MODEL.getRegistrationById( registration.getId() );
+  }
+
+  private Bid promoterBid( Participant participant,
+                           Registration registration ) {
+    return new Bid( new BidId( participant.getId(),
+                               registration.getId() ),
+                    participant,
+                    registration,
+                    0.0,
+                    new Date(),
+                    0 );
   }
 
   private Participant createSavedParticipant( String label,

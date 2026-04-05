@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import Controller.Controller;
 import Controller.RegattaStatus;
+import Controller.RegistrationStatus;
 import Controller.UI;
 import Model.ModelForView;
 import Tables.Bid;
@@ -138,11 +139,93 @@ class EditRegattaResultsBeanTest {
     assertTrue( bean.disableAddRegistrationButton() );
   }
 
+  @Test
+  void laptimeEditorIsEnabledOnlyForOwnerDuringSpeedTestWithOkRegistration() {
+    when( model.getBids( currentParticipant,
+                         regatta ) ).thenReturn( new ArrayList<>() );
+    when( model.getRegattaRegistrations( regatta ) ).thenReturn( List.of() );
+    bean.init();
+
+    Registration registration = registration( 401L );
+    registration.setRegatta( regatta );
+    registration.setStatus( RegistrationStatus.OK );
+
+    regatta.setStatus( (byte) RegattaStatus.SPEED_TEST );
+    assertFalse( bean.getDisableEditLaptime( registration ) );
+
+    regatta.setStatus( (byte) RegattaStatus.RACE_TEST );
+    assertTrue( bean.getDisableEditLaptime( registration ) );
+
+    regatta.setStatus( (byte) RegattaStatus.SPEED_TEST );
+    registration.setStatus( RegistrationStatus.INVALID );
+    assertTrue( bean.getDisableEditLaptime( registration ) );
+  }
+
+  @Test
+  void raceEditorsAreEnabledOnlyForOwnerDuringRaceTestWithValidRegistration() {
+    when( model.getBids( currentParticipant,
+                         regatta ) ).thenReturn( new ArrayList<>() );
+    when( model.getRegattaRegistrations( regatta ) ).thenReturn( List.of() );
+    bean.init();
+
+    Registration registration = registration( 402L );
+    registration.setRegatta( regatta );
+    registration.setStatus( RegistrationStatus.OK );
+
+    regatta.setStatus( (byte) RegattaStatus.RACE_TEST );
+    assertFalse( bean.disableEditRacepos( registration ) );
+    assertFalse( bean.disableEditRacelaps( registration ) );
+
+    regatta.setStatus( (byte) RegattaStatus.SPEED_TEST );
+    assertTrue( bean.disableEditRacepos( registration ) );
+    assertTrue( bean.disableEditRacelaps( registration ) );
+
+    regatta.setStatus( (byte) RegattaStatus.RACE_TEST );
+    registration.setStatus( RegistrationStatus.INVALID );
+    assertTrue( bean.disableEditRacepos( registration ) );
+    assertTrue( bean.disableEditRacelaps( registration ) );
+  }
+
+  @Test
+  void bidEditorTracksStatusAndDefaulterRules() {
+    when( model.getBids( currentParticipant,
+                         regatta ) ).thenReturn( new ArrayList<>() );
+    when( model.getRegattaRegistrations( regatta ) ).thenReturn( List.of() );
+    bean.init();
+
+    Registration registration = registration( 403L );
+    registration.setRegatta( regatta );
+    registration.setStatus( RegistrationStatus.OK );
+
+    regatta.setStatus( (byte) RegattaStatus.CREATED );
+    assertTrue( bean.disableEditBid( registration ) );
+
+    regatta.setStatus( (byte) RegattaStatus.SPEED_TEST );
+    assertFalse( bean.disableEditBid( registration ) );
+
+    regatta.setStatus( (byte) RegattaStatus.AUCTION );
+    assertFalse( bean.disableEditBid( registration ) );
+
+    regatta.setStatus( (byte) RegattaStatus.PUBLISHED );
+    assertTrue( bean.disableEditBid( registration ) );
+
+    regatta.setStatus( (byte) RegattaStatus.AUCTION );
+    currentParticipant.setDefaulter( 1 );
+    assertTrue( bean.disableEditBid( registration ) );
+
+    currentParticipant.setDefaulter( 0 );
+    registration.setStatus( RegistrationStatus.INVALID );
+    assertTrue( bean.disableEditBid( registration ) );
+  }
+
   private static Registration registration( Long id ) {
     Registration registration = new Registration();
     registration.setId( id );
     registration.setRegatta( new Regatta() );
     registration.getRegatta().setStatus( (byte) RegattaStatus.REGISTRATIONS_OPEN );
+    registration.getRegatta().setParticipant( new Participant() );
+    registration.getRegatta().getParticipant().setId( 7L );
+    registration.setStatus( RegistrationStatus.INCOMPLETE );
     return registration;
   }
 

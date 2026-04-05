@@ -15,6 +15,7 @@ import Tables.Registration;
 import Tables.Variant;
 import Tables.Venue;
 import View.ViewForController;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -451,12 +452,121 @@ public class Controller {
       return;
     }
 
-    modelBean.save( bids );
+    List<Bid> sanitizedBids = sanitizeRegattaResultsEdits( bids );
+    modelBean.save( sanitizedBids );
     modelBean.requestRecalculateRegattaPenalties(
       ( p )
       -> this.theView.setProgress( p )
     );
 //    theView.showUI( UI.VIEW_EDIT_REGATTA_RESULTS );
+  }
+
+  private List<Bid> sanitizeRegattaResultsEdits( List<Bid> bids ) {
+    List<Bid> sanitizedBids = new ArrayList<>();
+    if( bids == null ) {
+      return sanitizedBids;
+    }
+
+    for( Bid incomingBid
+         : bids ) {
+      if( incomingBid == null
+          || incomingBid.getRegistration() == null
+          || incomingBid.getRegistration().getId() == null ) {
+        continue;
+      }
+
+      Registration persistedRegistration = modelBean.getRegistrationById(
+        incomingBid.getRegistration().getId() );
+      if( persistedRegistration == null ) {
+        continue;
+      }
+
+      applyAllowedRegattaResultEdits( persistedRegistration,
+                                      incomingBid.getRegistration() );
+      sanitizedBids.add( buildSanitizedBid( incomingBid,
+                                            persistedRegistration ) );
+    }
+
+    return sanitizedBids;
+  }
+
+  private void applyAllowedRegattaResultEdits( Registration persisted,
+                                               Registration incoming ) {
+    if( !isCurrentParticipantRegattaOwner( persisted ) ) {
+      return;
+    }
+
+    Regatta regatta = persisted.getRegatta();
+    if( regatta == null || regatta.getStatus() >= RegattaStatus.PUBLISHED ) {
+      return;
+    }
+
+    persisted.setStatus( incoming.getStatus() );
+
+    if( regatta.getStatus() == RegattaStatus.SPEED_TEST
+        && incoming.getStatus() == RegistrationStatus.OK ) {
+      persisted.setSecondsLap( incoming.getSecondsLap() );
+    }
+
+    if( regatta.getStatus() == RegattaStatus.RACE_TEST
+        && incoming.getStatus() != RegistrationStatus.INVALID ) {
+      persisted.setPosRace( incoming.getPosRace() );
+      persisted.setLapsRace( incoming.getLapsRace() );
+    }
+  }
+
+  private Bid buildSanitizedBid( Bid incomingBid,
+                                 Registration persistedRegistration ) {
+    Bid sanitizedBid = getExistingBidForCurrentParticipant(
+      persistedRegistration.getId() );
+    boolean existingBid = sanitizedBid != null;
+    if( sanitizedBid == null ) {
+      sanitizedBid = new Bid();
+      sanitizedBid.setStatus( 0 );
+    }
+
+    sanitizedBid.setId( new Tables.BidId( currentParticipant.getId(),
+                                          persistedRegistration.getId() ) );
+    sanitizedBid.setParticipant( currentParticipant );
+    sanitizedBid.setRegistration( persistedRegistration );
+    sanitizedBid.setDate( incomingBid.getDate() == null
+                          ? new Date()
+                          : incomingBid.getDate() );
+
+    if( canCurrentParticipantEditBid( persistedRegistration ) ) {
+      sanitizedBid.setAmmount( incomingBid.getAmmount() );
+    } else if( !existingBid ) {
+      sanitizedBid.setAmmount( 0.0 );
+    }
+
+    return sanitizedBid;
+  }
+
+  private Bid getExistingBidForCurrentParticipant( Long registrationId ) {
+    try {
+      return modelBean.getBidById( new Tables.BidId( currentParticipant.getId(),
+                                                     registrationId ) );
+    } catch( RuntimeException e ) {
+      return null;
+    }
+  }
+
+  private boolean isCurrentParticipantRegattaOwner( Registration registration ) {
+    return registration.getRegatta() != null
+           && registration.getRegatta().getParticipant() != null
+           && Objects.equals( registration.getRegatta()
+             .getParticipant()
+             .getId(),
+                              currentParticipant.getId() );
+  }
+
+  private boolean canCurrentParticipantEditBid( Registration registration ) {
+    Regatta regatta = registration.getRegatta();
+    return regatta != null
+           && regatta.getStatus() >= RegattaStatus.SPEED_TEST
+           && regatta.getStatus() <= RegattaStatus.AUCTION
+           && registration.getStatus() == RegistrationStatus.OK
+           && currentParticipant.getDefaulter() <= 0;
   }
 
   public void clickAddToFinishingPrize( Regatta regatta ) {
