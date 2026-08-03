@@ -64,7 +64,7 @@ Recommended approach:
 - JUnit 5 + Mockito for unit tests.
 - Testcontainers MySQL for repository/integration tests.
 - Playwright for end-to-end browser flows against a deployed WAR.
-- a repeatable local start script for GlassFish 6 + database + deploy.
+- a repeatable local start script for GlassFish 7 + isolated test database + deploy.
 
 ## Current Regression Priorities
 
@@ -88,6 +88,8 @@ The first local test entry point is:
 - `powershell -ExecutionPolicy Bypass -File scripts/test-local.ps1`
 
 The script looks first for the Maven installation already present on this computer and falls back to `mvn` in `PATH` if available.
+For live and browser modes, it prefers `TOPRACING_ASADMIN`, then `TOPRACING_GLASSFISH_HOME`, then the documented GlassFish 7 installation.
+The default GlassFish domain is `topracing`; override it with `TOPRACING_GF_DOMAIN` only when intentionally testing another domain.
 
 Available local modes:
 
@@ -97,6 +99,23 @@ Available local modes:
 - `browser-live`
 - `deploy-and-browser-live`
 - `full-live`
+
+## Local Isolated Database
+
+Live and browser-oriented local runs now use an isolated MySQL database by default:
+
+- default isolated catalog: `topracing26_test`
+- bootstrap script: `scripts/prepare-test-db.ps1`
+- browser fixtures also default to that isolated catalog through `scripts/browser-fixture.ps1`
+
+Manual checks use the real local catalog `topracing26`.
+Automated live/browser checks recreate `topracing26_test` from `topracing26` and then write temporary participants, regattas, cars, venues, variants, registrations, bids, penalties, and points counts only in the isolated catalog.
+
+This matters because regatta recalculation cost depends heavily on how many historic regattas exist in the database.
+The shared local `topracing26` database had accumulated hundreds of regattas and synthetic fixtures, which made some browser tests spend most of their time recalculating unrelated history and polluted manual checks.
+
+The isolated test catalog keeps reference data but starts with no historic regattas, registrations, bids, penalties, or points counts.
+That makes status-transition and `editregattaresults.xhtml` tests fast enough to be practical locally.
 
 ## Conclusion
 

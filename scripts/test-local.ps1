@@ -1,7 +1,10 @@
+<# scripts/test-local.ps1
+   Runs local unit, integration, deployment, and browser test modes. #>
 param(
   [ValidateSet("unit", "verify-live", "deploy-and-verify-live", "browser-live", "deploy-and-browser-live", "full-live")]
   [string]$Mode = "unit",
-  [string]$BaseUrl = "http://localhost:8080/topracingwebapp"
+  [string]$BaseUrl = "http://localhost:8080/topracingwebapp",
+  [string]$TestDbName = "topracing26_test"
 )
 
 $candidates = @(
@@ -29,9 +32,27 @@ if (-not $maven) {
 }
 
 $asadminCandidates = @(
-  "C:\Users\usuario\ownCloud2\glassfish6\glassfish\bin\asadmin.bat",
-  "C:\Users\usuario\ownCloud2\tools\glassfish7\glassfish\bin\asadmin.bat"
+  $env:TOPRACING_ASADMIN,
+  $(if ($env:TOPRACING_GLASSFISH_HOME) {
+      Join-Path $env:TOPRACING_GLASSFISH_HOME "bin\asadmin.bat"
+    }),
+  "C:\Users\usuario\ownCloud2\tools\glassfish7\glassfish\bin\asadmin.bat",
+  "C:\Users\usuario\ownCloud2\glassfish6\glassfish\bin\asadmin.bat"
+) | Where-Object { $_ }
+
+$javaHomeCandidates = @(
+  $env:TOPRACING_JAVA_HOME,
+  "C:\Program Files\Eclipse Adoptium\jdk-17.0.18.8-hotspot",
+  "C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot",
+  $env:JAVA_HOME
 )
+
+$testDbUrl = "jdbc:mysql://localhost:3306/${TestDbName}?zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Mexico_City"
+$domainName = if ($env:TOPRACING_GF_DOMAIN) {
+  $env:TOPRACING_GF_DOMAIN
+} else {
+  "topracing"
+}
 
 function Ensure-Playwright {
   if (-not (Test-Path -LiteralPath "node_modules\@playwright\test")) {
@@ -65,41 +86,89 @@ function Resolve-Asadmin {
   throw "No local asadmin.bat was found. Update scripts/test-local.ps1 with a valid GlassFish path."
 }
 
+function Resolve-JavaHome {
+  foreach ($candidate in $javaHomeCandidates) {
+    if ($candidate -and (Test-Path -LiteralPath (Join-Path $candidate "bin\java.exe"))) {
+      return $candidate
+    }
+  }
+
+  throw "No local JDK was found. Set TOPRACING_JAVA_HOME to a JDK 11 or newer."
+}
+
+function Set-GlassFishJavaEnvironment {
+  $jdkHome = Resolve-JavaHome
+  $env:JAVA_HOME = $jdkHome
+  $env:AS_JAVA = $jdkHome
+  $env:Path = "$jdkHome\bin;$env:Path"
+}
+
+function Set-IsolatedDbEnvironment {
+  $env:TOPRACING_DB_URL = $testDbUrl
+  $env:TOPRACING_DB_CATALOG = $TestDbName
+  $env:TOPRACING_DB_USERNAME = "admin"
+  $env:TOPRACING_DB_PASSWORD = "admin"
+}
+
+function Prepare-IsolatedDb {
+  Set-IsolatedDbEnvironment
+  powershell -ExecutionPolicy Bypass -File "$PSScriptRoot\prepare-test-db.ps1" -TargetDb $TestDbName
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
+
+function Restart-GlassFishForTests {
+  param([string]$Asadmin)
+
+  Set-IsolatedDbEnvironment
+  Set-GlassFishJavaEnvironment
+  & $Asadmin stop-domain $domainName *> $null
+  & $Asadmin start-domain $domainName
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
+
+function Package-And-Deploy {
+  param([string]$Asadmin)
+
+  & $maven package -DskipTests
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  & $Asadmin deploy --force=true target\topracingwebapp
+  if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
+
+function Prepare-LiveEnvironment {
+  Prepare-IsolatedDb
+  $asadmin = Resolve-Asadmin
+  Restart-GlassFishForTests -Asadmin $asadmin
+  Package-And-Deploy -Asadmin $asadmin
+}
+
 switch ($Mode) {
   "unit" {
     & $maven test
   }
   "verify-live" {
+    Prepare-LiveEnvironment
     & $maven verify "-Dtopracing.baseUrl=$BaseUrl"
   }
   "deploy-and-verify-live" {
-    & $maven package -DskipTests
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
-    $asadmin = Resolve-Asadmin
-    & $asadmin deploy --force=true target\topracingwebapp
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
+    Prepare-LiveEnvironment
     & $maven failsafe:integration-test failsafe:verify "-Dtopracing.baseUrl=$BaseUrl"
   }
   "browser-live" {
+    Prepare-LiveEnvironment
     Ensure-Playwright
     $env:TOPRACING_BASE_URL = $BaseUrl
     npx playwright test
   }
   "deploy-and-browser-live" {
-    & $maven package -DskipTests
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
-    $asadmin = Resolve-Asadmin
-    & $asadmin deploy --force=true target\topracingwebapp
-    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
+    Prepare-LiveEnvironment
     Ensure-Playwright
     $env:TOPRACING_BASE_URL = $BaseUrl
     npx playwright test
   }
   "full-live" {
+    Prepare-LiveEnvironment
     & $maven verify "-Dtopracing.baseUrl=$BaseUrl"
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 

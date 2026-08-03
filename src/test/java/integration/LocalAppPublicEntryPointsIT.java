@@ -1,3 +1,5 @@
+// src/test/java/integration/LocalAppPublicEntryPointsIT.java
+// Verifies public HTTP entry points against a locally deployed app.
 package integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +39,19 @@ class LocalAppPublicEntryPointsIT {
                   login.statusCode() );
     assertTrue( login.body().contains( "participant_email" ) );
     assertTrue( login.body().contains( "participant_password" ) );
+  }
+
+  @Test
+  void publicStandingsPageResponds() throws IOException,
+                                            InterruptedException {
+    HttpResponse<String> standings = get( "/faces/listpointscounts.xhtml" );
+
+    assertEquals( 200,
+                  standings.statusCode() );
+    assertTrue( standings.body().contains( "contentForm" ) );
+    assertTrue( standings.body().contains( "pointscount" ) );
+    assertTrue( standings.body().contains( "</body>" ) );
+    assertTrue( !standings.body().contains( "participant_email" ) );
   }
 
   @Test

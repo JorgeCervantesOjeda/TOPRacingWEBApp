@@ -48,13 +48,24 @@ Aplicacion web Java para gestionar la liga TOP-Racing: participantes, autos, cam
   Arranca el dominio local `topracing`.
 - `powershell -ExecutionPolicy Bypass -File .\scripts\build-and-deploy.ps1`
   Compila con Maven y redepliega en GlassFish.
+- `node .\scripts\import-real-venues-from-mymaps.mjs --apply --clean-test-data`
+  Limpia datos automáticos de prueba reconocibles en `topracing26` e importa circuitos reales desde el CSV de My Maps, con una variante inicial por circuito.
+- `powershell -ExecutionPolicy Bypass -File .\scripts\test-local.ps1 -Mode full-live`
+  Prepara `topracing26_test`, arranca el dominio `topracing` y ejecuta las pruebas automáticas contra la BD aislada.
+
+## Bases de datos locales
+- `topracing26`: datos reales para uso y pruebas manuales.
+- `topracing26_test`: datos para pruebas automáticas; se puede recrear desde `topracing26` con `scripts\prepare-test-db.ps1`.
+- Las pruebas automáticas no deben crear datos en `topracing26`.
 
 ## Variables opcionales
 - `TOPRACING_JAVA_HOME`
 - `TOPRACING_MAVEN_HOME`
 - `TOPRACING_GLASSFISH_HOME`
+- `TOPRACING_ASADMIN`
 - `TOPRACING_GF_DOMAIN`
 - `TOPRACING_DB_URL`
+- `TOPRACING_DB_CATALOG`
 - `TOPRACING_DB_USERNAME`
 - `TOPRACING_DB_PASSWORD`
 - `TOPRACING_APP_URL`

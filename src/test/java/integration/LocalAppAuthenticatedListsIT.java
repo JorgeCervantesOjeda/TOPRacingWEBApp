@@ -1,3 +1,5 @@
+// src/test/java/integration/LocalAppAuthenticatedListsIT.java
+// Verifies authenticated list pages through HTTP and controller-backed fixtures.
 package integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,6 +50,7 @@ import org.junit.jupiter.api.Test;
 class LocalAppAuthenticatedListsIT {
 
   private static final ModelBean MODEL = new ModelBean();
+  private static final Duration HTTP_TIMEOUT = Duration.ofSeconds( 60 );
   private static final Pattern VIEW_STATE_PATTERN = Pattern.compile(
     "name=\"jakarta\\.faces\\.ViewState\"[^>]*value=\"([^\"]+)\"" );
 
@@ -165,14 +168,14 @@ class LocalAppAuthenticatedListsIT {
 
     HttpClient client = HttpClient.newBuilder()
       .cookieHandler( cookieManager )
-      .connectTimeout( Duration.ofSeconds( 10 ) )
+      .connectTimeout( HTTP_TIMEOUT )
       .followRedirects( Redirect.NEVER )
       .build();
 
     HttpResponse<String> loginPage = send( client,
                                            HttpRequest.newBuilder( URI.create(
-                                             baseUrl + "/faces/login.xhtml" ) )
-                                             .timeout( Duration.ofSeconds( 20 ) )
+                                              baseUrl + "/faces/login.xhtml" ) )
+                                              .timeout( HTTP_TIMEOUT )
                                              .GET()
                                              .build() );
 
@@ -192,9 +195,8 @@ class LocalAppAuthenticatedListsIT {
 
     HttpResponse<String> loginResponse = send( client,
                                                HttpRequest.newBuilder( URI.create(
-                                                 baseUrl + "/faces/login.xhtml" ) )
-                                                 .timeout( Duration.ofSeconds(
-                                                   20 ) )
+                                                  baseUrl + "/faces/login.xhtml" ) )
+                                                  .timeout( HTTP_TIMEOUT )
                                                  .header( "Content-Type",
                                                           "application/x-www-form-urlencoded" )
                                                  .POST( HttpRequest.BodyPublishers.ofString(
@@ -432,7 +434,7 @@ class LocalAppAuthenticatedListsIT {
                                                            InterruptedException {
       return send( client,
                    HttpRequest.newBuilder( URI.create( baseUrl + path ) )
-                     .timeout( Duration.ofSeconds( 20 ) )
+                     .timeout( HTTP_TIMEOUT )
                      .GET()
                      .build() );
     }

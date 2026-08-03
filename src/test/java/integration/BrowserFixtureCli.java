@@ -50,6 +50,13 @@ public final class BrowserFixtureCli {
         case "confirmed-participant":
           emitConfirmedParticipantFixture();
           break;
+        case "results-scenario":
+          if( args.length < 2 ) {
+            fail( "Missing results scenario status" );
+            return;
+          }
+          emitResultsScenarioFixture( args[ 1 ] );
+          break;
         default:
           fail( "Unknown fixture command: " + args[ 0 ] );
       }
@@ -173,6 +180,58 @@ public final class BrowserFixtureCli {
                "true" );
     printLine( "password",
                participant.getPassword() );
+  }
+
+  private static void emitResultsScenarioFixture( String scenario ) {
+    final String password = "Results-123";
+    byte regattaStatus;
+    switch( scenario.toLowerCase() ) {
+      case "speed":
+        regattaStatus = RegattaStatus.SPEED_TEST;
+        break;
+      case "race":
+        regattaStatus = RegattaStatus.RACE_TEST;
+        break;
+      case "auction":
+        regattaStatus = RegattaStatus.AUCTION;
+        break;
+      default:
+        fail( "Unknown results scenario status: " + scenario );
+        return;
+    }
+
+    Participant participant = createSavedParticipant(
+      "results-" + scenario + "-browser",
+      password,
+      true );
+    Regatta regatta = MODEL.createRegatta( participant );
+    regatta.setStatus( regattaStatus );
+    MODEL.save( regatta );
+
+    Registration registration = MODEL.createRegistration( regatta,
+                                                          participant );
+    registration.setParticipantByIdOwner( participant );
+    registration.setParticipantByIdDriver( participant );
+    registration.setParticipantByIdBuyer( participant );
+    registration.setStatus( RegistrationStatus.OK );
+    registration.setSecondsLap( 22.22 );
+    registration.setPosRace( (short) 2 );
+    registration.setLapsRace( (short) 10 );
+    registration.setValueAuction( 66.6 );
+    MODEL.save( registration );
+
+    MODEL.recalculateRegattaPenalties( ( p ) -> {
+    } );
+
+    printCommonParticipant( participant );
+    printLine( "password",
+               password );
+    printLine( "scenario",
+               scenario.toLowerCase() );
+    printLine( "regattaId",
+               String.valueOf( regatta.getId() ) );
+    printLine( "regattaStatus",
+               RegattaStatus.NAME[ regattaStatus ] );
   }
 
   private static Participant createSavedParticipant( String label,

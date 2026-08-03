@@ -1,17 +1,19 @@
 # Access Policy
 
-Politica actual deseada:
+Política actual deseada:
 
-- un usuario no autenticado solo debe poder entrar a `welcome` y `login`
-- el resto de vistas funcionales deben requerir sesion autenticada
+- un usuario no autenticado puede entrar a `welcome`, `login` y `standings`
+  (`listpointscounts.xhtml`)
+- `standings` es una consulta pública de solo lectura respaldada por base de datos
+- el resto de vistas funcionales deben requerir sesión autenticada
 
 Puntos a decidir:
 
 - si `confirmusermail.xhtml` debe seguir siendo publica
 - si `resetpassword.xhtml` debe seguir siendo publica
-- si algunas consultas publicas adicionales deben permanecer abiertas
+- si algunas consultas públicas adicionales deben permanecer abiertas
 
-Criterio de implementacion:
+Criterio de implementación:
 
 - la restriccion debe vivir en un punto central
 - los controllers y views solo deben complementar esa regla, no duplicarla

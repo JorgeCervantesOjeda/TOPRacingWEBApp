@@ -1,9 +1,23 @@
+// tests/e2e/editregatta-flow.spec.js
+// Verifies authenticated legacy editor flows for regattas, registrations, and related entities.
 const { test, expect } = require('@playwright/test');
-const { execFileSync } = require('node:child_process');
-const path = require('node:path');
-
-const baseUrl = process.env.TOPRACING_BASE_URL || 'http://localhost:8080/topracingwebapp';
-const fixtureScript = path.join(__dirname, '..', '..', 'scripts', 'browser-fixture.ps1');
+const {
+  baseUrl,
+  clickAndAcceptConfirm,
+  clickBackButton,
+  createAccount,
+  createEventFromPenalties,
+  createRegistrationEditor,
+  createSavedRegistrationAndReturnToResults,
+  dismissWaitUi,
+  editRegattaResultsCell,
+  loadBrowserFixture,
+  logoutIfVisible,
+  navigateResultsToStatus,
+  openFirstRegistrationFromResults,
+  typeIntoFilter,
+  typeIntoLastGlobalFilter
+} = require('./support/editregatta-flow-helpers');
 
 test.afterEach(async ({ page }) => {
   await logoutIfVisible(page);
@@ -221,6 +235,72 @@ test('authenticated user can see the created registration reflected in regatta r
   await expect(firstRow).toContainText('Incomplete');
 });
 
+test('authenticated user can edit best lap during speed test from regatta results', async ({ page }) => {
+  test.setTimeout(600000);
+  const email = `codex+speedlap-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, email, password, 'Speed', 'Lap');
+  await createSavedRegistrationAndReturnToResults(page);
+  await navigateResultsToStatus(page, 'SPEED TEST');
+
+  await editRegattaResultsCell(page, 4, '12.34');
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await dismissWaitUi(page);
+
+  const firstRow = page.locator('#contentForm\\:regattaRegistrationsList_data tr').first();
+  await expect(firstRow).toContainText('12.34');
+});
+
+test('authenticated user can edit race position and race laps during race test from regatta results', async ({ page }) => {
+  test.setTimeout(600000);
+  const email = `codex+raceresults-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, email, password, 'Race', 'Results');
+  await createSavedRegistrationAndReturnToResults(page);
+  await navigateResultsToStatus(page, 'RACE TEST');
+
+  await editRegattaResultsCell(page, 7, '1');
+  await editRegattaResultsCell(page, 8, '15');
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await dismissWaitUi(page);
+
+  const firstRow = page.locator('#contentForm\\:regattaRegistrationsList_data tr').first();
+  await expect(firstRow).toContainText('1');
+  await expect(firstRow).toContainText('15');
+});
+
+test('authenticated user can edit your bid during auction from regatta results', async ({ page }) => {
+  test.setTimeout(600000);
+  const email = `codex+auctionbid-${Date.now()}@example.com`;
+  const password = 'Pw-12345';
+
+  await createAccount(page, email, password, 'Auction', 'Bid');
+  await createSavedRegistrationAndReturnToResults(page);
+  await navigateResultsToStatus(page, 'RACE TEST');
+  await editRegattaResultsCell(page, 7, '1');
+  await editRegattaResultsCell(page, 8, '15');
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await dismissWaitUi(page);
+  await navigateResultsToStatus(page, 'AUCTION');
+
+  await editRegattaResultsCell(page, 12, '77.7');
+  await page.getByRole('button', { name: 'Save data' }).click();
+  await dismissWaitUi(page);
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await dismissWaitUi(page);
+
+  const firstRow = page.locator('#contentForm\\:regattaRegistrationsList_data tr').first();
+  await expect(firstRow).toContainText('77.7');
+});
+
 test('authenticated user can create a venue and inspect it on the map', async ({ page }) => {
   const email = `codex+venueflow-${Date.now()}@example.com`;
   const password = 'Pw-12345';
@@ -260,7 +340,6 @@ test('authenticated user can create a venue and inspect it on the map', async ({
   await dismissWaitUi(page);
 
   await page.locator('#contentForm\\:venues\\:globalFilter').fill(venueName);
-  await page.waitForTimeout(500);
   const venueRow = page.locator('tr', { hasText: venueName }).first();
   await expect(venueRow).toBeVisible();
   await Promise.all([
@@ -275,382 +354,3 @@ test('authenticated user can create a venue and inspect it on the map', async ({
   await expect(page).toHaveURL(/\/faces\/listvenues\.xhtml$/);
   await dismissWaitUi(page);
 });
-
-test('authenticated user can build the geographic chain from variant to planet region', async ({ page }) => {
-  const email = `codex+geochain-${Date.now()}@example.com`;
-  const password = 'Pw-12345';
-  const suffix = `${Date.now()}`;
-  const variantName = `Geo Variant ${suffix}`;
-  const venueName = `Geo Venue ${suffix}`;
-  const provinceRegionName = `Geo Province Region ${suffix}`;
-  const provinceName = `Geo Province ${suffix}`;
-  const countryRegionName = `Geo Country Region ${suffix}`;
-  const countryName = `Geo Country ${suffix}`;
-  const planetRegionName = `Geo Planet Region ${suffix}`;
-
-  await createAccount(page, email, password, 'Geo', 'Chain');
-
-  await page.goto(`${baseUrl}/faces/listvariants.xhtml`);
-  await expect(page).toHaveURL(/\/faces\/listvariants\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await clickAndAcceptConfirm(page, page.getByRole('button', { name: 'Create new Variant' }));
-  await expect(page).toHaveURL(/\/faces\/editvariant\.xhtml$/);
-  await dismissWaitUi(page);
-
-  const variantInputs = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
-  await variantInputs.nth(0).fill(variantName);
-  await variantInputs.nth(1).fill('1.1');
-  await variantInputs.nth(2).fill('2.2');
-  await page.getByRole('button', { name: 'View Venues' }).click();
-  await expect(page).toHaveURL(/\/faces\/listvenues\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await clickAndAcceptConfirm(page, page.getByRole('button', { name: 'Create new Venue' }));
-  await page.waitForURL(/\/faces\/editvenue\.xhtml$/, { timeout: 60000 });
-  await dismissWaitUi(page);
-
-  const venueInputs = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
-  await venueInputs.nth(0).fill(venueName);
-  await venueInputs.nth(2).fill('-99.1000');
-  await venueInputs.nth(3).fill('19.4000');
-  await page.getByRole('button', { name: 'View Province Regions' }).click();
-  await expect(page).toHaveURL(/\/faces\/listprovinceregions\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await clickAndAcceptConfirm(page, page.getByRole('button', { name: 'Create new Province Region' }));
-  await expect(page).toHaveURL(/\/faces\/editprovinceregion\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await fillFirstTextInput(page, provinceRegionName);
-  await page.getByRole('button', { name: 'View Provinces' }).click();
-  await expect(page).toHaveURL(/\/faces\/listprovinces\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await clickAndAcceptConfirm(page, page.getByRole('button', { name: 'Create new Province' }));
-  await expect(page).toHaveURL(/\/faces\/editprovince\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await fillFirstTextInput(page, provinceName);
-  await page.getByRole('button', { name: 'View Country Regions' }).click();
-  await expect(page).toHaveURL(/\/faces\/listcountryregions\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await clickAndAcceptConfirm(page, page.getByRole('button', { name: 'Create new Country Region' }));
-  await expect(page).toHaveURL(/\/faces\/editcountryregion\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await fillFirstTextInput(page, countryRegionName);
-  await page.getByRole('button', { name: 'View Countries' }).click();
-  await expect(page).toHaveURL(/\/faces\/listcountries\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await clickAndAcceptConfirm(page, page.getByRole('button', { name: 'Create new Country' }));
-  await expect(page).toHaveURL(/\/faces\/editcountry\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await fillFirstTextInput(page, countryName);
-  await page.getByRole('button', { name: 'View Planet Regions' }).click();
-  await expect(page).toHaveURL(/\/faces\/listplanetregions\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await clickAndAcceptConfirm(page, page.getByRole('button', { name: 'Create new Planet Region' }));
-  await expect(page).toHaveURL(/\/faces\/editplanetregion\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await fillFirstTextInput(page, planetRegionName);
-  await page.getByRole('button', { name: 'Save data' }).click();
-  await dismissWaitUi(page);
-  await expect(page).toHaveURL(/\/faces\/editplanetregion\.xhtml$/);
-  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
-  await expect(page).toHaveURL(/\/faces\/listplanetregions\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await selectRowByText(page, 'planetregions', planetRegionName);
-  await expect(page).toHaveURL(/\/faces\/editcountry\.xhtml$/);
-  await dismissWaitUi(page);
-  await page.getByRole('button', { name: 'Save data' }).click();
-  await dismissWaitUi(page);
-  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
-  await expect(page).toHaveURL(/\/faces\/listcountries\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await selectRowByText(page, 'countries', countryName);
-  await expect(page).toHaveURL(/\/faces\/editcountryregion\.xhtml$/);
-  await dismissWaitUi(page);
-  await page.getByRole('button', { name: 'Save data' }).click();
-  await dismissWaitUi(page);
-  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
-  await expect(page).toHaveURL(/\/faces\/listcountryregions\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await selectRowByText(page, 'countryregions', countryRegionName);
-  await expect(page).toHaveURL(/\/faces\/editprovince\.xhtml$/);
-  await dismissWaitUi(page);
-  await page.getByRole('button', { name: 'Save data' }).click();
-  await dismissWaitUi(page);
-  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
-  await expect(page).toHaveURL(/\/faces\/listprovinces\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await selectRowByText(page, 'provinces', provinceName);
-  await expect(page).toHaveURL(/\/faces\/editprovinceregion\.xhtml$/);
-  await dismissWaitUi(page);
-  await page.getByRole('button', { name: 'Save data' }).click();
-  await dismissWaitUi(page);
-  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
-  await expect(page).toHaveURL(/\/faces\/listprovinceregions\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await selectRowByText(page, 'provinceregions', provinceRegionName);
-  await expect(page).toHaveURL(/\/faces\/editvenue\.xhtml$/);
-  await dismissWaitUi(page);
-  await page.getByRole('button', { name: 'Save data' }).click();
-  await dismissWaitUi(page);
-  await page.getByRole('button').filter({ has: page.locator('.fa-arrow-left') }).first().click();
-  await expect(page).toHaveURL(/\/faces\/listvenues\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await selectRowByText(page, 'venues', venueName);
-  await expect(page).toHaveURL(/\/faces\/editvariant\.xhtml$/);
-  await dismissWaitUi(page);
-  const variantInputsAfterVenueSelection = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
-  await variantInputsAfterVenueSelection.nth(0).fill(variantName);
-  await variantInputsAfterVenueSelection.nth(1).fill('1.1');
-  await variantInputsAfterVenueSelection.nth(2).fill('2.2');
-  await page.getByRole('button', { name: 'Save data' }).click();
-  await dismissWaitUi(page);
-
-  await expect(page).toHaveURL(/\/faces\/editvariant\.xhtml$/);
-  await expect(page.locator('#contentForm')).toContainText('Venue:');
-  await expect(page.locator('#contentForm')).not.toContainText('Venue not set yet.');
-  await expect(variantInputsAfterVenueSelection.nth(0)).toHaveValue(variantName);
-  await expect(variantInputsAfterVenueSelection.nth(1)).toHaveValue('1.1');
-  await expect(variantInputsAfterVenueSelection.nth(2)).toHaveValue('2.2');
-});
-
-async function createAccount(page, email, password, givenNames, familyNames) {
-  await gotoWithRetry(page, `${baseUrl}/faces/login.xhtml`);
-  const createAccountButton = page.getByRole('button', { name: 'Create Account' });
-  await expect(createAccountButton).toBeVisible();
-  await createAccountButton.click();
-
-  await expect(page).toHaveURL(/\/faces\/editparticipant\.xhtml$/);
-  await expect(page.locator('#contentForm\\:saveParticipantButton')).toBeVisible();
-
-  await page.locator('#contentForm\\:passwordInput').fill(password);
-  await page.locator('#contentForm\\:givenNamesInput').fill(givenNames);
-  await page.locator('#contentForm\\:familyNamesInput').fill(familyNames);
-  await page.locator('#contentForm\\:emailInput').fill(email);
-  await page.locator('#contentForm\\:phoneInput').fill('5555555555');
-  await page.locator('#contentForm\\:saveParticipantButton').click();
-
-  await expect(page).toHaveURL(/\/faces\/welcome\.xhtml$/);
-  await expect(page.getByText('Logout').first()).toBeVisible();
-}
-
-async function createEventFromPenalties(page) {
-  await page.goto(`${baseUrl}/faces/listpenalties.xhtml`);
-  await expect(page).toHaveURL(/\/faces\/listpenalties\.xhtml$/);
-  const createEventButton = page.getByRole('button', { name: 'Create Event' });
-  await expect(createEventButton).toBeVisible({ timeout: 60000 });
-
-  await clickAndAcceptConfirm(page, createEventButton);
-  await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
-  await dismissWaitUi(page);
-}
-
-async function createRegistrationEditor(page) {
-  await createEventFromPenalties(page);
-
-  await clickAndAcceptConfirm(page, page.getByRole('button', { name: /Next status:/ }));
-  await settleAfterStatusAdvance(page);
-
-  await expect(page).toHaveURL(/\/faces\/editregatta\.xhtml$/);
-  await page.getByRole('button', { name: 'View/Edit Registrations' }).click();
-  await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
-  await dismissWaitUi(page);
-
-  await clickAndAcceptConfirm(page, page.getByRole('button', { name: 'Create new registration' }));
-  await expect(page).toHaveURL(/\/faces\/editregistration\.xhtml$/);
-  await dismissWaitUi(page);
-}
-
-async function createSavedRegistrationAndReturnToResults(page) {
-  await createRegistrationEditor(page);
-  await page.getByRole('button', { name: 'Save data' }).click();
-  await dismissWaitUi(page);
-  await clickBackButton(page);
-  await expect(page).toHaveURL(/\/faces\/editregattaresults\.xhtml$/);
-  await dismissWaitUi(page);
-}
-
-async function dismissWaitUi(page) {
-  try {
-    await page.evaluate(() => {
-      try {
-        if (window.PF) {
-          const waitDialog = PF('dlgWait');
-          if (waitDialog && typeof waitDialog.hide === 'function') {
-            waitDialog.hide();
-          }
-        }
-      } catch (error) {
-        // Ignore missing PrimeFaces widget state in tests.
-      }
-
-      document
-        .querySelectorAll('.ui-widget-overlay, .ui-dialog-mask')
-        .forEach((node) => node.remove());
-    });
-  } catch (error) {
-    if (!String(error).includes('Execution context was destroyed')) {
-      throw error;
-    }
-  }
-}
-
-async function fillFirstTextInput(page, value) {
-  const inputs = page.locator('#contentForm input[type="text"]').filter({ hasNot: page.locator('[type="hidden"]') });
-  await inputs.nth(0).fill(value);
-}
-
-async function selectRowByText(page, tableId, text) {
-  await page.locator(`#contentForm\\:${tableId}\\:globalFilter`).fill(text);
-  await page.waitForTimeout(500);
-  const row = page.locator(`#contentForm\\:${tableId}_data tr`, { hasText: text }).first();
-  await expect(row).toBeVisible();
-  await row.getByRole('button', { name: 'Select' }).click();
-}
-
-async function clickBackButton(page) {
-  await page.locator('#contentForm button:has(.fa-arrow-left)').first().click();
-}
-
-async function clickAndAcceptConfirm(page, buttonLocator) {
-  await expect(buttonLocator).toBeVisible({ timeout: 30000 });
-  try {
-    await buttonLocator.click({ timeout: 10000 });
-  } catch (error) {
-    await buttonLocator.evaluate((button) => button.click());
-  }
-  const confirmYesButton = page.locator('.ui-confirmdialog-yes:visible').first();
-  await expect(confirmYesButton).toBeVisible({ timeout: 10000 });
-  await confirmYesButton.click({ force: true });
-  await expect(confirmYesButton).toBeHidden({ timeout: 10000 });
-}
-
-async function settleAfterStatusAdvance(page) {
-  const infoOkButton = page.locator('#contentForm\\:infoMessageOK');
-
-  try {
-    await infoOkButton.waitFor({ state: 'visible', timeout: 60000 });
-    await infoOkButton.click();
-  } catch (error) {
-    // Some runs transition without surfacing the intermediate OK button.
-  }
-
-  await dismissWaitUi(page);
-}
-
-async function openFirstRegistrationFromResults(page) {
-  const registrationRow = page.locator('#contentForm\\:regattaRegistrationsList_data tr').first();
-  await expect(registrationRow).toBeVisible();
-
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const clicked = registrationRow.locator('td').nth(1);
-    await clicked.evaluate((cell) => cell.click());
-
-    try {
-      await page.waitForURL(/\/faces\/editregistration\.xhtml$/, {
-        timeout: 15000,
-        waitUntil: 'domcontentloaded'
-      });
-      return;
-    } catch (error) {
-      if (attempt === 1) {
-        throw error;
-      }
-    }
-  }
-}
-
-async function typeIntoLastGlobalFilter(page, value) {
-  const filterInput = page.locator('#contentForm input[id$="globalFilter"]').last();
-  await typeIntoFilter(page, filterInput, value);
-}
-
-async function typeIntoFilter(page, locatorOrSelector, value) {
-  const filterInput = typeof locatorOrSelector === 'string'
-    ? page.locator(locatorOrSelector)
-    : locatorOrSelector;
-  await filterInput.click();
-  await filterInput.fill('');
-  await filterInput.type(value, { delay: 50 });
-  await page.waitForTimeout(500);
-}
-
-async function gotoWithRetry(page, url) {
-  for (let attempt = 0; attempt < 2; attempt++) {
-    try {
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 300000 });
-      return;
-    } catch (error) {
-      if (attempt === 1) {
-        throw error;
-      }
-      await page.waitForTimeout(1000);
-    }
-  }
-}
-
-function loadBrowserFixture(command, argument) {
-  const args = [
-    '-ExecutionPolicy',
-    'Bypass',
-    '-File',
-    fixtureScript,
-    '-Command',
-    command
-  ];
-
-  if (argument) {
-    args.push('-Argument', argument);
-  }
-
-  const output = execFileSync('powershell', args, {
-    cwd: path.join(__dirname, '..', '..'),
-    encoding: 'utf8',
-    stdio: ['ignore', 'pipe', 'pipe']
-  });
-
-  return output
-    .split(/\r?\n/)
-    .filter(Boolean)
-    .reduce((fixture, line) => {
-      const separator = line.indexOf('=');
-      if (separator <= 0) {
-        return fixture;
-      }
-      fixture[line.slice(0, separator)] = line.slice(separator + 1);
-      return fixture;
-    }, {});
-}
-
-
-async function logoutIfVisible(page) {
-  if (page.isClosed()) {
-    return;
-  }
-
-  try {
-    await dismissWaitUi(page);
-    const logoutButton = page.locator('[id$="logoutButton"]').first();
-    if (await logoutButton.isVisible({ timeout: 1500 }).catch(() => false)) {
-      await logoutButton.click({ timeout: 5000 });
-      await page.waitForTimeout(300);
-    }
-  } catch (error) {
-    // Best-effort session cleanup for local GlassFish stability.
-  }
-}

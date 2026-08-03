@@ -1,3 +1,5 @@
+// src/main/java/Web/AuthenticationPageFilter.java
+// Centralizes page-level authentication rules for JSF requests.
 package Web;
 
 import Controller.Controller;
@@ -32,6 +34,8 @@ public class AuthenticationPageFilter
   private static final String COMPLAINT_BUYER_FACES_PAGE = "/faces/complaintbuyer.xhtml";
   private static final String COMPLAINT_SELLER_PAGE = "/complaintseller.xhtml";
   private static final String COMPLAINT_SELLER_FACES_PAGE = "/faces/complaintseller.xhtml";
+  private static final String POINTSCOUNTS_PAGE = "/listpointscounts.xhtml";
+  private static final String POINTSCOUNTS_FACES_PAGE = "/faces/listpointscounts.xhtml";
 
   @Override
   public void doFilter( ServletRequest request,
@@ -88,6 +92,8 @@ public class AuthenticationPageFilter
            || COMPLAINT_BUYER_PAGE.equals( path )
            || COMPLAINT_BUYER_FACES_PAGE.equals( path )
            || COMPLAINT_SELLER_PAGE.equals( path )
-           || COMPLAINT_SELLER_FACES_PAGE.equals( path );
+           || COMPLAINT_SELLER_FACES_PAGE.equals( path )
+           || POINTSCOUNTS_PAGE.equals( path )
+           || POINTSCOUNTS_FACES_PAGE.equals( path );
   }
 }

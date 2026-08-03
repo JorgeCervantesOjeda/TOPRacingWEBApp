@@ -1,3 +1,5 @@
+// src/main/java/Model/ModelBean.java
+// Provides application-scoped business logic and Hibernate-backed data access.
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -3781,10 +3783,38 @@ public class ModelBean
 
   @Override
   public synchronized String getParticipantFullNameById( long _userNumber ) {
-    Participant u = new Participant();
-    u.setId( _userNumber );
-    u = getParticipantById( u );
-    return getParticipantFullName( u );
+    SessionFactory sf = U_HibernateUtil.getSessionFactory();
+    Session s = sf.openSession();
+    Transaction t = null;
+    try {
+      t = s.beginTransaction();
+
+      Query q = s.createQuery(
+            "select p.confirmed, p.namesFamily, p.namesGiven"
+            + " from Tables.Participant as p"
+            + " where p.id = " + _userNumber
+          );
+      Object[] participantName = (Object[]) q.uniqueResult();
+
+      t.commit();
+      if( participantName == null ) {
+        return "-";
+      }
+
+      boolean confirmed = Boolean.TRUE.equals( participantName[ 0 ] );
+      return ( confirmed
+               ? ""
+               : "*" )
+             + participantName[ 1 ] + ", "
+             + participantName[ 2 ];
+    } catch( RuntimeException ex ) {
+      if( t != null && t.isActive() ) {
+        t.rollback();
+      }
+      throw ex;
+    } finally {
+      s.close();
+    }
   }
 
   @Override
