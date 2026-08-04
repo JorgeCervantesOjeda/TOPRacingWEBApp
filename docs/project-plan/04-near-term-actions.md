@@ -2,8 +2,8 @@
 
 Siguientes acciones recomendadas:
 
-1. decidir si `confirmusermail.xhtml` y `resetpassword.xhtml` deben quedar publicas
-2. configurar `MAIL_OAUTH_CLIENT_ID` y resto de variables de correo
+1. decidir si hay consultas públicas adicionales además de Standings, confirmación y recuperación
+2. configurar `MAIL_DELIVERY_MODE=smtp` y variables SMTP en `scripts\local-env.ps1`
 3. cubrir con pruebas o checklist manual estos casos:
 - welcome anonimo
 - login valido e invalido

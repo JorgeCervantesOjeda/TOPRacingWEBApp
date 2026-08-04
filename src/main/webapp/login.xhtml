@@ -72,8 +72,9 @@
                              value="Request a Password Reset"
                              icon="fa fa-fw fa-key"
                              ajax="true"
-                             onclick="PF('dlgWait').show();"
-                             disabled="#{viewBean.disableResetButton()}">
+                             process="@form"
+                             update="dlgInfo"
+                             onstart="PF('dlgWait').show();">
               <p:confirm header="Are you sure?"
                          message="Reset your password now" />
             </p:commandButton>

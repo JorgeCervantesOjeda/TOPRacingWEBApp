@@ -68,11 +68,35 @@ Aplicacion web Java para gestionar la liga TOP-Racing: participantes, autos, cam
 - `TOPRACING_DB_CATALOG`
 - `TOPRACING_DB_USERNAME`
 - `TOPRACING_DB_PASSWORD`
-- `TOPRACING_APP_URL`
+- `TOPRACING_APP_URL`: URL pública base usada en enlaces de e-mail. En desarrollo local usa `http://localhost:8080/topracingwebapp/`; en otro servidor cámbiala sin modificar código.
 
-## Correo (OAuth)
-- `MAIL_OAUTH_CLIENT_ID`
-- `MAIL_OAUTH_CLIENT_SECRET`
-- `MAIL_OAUTH_REFRESH_TOKEN`
-- Opcional: `MAIL_OAUTH_TOKEN_URL` (default: `https://oauth2.googleapis.com/token`)
-- Opcional: `MAIL_SENDER_EMAIL` y `MAIL_MONITOR_EMAIL`
+## Correo
+La app puede enviar e-mails por SMTP o por el flujo heredado de Gmail OAuth.
+Los scripts `start-glassfish.ps1` y `build-and-deploy.ps1` cargan opcionalmente
+`scripts\local-env.ps1`; ese archivo no se versiona porque puede contener secretos.
+Usa `scripts\local-env.example.ps1` como plantilla.
+
+Modo recomendado:
+- `MAIL_DELIVERY_MODE=smtp`
+- `MAIL_SENDER_EMAIL`
+- `MAIL_MONITOR_EMAIL`
+- `MAIL_SMTP_HOST`
+- `MAIL_SMTP_PORT` (default: `587`)
+- `MAIL_SMTP_AUTH` (default: `true`)
+- `MAIL_SMTP_STARTTLS` (default: `true`)
+- `MAIL_SMTP_SSL_ENABLE` (default: `false`)
+- `MAIL_SMTP_USERNAME`
+- `MAIL_SMTP_PASSWORD`
+
+Modos alternativos:
+- `MAIL_DELIVERY_MODE=gmail-oauth` con `MAIL_OAUTH_CLIENT_ID`,
+  `MAIL_OAUTH_CLIENT_SECRET`, `MAIL_OAUTH_REFRESH_TOKEN` y, opcionalmente,
+  `MAIL_OAUTH_TOKEN_URL` (default: `https://oauth2.googleapis.com/token`).
+- `MAIL_DELIVERY_MODE=log` para pruebas sin envío real.
+- `MAIL_DELIVERY_MODE=disabled` para desactivar explícitamente el envío.
+
+Si `MAIL_DELIVERY_MODE` no se define, la app usa SMTP cuando existe
+`MAIL_SMTP_HOST`, usa Gmail OAuth cuando existen variables OAuth, y falla con
+un error explícito si no hay transporte configurado.
+Después de crear o modificar `scripts\local-env.ps1`, reinicia el dominio de
+GlassFish para que el proceso cargue las variables nuevas.

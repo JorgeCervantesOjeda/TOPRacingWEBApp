@@ -74,5 +74,6 @@ public class UI {
   public static final int INVALID_RACE_RESULTS = 701;
 
   public static final int PASSWORD_RESET_REQUEST = 800;
+  public static final int ERROR_PASSWORD_RESET_REQUEST = 801;
 }
 

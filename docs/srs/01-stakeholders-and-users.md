@@ -1,17 +1,52 @@
-# Stakeholders And Users
+# Stakeholders Y Usuarios
 
-Stakeholders:
+## Stakeholders
 
-- organizadores de TOP-Racing
-- participantes registrados
-- operadores tecnicos del despliegue
+- Organizadores de TOP Racing.
+- Promotores de eventos.
+- Participantes registrados.
+- Dueños de vehículos.
+- Pilotos, cuando sean distintos del dueño.
+- Postores en subastas de acceso o vehículos.
+- Patrocinadores y aportantes.
+- Espectadores.
+- Administradores del sistema.
+- Operadores técnicos del despliegue.
 
-Tipos de usuario:
+## Tipos De Usuario
 
-- visitante anonimo
-- participante autenticado
-- operador con acceso a funciones de gestion
+- `Visitante anónimo`: consulta páginas públicas y puede iniciar flujos de registro, confirmación o recuperación de cuenta.
+- `Participante autenticado`: consulta y opera información asociada a su cuenta.
+- `Promotor`: convoca y administra eventos conforme a reglas publicadas.
+- `Dueño de vehículo`: registra vehículos y puede inscribirlos en eventos.
+- `Piloto`: puede conducir o quedar asociado a una inscripción cuando el dominio lo permita.
+- `Postor`: participa en subastas habilitadas para su nivel de verificación.
+- `Patrocinador o aportante`: aporta fondos o publicidad conforme a reglas publicadas.
+- `Administrador`: gestiona reglas, usuarios, excepciones, moderación y operación crítica.
+- `Operador técnico`: mantiene despliegue, base de datos, pruebas y observabilidad.
 
-Supuesto actual:
+## Papeles Y Estados
 
-- la mayor parte de la operacion de dominio ocurre bajo sesion autenticada
+Los papeles funcionales pueden acumularse en un mismo usuario, excepto los casos que el dominio reserve a administración.
+
+Estados relevantes del usuario:
+
+- sesión anónima o autenticada;
+- correo confirmado o no confirmado;
+- identidad verificada;
+- verificación reforzada;
+- aceptación vigente de términos;
+- exclusión activa o inexistente.
+
+## Reglas De Acceso Por Tipo De Usuario
+
+- La consulta pública no debe requerir cuenta cuando la información haya sido declarada pública.
+- La participación operativa debe requerir cuenta autenticada.
+- Las operaciones de mayor riesgo deben requerir verificación reforzada: promover eventos, inscribir vehículos y pujar por vehículos.
+- Un usuario excluido no debe poder participar en operaciones competitivas o económicas mientras la exclusión esté activa.
+
+## Estado De Implementación
+
+- `Implementado`: visitante anónimo, participante autenticado, confirmación de correo, recuperación de contraseña y acceso público a Standings.
+- `Parcial`: administración de participantes, sedes, vehículos, regattas, registrations, bids y puntos.
+- `Objetivo`: verificación reforzada formal, roles explícitos de promotor/postor/patrocinador, exclusión normativa, aceptación versionada de términos y moderación comunitaria.

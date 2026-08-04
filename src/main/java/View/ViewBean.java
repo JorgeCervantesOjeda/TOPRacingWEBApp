@@ -309,11 +309,19 @@ public class ViewBean
             bundle(
               "PASSWORD RESET REQUEST LONG" ) );
           return;
-          case UI.LOGIN:
-            currentParticipant = createPlaceholderParticipant();
-            redirect( context,
-                      context.getRequestContextPath() + "/login.xhtml" );
-            break;
+        case UI.ERROR_PASSWORD_RESET_REQUEST:
+          showModal(
+            bundle(
+              "ERROR PASSWORD RESET REQUEST" ),
+
+            bundle(
+              "ERROR PASSWORD RESET REQUEST LONG" ) );
+          return;
+        case UI.LOGIN:
+          currentParticipant = createPlaceholderParticipant();
+          redirect( context,
+                    context.getRequestContextPath() + "/login.xhtml" );
+          break;
         case UI.ERROR_LOGIN:
           showModal(
             bundle(
@@ -617,8 +625,11 @@ public class ViewBean
     this.messageHeader = header;
     this.messageDetail = detail;
 
-    PrimeFaces.current().executeScript( "PF('dlgWait').hide()" );
-    PrimeFaces.current().executeScript( "PF('dlgInfo').show()" );
+    PrimeFaces.current()
+      .ajax()
+      .update( "contentForm:dlgInfo" );
+    PrimeFaces.current()
+      .executeScript( "PF('dlgWait').hide(); PF('dlgInfo').show();" );
 
     FacesContext instance = FacesContext.getCurrentInstance();
     ExternalContext context = instance.getExternalContext();

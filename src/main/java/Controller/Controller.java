@@ -171,7 +171,7 @@ public class Controller {
     }
 
     modelBean.sendEmail( currentParticipant,
-                         "You have logged in to top-racing.org.",
+                         "You have logged in to TOP Racing.",
                          this.session );
 
     updateAuthenticatedSession( currentParticipant );
@@ -186,9 +186,11 @@ public class Controller {
     System.out.println( new Date()
                         + " clickResetPasswordRequest for "
                         + (user == null ? "null" : user.getEmail()) );
-    modelBean.resetPasswordRequest( user,
-                                    this.session );
-    theView.showUI( UI.PASSWORD_RESET_REQUEST,
+    boolean emailAccepted = modelBean.resetPasswordRequest( user,
+                                                            this.session );
+    theView.showUI( emailAccepted
+                    ? UI.PASSWORD_RESET_REQUEST
+                    : UI.ERROR_PASSWORD_RESET_REQUEST,
                     user );
   }
 

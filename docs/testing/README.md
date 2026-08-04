@@ -48,8 +48,8 @@ These areas are testable, but the current seams are weak:
   - they read static `FacesContext` directly in `@PostConstruct`.
   - First step: extract request-parameter access behind a small adapter.
 - `View/MailerAgent.java`
-  - it calls Gmail OAuth and HTTP directly.
-  - First step: inject a `MailGateway` so tests can capture outgoing messages without network calls.
+  - it now has configurable delivery modes.
+  - Next step: inject a `MailGateway` if tests need to assert message contents outside existing model doubles.
 
 ## What Needs Environment Support
 
@@ -76,7 +76,7 @@ Recommended approach:
 
 ## Remaining Gaps
 
-- Mail delivery itself is still tied to live Gmail OAuth credentials.
+- Mail delivery has SMTP, Gmail OAuth, log, and disabled modes; automated local tests default to `MAIL_DELIVERY_MODE=log`.
 - JSF request beans still depend heavily on container state and are easier to cover through live tests than isolated unit tests.
 - Administrative coverage is broad but not exhaustive across every screen.
 - Local automation still depends on the machine-specific GlassFish and database setup because there is no disposable stack or Maven wrapper yet.

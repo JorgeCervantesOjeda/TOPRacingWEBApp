@@ -1,6 +1,11 @@
 $ErrorActionPreference = "Stop"
 
 $projectRoot = Split-Path -Parent $PSScriptRoot
+$localEnv = Join-Path $PSScriptRoot "local-env.ps1"
+if( Test-Path -LiteralPath $localEnv ) {
+  . $localEnv
+}
+
 $jdkHome = if( $env:TOPRACING_JAVA_HOME ) {
   $env:TOPRACING_JAVA_HOME
 } else {
@@ -28,6 +33,11 @@ $domainName = if( $env:TOPRACING_GF_DOMAIN ) {
 $env:JAVA_HOME = $jdkHome
 $env:AS_JAVA = $jdkHome
 $env:Path = "$jdkHome\bin;C:\Windows\System32;C:\Windows"
+
+& "$PSScriptRoot\sync-glassfish-truststore.ps1" `
+  -JdkHome $jdkHome `
+  -GlassfishHome $glassfishHome `
+  -DomainName $domainName
 
 Push-Location $projectRoot
 try {

@@ -83,7 +83,7 @@ class ControllerTest {
                                                  "confirm-message",
                                                  42L );
     verify( modelBean ).sendEmail( attempt,
-                                   "You have logged in to top-racing.org.",
+                                   "You have logged in to TOP Racing.",
                                    42L );
     verify( view ).showUI( UI.WELCOME,
                            attempt );
@@ -108,6 +108,32 @@ class ControllerTest {
     controller.clickNewParticipant();
 
     verify( view ).showUI( UI.ERROR_CREATE_REGISTRATION_DUPLICATE );
+  }
+
+  @Test
+  void clickResetPasswordRequestShowsSuccessWhenMailIsAccepted() {
+    Participant attempt = participant( 10L,
+                                       false );
+    when( modelBean.resetPasswordRequest( attempt,
+                                          42L ) ).thenReturn( true );
+
+    controller.clickResetPasswordRequest( attempt );
+
+    verify( view ).showUI( UI.PASSWORD_RESET_REQUEST,
+                           attempt );
+  }
+
+  @Test
+  void clickResetPasswordRequestShowsErrorWhenMailFails() {
+    Participant attempt = participant( 10L,
+                                       false );
+    when( modelBean.resetPasswordRequest( attempt,
+                                          42L ) ).thenReturn( false );
+
+    controller.clickResetPasswordRequest( attempt );
+
+    verify( view ).showUI( UI.ERROR_PASSWORD_RESET_REQUEST,
+                           attempt );
   }
 
   @Test

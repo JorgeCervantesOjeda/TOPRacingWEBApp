@@ -49,6 +49,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
@@ -71,6 +73,11 @@ import org.hibernate.type.LongType;
 
 public class ModelBean
   implements ModelForView {
+
+  private static final Logger LOGGER = Logger.getLogger( ModelBean.class
+    .getName() );
+  private static final String DEFAULT_APP_URL =
+                                      "http://localhost:8080/topracingwebapp/";
 
   private long numSesionesActivas = 0;
   private long numUsuariosActivos = 0;
@@ -201,12 +208,26 @@ public class ModelBean
     if( configured == null || configured.isBlank() ) {
       configured = System.getenv( "TOPRACING_APP_URL" );
     }
-    if( configured == null || configured.isBlank() ) {
-      configured = "148.206.179.34:8080/topracingwebapp/";
+    String resolved = appURLFrom( configured );
+    LOGGER.log( Level.INFO,
+                "TOP Racing application URL resolved to {0}",
+                resolved );
+    return resolved;
+  }
+
+  static String appURLFrom( String configured ) {
+    String url = configured == null || configured.isBlank()
+                 ? DEFAULT_APP_URL
+                 : configured.trim();
+
+    if( !url.startsWith( "http://" )
+        && !url.startsWith( "https://" ) ) {
+      url = "http://" + url;
     }
-    return configured.endsWith( "/" )
-           ? configured
-           : configured + "/";
+
+    return url.endsWith( "/" )
+           ? url
+           : url + "/";
   }
 
   public synchronized Bid getBidById( BidId _bidId ) {
@@ -1529,20 +1550,32 @@ public class ModelBean
                       pl );
   }
 
-  public synchronized void resetPasswordRequest( Participant _user,
-                                                 long session ) {
-    Participant user = this.getParticipantByEmail( _user );
-    if( user == null ) {
-      return;
+  public synchronized boolean resetPasswordRequest( Participant _user,
+                                                    long session ) {
+    if( _user == null
+        || _user.getEmail() == null
+        || _user.getEmail()
+          .trim()
+          .isEmpty() ) {
+      LOGGER.log( Level.WARNING,
+                  "Password reset requested without e-mail. session={0}",
+                  session );
+      return true;
     }
 
-    sendEmail(
+    Participant user = this.getParticipantByEmail( _user );
+    if( user == null ) {
+      LOGGER.log( Level.WARNING,
+                  "Password reset requested for unknown e-mail. session={0}",
+                  session );
+      return true;
+    }
+
+    return sendEmailSynchronously(
       user,
       "A password reset request was received.\n"
       + "If you want to reset your password please click the following link:\n"
-      + "http://"
       + this.appURL
-      // + "localhost:8080/TOPRacingWEBApp/"
       + "faces/resetpassword.xhtml?key=%27"
       + user.getEmailKey() + "%27",
       session );
@@ -1578,7 +1611,6 @@ public class ModelBean
       p,
       message
       + "\n"
-      + "http://"
       + this.appURL
       + "faces/confirmusermail.xhtml?key=%27"
       + p.getEmailKey() + "%27",
@@ -3672,7 +3704,11 @@ public class ModelBean
   }
 
   private String getMonitorEmail() {
-    String monitor = System.getenv( "MAIL_MONITOR_EMAIL" );
+    String monitor = System.getProperty( "MAIL_MONITOR_EMAIL" );
+    if( monitor == null
+        || monitor.trim().isEmpty() ) {
+      monitor = System.getenv( "MAIL_MONITOR_EMAIL" );
+    }
     return monitor == null || monitor.trim().isEmpty()
            ? "top.racing.org@gmail.com"
            : monitor.trim();
@@ -3733,7 +3769,8 @@ public class ModelBean
                    + " session:" + session
                    + "\tu:" + user.getId()
                    + "\t" + getClientIpAddress()
-                   + "\t" + messageText;
+                   + "\tmailMessageLength:" + numOfCharactersInText(
+                     messageText );
 
       Files.write( filePath,
                    msg.getBytes(),
@@ -3746,6 +3783,60 @@ public class ModelBean
     } catch( IOException ex ) {
       System.out.println( new Date() + " !!! " + ex.getMessage() );
     }
+  }
+
+  private boolean sendEmailSynchronously( Participant user,
+                                          String messageText,
+                                          long session ) {
+    logMessage( user,
+                messageText,
+                session );
+
+    if( user == null ) {
+      LOGGER.log( Level.WARNING,
+                  "Synchronous e-mail skipped because recipient is null. session={0}",
+                  session );
+      return false;
+    }
+
+    try {
+      MailerAgent mail = new MailerAgent(
+        this.eMailSender,
+        session,
+        user.getEmail(),
+        messageText
+        + "\n\nuser:" + user.getId()
+        + " " + this.getParticipantFullName( user )
+        + "\n" + new SimpleDateFormat(
+          "yyyy-MM-dd HH:mm:ss.SSS" ).format(
+          new Date() )
+        + "\n",
+        "" );
+      mail.sendNow();
+      return true;
+    } catch( MessagingException ex ) {
+      LOGGER.log( Level.SEVERE,
+                  "Synchronous e-mail failed. recipient={0}, session={1}, cause={2}, rootCause={3}",
+                  new Object[]{ user.getEmail(),
+                                session,
+                                ex.getMessage(),
+                                rootCauseSummary( ex ) } );
+      return false;
+    }
+  }
+
+  private String rootCauseSummary( Throwable throwable ) {
+    Throwable current = throwable;
+    while( current.getCause() != null ) {
+      current = current.getCause();
+    }
+    return current.getClass().getName() + ": " + current.getMessage();
+  }
+
+  private int numOfCharactersInText( String text ) {
+    return text == null
+           ? 0
+           : text.length();
   }
 
   /*
@@ -4027,7 +4118,6 @@ public class ModelBean
         buyer,
         buyerMsg
         + "\n"
-        + "http://"
         + this.appURL
         + "faces/complaint.xhtml?key=%27"
         + buyer.getEmailKey() + "%27"
@@ -4051,7 +4141,6 @@ public class ModelBean
         seller,
         sellerMsg
         + "\n"
-        + "http://"
         + this.appURL
         + "faces/complaint.xhtml?key=%27"
         + seller.getEmailKey() + "%27"
@@ -4197,7 +4286,7 @@ public class ModelBean
 
     return "\n\n"
            + intro
-           + "\nhttp://"
+           + "\n"
            + this.appURL
            + "faces/complaint.xhtml?mode=balance&key=%27"
            + reporter.getEmailKey() + "%27"

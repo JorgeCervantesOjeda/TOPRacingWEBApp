@@ -4,7 +4,7 @@ Dependencias externas principales:
 
 - GlassFish 6+ compatible con Jakarta
 - MySQL con esquema utilizable
-- variables de correo OAuth
+- variables de correo SMTP u OAuth
 
 Riesgos tecnicos principales:
 

@@ -108,6 +108,9 @@ function Set-IsolatedDbEnvironment {
   $env:TOPRACING_DB_CATALOG = $TestDbName
   $env:TOPRACING_DB_USERNAME = "admin"
   $env:TOPRACING_DB_PASSWORD = "admin"
+  if (-not $env:MAIL_DELIVERY_MODE) {
+    $env:MAIL_DELIVERY_MODE = "log"
+  }
 }
 
 function Prepare-IsolatedDb {
