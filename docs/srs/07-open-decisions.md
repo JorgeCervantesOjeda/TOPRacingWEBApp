@@ -1,6 +1,6 @@
 # Decisiones Abiertas
 
-Esta lista contiene solo decisiones que siguen abiertas después de alinear la SRS local con la versión actual.
+Esta lista auxiliar contiene decisiones que siguen abiertas después de comparar la SRS oficial completa con la versión actual de la app Java/MySQL.
 
 ## Producto
 

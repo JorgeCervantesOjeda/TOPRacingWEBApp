@@ -6,7 +6,7 @@ TOPRacingWEBApp debe permitir operar digitalmente la liga TOP Racing en su imple
 
 El sistema debe organizar eventos competitivos, participantes, vehículos, sedes, variantes de pista, inscripciones, resultados, clasificaciones, puntos y datos públicos de la liga.
 
-La SRS de producto v2.6 amplía ese objetivo con subastas de acceso, subastas de vehículos, eficiencia relativa al mercado, pagos, devoluciones, patrocinio, aportaciones, disputas, moderación comunitaria e historial público. Esta app debe considerarlos como alcance objetivo salvo que esta SRS local indique que ya están implementados.
+La SRS oficial completa v2.6 amplía ese objetivo con subastas de acceso, subastas de vehículos, eficiencia relativa al mercado, pagos, devoluciones, patrocinio, aportaciones, disputas, moderación comunitaria e historial público. Esta app debe considerarlos como alcance objetivo; los documentos auxiliares solo indican estado observado de implementación.
 
 ## Objetivo Operativo De Esta Versión
 
@@ -30,6 +30,6 @@ Esta versión debe:
 
 Observación: el código actual implementa una aplicación JSF con persistencia MySQL y páginas públicas/protegidas.
 
-Supuesto: la SRS v2.6 del proyecto React/Firebase describe la visión funcional completa de TOP Racing.
+Supuesto: la SRS oficial completa v2.6 describe la visión funcional completa de TOP Racing.
 
-Inferencia: esta SRS local debe documentar simultáneamente la visión completa y el estado implementado por la app Java para evitar que las pruebas manuales se basen en datos o flujos de prueba.
+Inferencia: los documentos auxiliares deben separar la visión completa de la SRS oficial y el estado implementado por la app Java para evitar que las pruebas manuales se basen en datos o flujos de prueba.

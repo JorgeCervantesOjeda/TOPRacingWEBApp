@@ -1332,8 +1332,8 @@ public class ModelBean
     for( Registration registration
          : registrations ) {
 
-      // set default values for not-OK registrations
-      registration.setValueAuction( 1e-10 );
+      // set default values for registrations without an official auction price
+      registration.setValueAuction( 0.0 );
       registration.setParticipantByIdBuyer(
         registration
           .getParticipantByIdOwner() );
@@ -1393,47 +1393,56 @@ public class ModelBean
 
     // set efficiency positions
     regatta = getRegattaById( regatta.getId() );
-    double dollarValue = regatta.getCurrency().getDollarvalue();
-    boolean isMetric = regatta.getVariant().isMetric();
-
-    // calculate slope and intercept of adjusted line in the log plot of speed( auctionValue )
-    // x = speed km/hr; y = log( market_value ) in regatta currency
-    int k = 1; // bycicle with
-    double sumX = 32 / ( isMetric
-                         ? 1
-                         : 1.609 );
-    double sumY = Math.log( 10000.0 / dollarValue ); // valued 10000 pesos. ln( 10000/dollar ) = 9.21
-    double sumX2 = sumX * sumX;
-    double sumXY = sumX * sumY;
-    double x, y;
-
+    List<Registration> efficiencySample = new ArrayList<>();
     for( Registration r
          : registrations ) {
-      if( r.getStatus() == RegistrationStatus.OK ) {
-        k++;
-        x = regatta.getVariant().getLength() / r.getSecondsLap();
-        y = Math.log( r.getValueAuction() );
-        sumXY += x * y;
+      if( isEfficiencySampleRegistration( r ) ) {
+        efficiencySample.add( r );
+      }
+    }
+
+    double slope = 0.0;
+    double intercept = 0.0;
+    int numOfEfficiencySamples = efficiencySample.size();
+    if( numOfEfficiencySamples > 0 ) {
+      double sumX = 0.0;
+      double sumY = 0.0;
+      double sumX2 = 0.0;
+      double sumXY = 0.0;
+
+      for( Registration r
+           : efficiencySample ) {
+        double x = getObservedSpeed( r,
+                                     regatta );
+        double y = Math.log( r.getValueAuction() );
         sumX += x;
         sumY += y;
         sumX2 += x * x;
+        sumXY += x * y;
       }
-    }
-    double slope = 1;
-    double intercept = 0;
-    if( k > 1 ) {
-      slope = ( k * sumXY - sumX * sumY ) / ( k * sumX2 - sumX * sumX );
-      intercept = ( sumY - slope * sumX ) / k;
+
+      intercept = sumY / numOfEfficiencySamples;
+      if( numOfEfficiencySamples >= 3 ) {
+        double denominator = numOfEfficiencySamples * sumX2 - sumX * sumX;
+        if( denominator > 0.0 ) {
+          slope = ( numOfEfficiencySamples * sumXY - sumX * sumY )
+                  / denominator;
+          intercept = ( sumY - slope * sumX )
+                      / numOfEfficiencySamples;
+        }
+      }
     }
     regatta.setSlope( slope );
     regatta.setIntercept( intercept );
 
-    // efficiency is evaluated via the base cost
+    // valueBase stores the SRS trend price C-hat(S).
     for( Registration r
          : registrations ) {
       setValueBase( r,
                     regatta,
-                    slope );
+                    intercept,
+                    slope,
+                    numOfEfficiencySamples );
     }
 
     registrations.sort( ( a, b )
@@ -1443,7 +1452,7 @@ public class ModelBean
     short i = 1;
     for( Registration r
          : registrations ) {
-      if( r.getStatus() == RegistrationStatus.OK ) {
+      if( isEfficiencySampleRegistration( r ) ) {
         r.setPosEfficiency( i++ );
       } else {
         r.setPosEfficiency( (short) 1000 );
@@ -1456,14 +1465,35 @@ public class ModelBean
 
   private void setValueBase( Registration r,
                              Regatta regatta,
-                             double slope ) {
-    // x = speed; y = log( market_value )
-    double x = regatta.getVariant().getLength() / r.getSecondsLap();
-    double y = Math.log( r.getValueAuction() );
+                             double intercept,
+                             double slope,
+                             int numOfEfficiencySamples ) {
+    if( !isEfficiencySampleRegistration( r ) ) {
+      r.setValueBase( 0.0 );
+      return;
+    }
 
-    // baseCost is the cost for zero speed given the current slope
-    double baseValue = Math.exp( y - slope * x );
-    r.setValueBase( baseValue );
+    if( numOfEfficiencySamples <= 2 ) {
+      r.setValueBase( r.getValueAuction() );
+      return;
+    }
+
+    double trendPrice = Math.exp( intercept
+                                  + slope * getObservedSpeed( r,
+                                                              regatta ) );
+    r.setValueBase( trendPrice );
+  }
+
+  private boolean isEfficiencySampleRegistration( Registration r ) {
+    return r != null
+           && r.getStatus() == RegistrationStatus.OK
+           && r.getSecondsLap() > 0.0
+           && r.getValueAuction() > 0.0;
+  }
+
+  private double getObservedSpeed( Registration r,
+                                   Regatta regatta ) {
+    return regatta.getVariant().getLength() / r.getSecondsLap();
   }
 
   private int compareBids( Bid a,
@@ -1481,19 +1511,37 @@ public class ModelBean
   private int compareEfficiency( Registration ra,
                                  Registration rb ) {
 
-    if( ra.getStatus() != rb.getStatus() ) {
-      return (int) Math.signum( ra.getStatus() - rb.getStatus() );
+    boolean isEfficiencySampleA = isEfficiencySampleRegistration( ra );
+    boolean isEfficiencySampleB = isEfficiencySampleRegistration( rb );
+
+    if( isEfficiencySampleA != isEfficiencySampleB ) {
+      return isEfficiencySampleA
+             ? -1
+             : 1;
+    }
+    if( !isEfficiencySampleA ) {
+      return compareRegistrationAge( ra,
+                                     rb );
     }
 
-    double baseValueA = ra.getValueBase();
-    double baseValueB = rb.getValueBase();
+    double differenceA = ra.getValueBase() - ra.getValueAuction();
+    double differenceB = rb.getValueBase() - rb.getValueAuction();
 
-    int result = baseValueA != baseValueB
-                 ? baseValueA > baseValueB
-                   ? 1 // A worse than B
-                   : -1  // A better than B
-                 : (int) Math.signum( ra.getPosSpeed() - rb.getPosSpeed() );
-    return result;
+    if( differenceA != differenceB ) {
+      return differenceA > differenceB
+             ? -1
+             : 1;
+    }
+    return compareRegistrationAge( ra,
+                                   rb );
+  }
+
+  private int compareRegistrationAge( Registration ra,
+                                      Registration rb ) {
+    if( ra.getId() == null || rb.getId() == null ) {
+      return 0;
+    }
+    return ra.getId().compareTo( rb.getId() );
   }
 
   protected void quickSortRegatta( List<Regatta> regattas,
@@ -2438,20 +2486,19 @@ public class ModelBean
 
   @Override
   public synchronized double getRegattaPriorityPoints( Regatta r ) {
-    double fee;
-    int numValidReg = r.getValidregistrations();
-    if( numValidReg <= 0 ) {
-      numValidReg = 1;
+    int numOfActiveParticipants = r.getValidregistrations();
+    if( numOfActiveParticipants <= 0 ) {
+      numOfActiveParticipants = 1;
     }
-    fee = r.getEntryfee()
-          + r.getTrackrental() / numValidReg;
-    if( fee == 0.0 ) {
-      fee = 1.0;
+    double effectiveEntryCost = r.getEntryfee()
+                                + r.getTrackrental() / numOfActiveParticipants;
+    if( effectiveEntryCost <= 0.0 ) {
+      effectiveEntryCost = 1.0;
     }
 
     double totalPrize = getRegattaTotalPrize( r );
-    return totalPrize
-           / fee;
+    return totalPrize * numOfActiveParticipants
+           / effectiveEntryCost;
   }
 
   private double getRegattaTotalPrize( Regatta r ) {
@@ -3088,13 +3135,35 @@ public class ModelBean
     return user;
   }
 
+  private long getFirstId( Session session,
+                           String tableName,
+                           String entityName ) {
+    Query q = session.createSQLQuery(
+          "SELECT min(entity.id) as id FROM " + tableName + " entity" )
+          .addScalar( "id",
+                      LongType.INSTANCE );
+    Long id = ( (List<Long>) q.list() ).get( 0 );
+    if( id == null ) {
+      LOGGER.log( Level.SEVERE,
+                  "Cannot create placeholder {0}; parent table {1} is empty.",
+                  new Object[] { entityName,
+                                 tableName } );
+      throw new IllegalStateException(
+        "Cannot create placeholder " + entityName
+        + "; parent table " + tableName + " is empty." );
+    }
+    return id;
+  }
+
   public synchronized Variant createVariant( Participant user ) {
     SessionFactory sf = U_HibernateUtil.getSessionFactory();
     Session s = sf.openSession();
     Transaction t = s.beginTransaction();
 
     Venue venue = new Venue();
-    venue.setId( 1L );
+    venue.setId( getFirstId( s,
+                             "venue",
+                             "variant" ) );
     Variant v = new Variant( venue,
                              "",
                              0,
@@ -3140,7 +3209,9 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Provinceregion pr = new Provinceregion();
-    pr.setId( 1L );
+    pr.setId( getFirstId( s,
+                          "provinceregion",
+                          "venue" ) );
     Venue v = new Venue( user,
                          pr,
                          "",
@@ -3187,7 +3258,9 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Province p = new Province();
-    p.setId( 1L );
+    p.setId( getFirstId( s,
+                         "province",
+                         "provinceregion" ) );
     Provinceregion pr = new Provinceregion( p,
                                             "",
                                             user.getId() );
@@ -3230,7 +3303,9 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Countryregion cr = new Countryregion();
-    cr.setId( 1L );
+    cr.setId( getFirstId( s,
+                          "countryregion",
+                          "province" ) );
     Province p = new Province( cr,
                                "",
                                user.getId() );
@@ -3271,7 +3346,9 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Country c = new Country();
-    c.setId( 1L );
+    c.setId( getFirstId( s,
+                         "country",
+                         "countryregion" ) );
     Countryregion cr = new Countryregion( c,
                                           "",
                                           user.getId() );
@@ -3315,7 +3392,9 @@ public class ModelBean
     Transaction t = s.beginTransaction();
 
     Planetregion pr = new Planetregion();
-    pr.setId( 1L );
+    pr.setId( getFirstId( s,
+                          "planetregion",
+                          "country" ) );
     Country c = new Country( pr,
                              "",
                              user.getId() );

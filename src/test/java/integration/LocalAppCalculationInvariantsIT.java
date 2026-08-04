@@ -263,6 +263,114 @@ class LocalAppCalculationInvariantsIT {
   }
 
   @Test
+  void efficiencyPositionsFollowLogPriceTrendByObservedSpeed() {
+    ModelBean model = new ModelBean();
+    Participant promoter = createSavedParticipant( model,
+                                                   "efficiency-promoter",
+                                                   "Efficiency-123" );
+    Participant ownerA = createSavedParticipant( model,
+                                                 "efficiency-owner-a",
+                                                 "Efficiency-123" );
+    Participant ownerB = createSavedParticipant( model,
+                                                 "efficiency-owner-b",
+                                                 "Efficiency-123" );
+    Participant ownerC = createSavedParticipant( model,
+                                                 "efficiency-owner-c",
+                                                 "Efficiency-123" );
+    Variant variant = model.getVariants().get( 0 );
+    double originalLength = variant.getLength();
+
+    try {
+      variant.setLength( 60.0 );
+      model.save( variant );
+
+      Regatta regatta = createSavedRegatta( model,
+                                            promoter,
+                                            variant,
+                                            RegattaStatus.AUCTION,
+                                            new Date( 1775692800000L ) );
+
+      Registration registrationA = createSavedRegistration( model,
+                                                            regatta,
+                                                            ownerA,
+                                                            createSavedCar(
+                                                              model,
+                                                              ownerA,
+                                                              "eff-car-a" ) );
+      registrationA.setSecondsLap( 60.0 );
+      registrationA.setPosSpeed( (short) 3 );
+      model.save( registrationA );
+
+      Registration registrationB = createSavedRegistration( model,
+                                                            regatta,
+                                                            ownerB,
+                                                            createSavedCar(
+                                                              model,
+                                                              ownerB,
+                                                              "eff-car-b" ) );
+      registrationB.setSecondsLap( 30.0 );
+      registrationB.setPosSpeed( (short) 2 );
+      model.save( registrationB );
+
+      Registration registrationC = createSavedRegistration( model,
+                                                            regatta,
+                                                            ownerC,
+                                                            createSavedCar(
+                                                              model,
+                                                              ownerC,
+                                                              "eff-car-c" ) );
+      registrationC.setSecondsLap( 20.0 );
+      registrationC.setPosSpeed( (short) 1 );
+      model.save( registrationC );
+
+      saveBid( model,
+               ownerA,
+               registrationA,
+               2.0 );
+      saveBid( model,
+               ownerB,
+               registrationB,
+               2.0 );
+      saveBid( model,
+               ownerC,
+               registrationC,
+               3.0 );
+
+      model.assignRegattaEfficiencyPositions( regatta );
+
+      Registration refreshedA = model.getRegistrationById( registrationA.getId() );
+      Registration refreshedB = model.getRegistrationById( registrationB.getId() );
+      Registration refreshedC = model.getRegistrationById( registrationC.getId() );
+      Regatta refreshedRegatta = model.getRegattaById( regatta.getId() );
+
+      assertEquals( 0.2027,
+                    refreshedRegatta.getSlope(),
+                    0.0001 );
+      assertEquals( 0.4228,
+                    refreshedRegatta.getIntercept(),
+                    0.0001 );
+      assertEquals( 1.8693,
+                    refreshedA.getValueBase(),
+                    0.0001 );
+      assertEquals( 2.2894,
+                    refreshedB.getValueBase(),
+                    0.0001 );
+      assertEquals( 2.8040,
+                    refreshedC.getValueBase(),
+                    0.0001 );
+      assertEquals( 2,
+                    refreshedA.getPosEfficiency() );
+      assertEquals( 1,
+                    refreshedB.getPosEfficiency() );
+      assertEquals( 3,
+                    refreshedC.getPosEfficiency() );
+    } finally {
+      variant.setLength( originalLength );
+      model.save( variant );
+    }
+  }
+
+  @Test
   void balanceMessagesExposeExactTotalAndOnlyTheExpectedComplaintDirection() {
     RecordingModelBean model = new RecordingModelBean();
     Participant promoter = createSavedParticipant( model,
@@ -365,6 +473,10 @@ class LocalAppCalculationInvariantsIT {
     challengerRegistration.setPosEfficiency( (short) 2 );
     challengerRegistration.setStatus( RegistrationStatus.OK );
     model.save( challengerRegistration );
+    saveBid( model,
+             challenger,
+             challengerRegistration,
+             10.0 );
 
     model.assignRegattaIndividualEfficiencyPrize( regatta );
 
@@ -517,6 +629,20 @@ class LocalAppCalculationInvariantsIT {
     registration.setStatus( RegistrationStatus.OK );
     model.save( registration );
     return model.getRegistrationById( registration.getId() );
+  }
+
+  private static void saveBid( ModelBean model,
+                               Participant participant,
+                               Registration registration,
+                               double amount ) {
+    Bid bid = new Bid( new BidId( participant.getId(),
+                                  registration.getId() ),
+                       participant,
+                       registration,
+                       amount,
+                       new Date(),
+                       0 );
+    model.save( List.of( bid ) );
   }
 
   private static Participant getParticipantByEmail( ModelBean model,

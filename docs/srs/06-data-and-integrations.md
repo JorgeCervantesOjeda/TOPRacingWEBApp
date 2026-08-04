@@ -13,6 +13,20 @@ La app trabaja con estas familias de datos:
 - clasificaciones: `Pointscount`;
 - soporte operativo: estadísticas, sesión, claves y correo.
 
+## Campos Derivados De Eficiencia
+
+Para eficiencia relativa al mercado, la SRS oficial completa define el modelo log-lineal `ln(C)=a+bS`.
+
+En la app Java/MySQL:
+
+- `Regatta.intercept` conserva el parámetro derivado `a`;
+- `Regatta.slope` conserva el parámetro derivado `b`;
+- `Registration.value_auction` conserva el precio oficial de subasta `C_i`;
+- `Registration.value_base` conserva el precio de tendencia `C_hat(S_i)`;
+- `Registration.pos_efficiency` conserva la posición oficial derivada de ordenar `C_hat(S_i)-C_i` en forma descendente.
+
+Estos campos son derivados del cierre de subasta y resultados computables; no son campos de captura manual para eventos nuevos.
+
 ## Jerarquía Territorial
 
 Cada `Variant` pertenece a un `Venue`. Cada `Venue` debe pertenecer a una región estatal o provincial. La cadena completa debe llegar hasta región planetaria:

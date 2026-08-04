@@ -1,6 +1,6 @@
 # Catálogo De Requisitos
 
-Este catálogo resume los requisitos funcionales y no funcionales que deben guiar esta app. El estado indica el cumplimiento observado en la implementación Java actual, no el alcance total del producto.
+Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes para esta app. No sustituye ni resume de forma normativa la SRS oficial completa; el estado indica el cumplimiento observado en la implementación Java actual, no el alcance total del producto.
 
 ## IAM: Identidad, Acceso Y Cuenta
 
@@ -73,6 +73,7 @@ Este catálogo resume los requisitos funcionales y no funcionales que deben guia
 | RES-004 | Las clasificaciones deben derivarse de reglas, niveles territoriales, niveles temporales y modalidad. | Parcial |
 | RES-005 | La estructura objetivo comprende seis niveles temporales, ocho territoriales y cuatro modalidades. | Objetivo |
 | RES-006 | La matriz de pesos debe publicarse desde inscripciones y permanecer visible. | Objetivo |
+| RES-007 | El puntaje de prioridad de eventos debe derivarse de la bolsa total de premios, el costo efectivo de inscripción y el número de participantes activos del evento. | Parcial |
 
 ## AUC: Subastas
 

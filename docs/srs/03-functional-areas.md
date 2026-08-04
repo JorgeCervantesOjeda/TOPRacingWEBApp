@@ -88,6 +88,8 @@ El sistema debe calcular y publicar resultados de velocidad, carrera, eficiencia
 
 Para esta versión, Standings debe quedar disponible públicamente y debe poder recalcularse desde eventos y resultados válidos.
 
+El puntaje de prioridad de eventos debe calcularse como dato derivado. Debe aumentar con la bolsa total de premios y con el número de participantes activos del evento, y debe disminuir con el costo efectivo de inscripción para cada participante activo.
+
 Estado: `Parcial`.
 
 ## Subastas

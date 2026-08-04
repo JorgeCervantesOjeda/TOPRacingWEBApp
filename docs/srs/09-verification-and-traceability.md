@@ -39,6 +39,7 @@
 - Los eventos tienen estado válido.
 - Las transiciones rechazan datos incompletos o usuario no autorizado.
 - Los resultados de velocidad y carrera se calculan con registros válidos.
+- La eficiencia relativa al mercado calcula una tendencia log-lineal `ln(C)=a+bS`, guarda el precio de tendencia por inscripción y ordena por `C_hat(S)-C`.
 - Los puntos se recalculan desde datos oficiales.
 - Los resultados publicados no cambian sin trazabilidad.
 
@@ -64,7 +65,7 @@ Observación:
 
 Inferencia:
 
-- La app está alineada con la SRS v2.6 en acceso público a clasificaciones, jerarquía territorial y separación operativa de datos.
+- La app está alineada con la SRS oficial completa v2.6 en acceso público a clasificaciones, jerarquía territorial y separación operativa de datos.
 - La app todavía no demuestra cumplimiento completo de subastas, eficiencia relativa, pagos, patrocinio, comunidad y verificación reforzada.
 
 Demostración pendiente:
@@ -79,7 +80,7 @@ Demostración pendiente:
 
 | Fuente | Uso En Esta SRS |
 | --- | --- |
-| SRS v2.6 React/Firebase | Alcance funcional objetivo de producto. |
+| `SRS_TOP_Racing_v2_6_tecnologia_abierta_obligatoria.tex` | SRS oficial completa y fuente normativa funcional. |
 | Código Java actual | Estado implementado observado. |
 | `README.md` | Operación local, GlassFish, MySQL y separación de bases. |
 | `docs/testing/README.md` | Estrategia de pruebas automáticas con base aislada. |
