@@ -40,8 +40,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -2796,24 +2798,87 @@ public class ModelBean
       new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" )
         .format( new Date() )
       + " -------------------- Saving Points Counts ---------------" );
+    long startedAt = System.currentTimeMillis();
     SessionFactory sf = U_HibernateUtil.getSessionFactory();
     Session s = sf.openSession();
-    Transaction t = s.beginTransaction();
+    Transaction t = null;
+    try {
+      t = s.beginTransaction();
 
-      Query q = s.createQuery( "delete from Tables.Pointscount" );
-    q.executeUpdate();
+      List<Pointscount> existing = s.createQuery( "from Tables.Pointscount" )
+        .list();
+      Map<PointscountId, Pointscount> existingById =
+                                             pointscountById( existing );
+      PointscountDelta.SavePlan savePlan = PointscountDelta.planFor(
+        existing,
+        pointscount );
 
-    pointscount.forEach( ( p )
-      -> {
-        s.saveOrUpdate( p );
-      } );
+      System.out.println(
+        new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" )
+          .format( new Date() )
+        + " Pointscount delta: existing="
+        + existing.size()
+        + ", desired="
+        + pointscount.size()
+        + ", inserts="
+        + savePlan.getInserts().size()
+        + ", updates="
+        + savePlan.getUpdates().size()
+        + ", deletes="
+        + savePlan.getDeletes().size() );
 
-    t.commit();
-    s.close();
-    System.out.println(
-      new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" )
-        .format( new Date() )
-      + " ----------- Finished Saving Points Counts ---------------" );
+      savePlan.getDeletes().forEach( ( p )
+        -> {
+          s.delete( p );
+        } );
+      savePlan.getUpdates().forEach( ( p )
+        -> {
+          Pointscount managed = existingById.get( p.getId() );
+          copyPointscountValues( managed,
+                                 p );
+          s.saveOrUpdate( managed );
+        } );
+      savePlan.getInserts().forEach( ( p )
+        -> {
+          s.save( p );
+        } );
+
+      t.commit();
+      System.out.println(
+        new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss.SSS" )
+          .format( new Date() )
+        + " ----------- Finished Saving Points Counts in "
+        + ( System.currentTimeMillis() - startedAt )
+        + " ms ---------------" );
+    } catch( RuntimeException ex ) {
+      if( t != null && t.isActive() ) {
+        t.rollback();
+      }
+      throw ex;
+    } finally {
+      s.close();
+    }
+  }
+
+  private Map<PointscountId, Pointscount> pointscountById(
+    List<Pointscount> items ) {
+    Map<PointscountId, Pointscount> output = new HashMap<>();
+    for( Pointscount item
+         : items ) {
+      output.put( item.getId(),
+                  item );
+    }
+    return output;
+  }
+
+  private void copyPointscountValues( Pointscount target,
+                                      Pointscount source ) {
+    target.setPointsSD( source.getPointsSD() );
+    target.setPointsSO( source.getPointsSO() );
+    target.setPointsRD( source.getPointsRD() );
+    target.setPointsRO( source.getPointsRO() );
+    target.setPointsED( source.getPointsED() );
+    target.setPointsEO( source.getPointsEO() );
   }
 
   @Override
