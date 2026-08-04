@@ -1,3 +1,4 @@
+<!-- src/main/webapp/TemplateNav.xhtml - Navigation template for public and authenticated pages. -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 template="/TemplateBasic.xhtml"
@@ -75,12 +76,12 @@
           </p:commandButton>
           <p:tooltip for="EditProfileButton" position="top" />
 
-          <p:commandButton id="contactButton"
-                           title="Ver nuestro correo"
-                           onclick="alert('top.racing.org@gmail.com')"
-                           value="#{viewBean.getContactLabel()}">
-          </p:commandButton>
-          <p:tooltip for="contactButton" position="top" />
+          <a id="contactButton"
+             class="mybutton nav-contact-link"
+             title="top.racing.org@gmail.com"
+             href="mailto:top.racing.org@gmail.com">
+            #{viewBean.getContactLabel()}
+          </a>
 
           <p:commandButton styleClass="mybutton" style="float: right" id="logoutButton"
                            actionListener="#{viewBean.clickLogout()}" rendered="#{viewBean.renderLogoutButton()}"

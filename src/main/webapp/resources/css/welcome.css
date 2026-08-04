@@ -1,0 +1,250 @@
+/*
+ * src/main/webapp/resources/css/welcome.css
+ * Styles the public TOP-Racing welcome page and public contact affordance.
+ */
+
+.nav-contact-link {
+  align-items: center;
+  background: linear-gradient(180deg, #ffffff, #d7dde5);
+  border: 1px solid #8f9bad;
+  border-radius: 4px;
+  color: black !important;
+  display: inline-flex;
+  font-weight: bold;
+  line-height: 1;
+  margin-left: 4px;
+  min-height: 25px;
+  padding: 0 14px;
+  text-decoration: none !important;
+  vertical-align: middle;
+}
+
+.nav-contact-link:hover {
+  filter: invert(0.2) !important;
+  font-size: inherit !important;
+}
+
+.welcome-page {
+  color: #1d242d;
+  font-family: 'lexend', sans-serif !important;
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 0 18px 42px;
+}
+
+.welcome-page *,
+.welcome-page *::before,
+.welcome-page *::after {
+  box-sizing: border-box;
+}
+
+.welcome-page p,
+.welcome-page li {
+  text-shadow: none !important;
+}
+
+.welcome-hero {
+  align-items: center;
+  display: flex;
+  min-height: 360px;
+  padding: 44px 0 34px;
+}
+
+.welcome-hero-copy {
+  max-width: 760px;
+}
+
+.welcome-kicker,
+.welcome-section-label {
+  color: #8f1215;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+}
+
+.welcome-hero h1 {
+  color: #8f1215;
+  font-size: 2.9rem;
+  line-height: 1.08;
+  margin: 0;
+  max-width: 760px;
+  text-align: left;
+  text-shadow: -2px 2px 3px white, 2px -2px 3px white,
+    -2px -2px 3px white, 2px 2px 3px white !important;
+}
+
+.welcome-lead {
+  background: rgba(255, 255, 255, 0.78);
+  border-left: 5px solid #d3a31f;
+  color: #1d242d;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  margin: 22px 0 0;
+  max-width: 720px;
+  padding: 16px 18px;
+}
+
+.welcome-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.welcome-cta {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #9ca8b6;
+  border-radius: 6px;
+  color: #1d242d !important;
+  display: inline-flex;
+  font-size: 1rem;
+  font-weight: 800;
+  min-height: 44px;
+  padding: 0 18px;
+  text-decoration: none !important;
+}
+
+.welcome-cta:hover {
+  background: #edf2f7;
+  color: #1d242d !important;
+  font-size: 1rem !important;
+}
+
+.welcome-cta-primary {
+  background: #8f1215;
+  border-color: #8f1215;
+  color: #ffffff !important;
+}
+
+.welcome-cta-primary:hover {
+  background: #6f0e11;
+  color: #ffffff !important;
+}
+
+.welcome-cta-quiet {
+  border-color: #d3a31f;
+}
+
+.welcome-content {
+  display: grid;
+  gap: 18px;
+}
+
+.welcome-copy-panel {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(77, 91, 110, 0.28);
+  border-radius: 8px;
+  padding: 28px;
+  text-align: left;
+}
+
+.welcome-copy-panel h2 {
+  color: #1d242d;
+  display: block;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  margin: 0 0 12px;
+  text-shadow: none !important;
+}
+
+.welcome-copy-panel h3 {
+  color: #8f1215;
+  font-size: 1.05rem;
+  margin: 0 0 8px;
+  text-shadow: none !important;
+}
+
+.welcome-copy-panel p {
+  color: #1d242d;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.welcome-summary-grid,
+.welcome-path-list {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 22px;
+}
+
+.welcome-summary-grid article,
+.welcome-path-list article {
+  border-left: 4px solid #d3a31f;
+  padding-left: 14px;
+}
+
+.welcome-map-section {
+  display: grid;
+  gap: 20px;
+}
+
+.welcome-map-frame {
+  border: 0;
+  min-height: 420px;
+  width: 100%;
+}
+
+.welcome-faq-accordion {
+  margin-top: 20px;
+}
+
+.welcome-faq-accordion .ui-accordion-content {
+  background: rgba(255, 255, 255, 0.96) !important;
+}
+
+@media (max-width: 720px) {
+  .welcome-page {
+    padding: 0 10px 28px;
+  }
+
+  .welcome-hero {
+    min-height: 300px;
+    padding: 34px 0 26px;
+  }
+
+  .welcome-hero h1 {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .welcome-kicker {
+    text-align: center;
+  }
+
+  .welcome-lead {
+    font-size: 1rem;
+    padding: 14px;
+  }
+
+  .welcome-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .welcome-cta {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .welcome-copy-panel {
+    padding: 20px;
+  }
+
+  .welcome-copy-panel h2 {
+    font-size: 1.35rem;
+  }
+
+  .welcome-summary-grid,
+  .welcome-path-list {
+    grid-template-columns: 1fr;
+  }
+
+  .welcome-map-frame {
+    min-height: 320px;
+  }
+}

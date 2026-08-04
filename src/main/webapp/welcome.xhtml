@@ -1,236 +1,149 @@
+<!-- src/main/webapp/welcome.xhtml - Public welcome page for TOP-Racing visitors. -->
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-                xmlns:f="http://xmlns.jcp.org/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
-                template="/TemplateNav.xhtml"
-                >
+                template="/TemplateNav.xhtml">
 
   <ui:define name="content">
-
-    <h1 style="text-shadow: -2px 2px 3px white, 2px -2px 3px white, -2px -2px 3px white, 2px 2px 3px white"><br />
-      #{viewBean.getWelcomeMsg()}
-      <br /><br />
-    </h1>
-    <p:accordionPanel activeIndex="1"  style="width: 95%; max-width: 800px; font-family: 'lexend', sans-serif !important; font-size: 1.3em;">
-
-      <p:tab title="Adjetivos que describen TOP-Racing">
-
-        <!-- Nivel 1 -->
-        <p:accordionPanel activeIndex="-1" styleClass="accordion-header">
-          <p:tab title="Innovador">
-            <h:outputText value="Innovador es el adjetivo más general que describe a TOP-Racing. Refleja la introducción de nuevas ideas, tecnologías y enfoques en el automovilismo. Este adjetivo abarca todos los aspectos, desde la estructura de los campeonatos hasta los sistemas financieros y la tecnología utilizada." />
-
-            <!-- Nivel 2 -->
-            <p:accordionPanel activeIndex="-1" multiple="false" styleClass="level-2">
-              <p:tab title="Competitivo">
-                <h:outputText value="Competitivo describe la esencia de TOP-Racing, donde pilotos, propietarios y equipos luchan por alcanzar la excelencia. Esta competitividad se manifiesta en varios aspectos clave:" />
-
-                <!-- Nivel 3 -->
-                <p:accordionPanel activeIndex="-1" multiple="false" styleClass="level-3">
-                  <p:tab title="Exigente">
-                    <h:outputText value="Exigente subraya el alto nivel de habilidad, preparación y dedicación que se requiere para tener éxito en TOP-Racing. Los competidores deben estar preparados para enfrentar desafíos complejos y mantenerse al día con las innovaciones tecnológicas." />
-                  </p:tab>
-
-                  <p:tab title="Desafiante">
-                    <h:outputText value="Desafiante se refiere a las múltiples dificultades que los competidores deben superar. Esto incluye desde la planificación estratégica hasta la gestión de recursos y la adaptación a diferentes circuitos y condiciones de carrera." />
-                  </p:tab>
-
-                  <p:tab title="Estratégico">
-                    <h:outputText value="Estratégico destaca la importancia de la planificación y toma de decisiones en TOP-Racing. Los competidores deben elegir cuidadosamente en qué eventos participar, cómo manejar sus recursos y cómo maximizar sus posibilidades de éxito en los campeonatos." />
-                  </p:tab>
-                </p:accordionPanel>
-              </p:tab>
-
-              <p:tab title="Emocionante">
-                <h:outputText value="Emocionante captura la experiencia intensa que ofrece TOP-Racing tanto a los participantes como a los espectadores. La emoción es un componente clave del deporte, haciendo que cada carrera sea una experiencia memorable." />
-
-                <p:accordionPanel activeIndex="-1" multiple="false" styleClass="level-3">
-                  <p:tab title="Espectacular">
-                    <h:outputText value="Espectacular se refiere al impacto visual y la asombrosa naturaleza de las carreras en TOP-Racing. Las maniobras audaces, la tecnología avanzada y la competencia feroz crean un espectáculo inolvidable." />
-                  </p:tab>
-
-                  <p:tab title="Dinámico">
-                    <h:outputText value="Dinámico subraya la constante acción y cambio en TOP-Racing. Las posiciones y estrategias pueden cambiar rápidamente, manteniendo a todos los involucrados en constante alerta y añadiendo un nivel extra de emoción." />
-                  </p:tab>
-                </p:accordionPanel>
-              </p:tab>
-
-              <p:tab title="Inclusivo">
-                <h:outputText value="Inclusivo refleja el compromiso de TOP-Racing con la apertura y la equidad. El deporte está diseñado para permitir la participación de una amplia gama de competidores, independientemente de su nivel de habilidad o recursos." />
-
-                <p:accordionPanel activeIndex="-1" multiple="false" styleClass="level-3">
-                  <p:tab title="Accesible">
-                    <h:outputText value="Accesible destaca cómo TOP-Racing reduce las barreras de entrada para los competidores. Los pilotos novatos pueden participar junto a los veteranos, y las reglas están diseñadas para fomentar la inclusión y la igualdad de oportunidades." />
-                  </p:tab>
-
-                  <p:tab title="Equitativo">
-                    <h:outputText value="Equitativo se refiere a las reglas y sistemas que garantizan una competencia justa. En TOP-Racing, el talento y la eficiencia pueden superar las ventajas financieras o tecnológicas, promoviendo un campo de juego nivelado." />
-                  </p:tab>
-                </p:accordionPanel>
-              </p:tab>
-
-              <p:tab title="Tecnológico">
-                <h:outputText value="Tecnológico describe el enfoque en la utilización de tecnología avanzada en TOP-Racing. La tecnología no solo mejora el rendimiento de los vehículos, sino que también juega un papel crucial en la estrategia y la competencia." />
-
-                <p:accordionPanel activeIndex="-1" multiple="false" styleClass="level-3">
-                  <p:tab title="Eficiente">
-                    <h:outputText value="Eficiente enfatiza la importancia de maximizar el rendimiento en relación con el costo. Este adjetivo es clave en TOP-Racing, donde los premios se basan en la eficiencia y no solo en la velocidad." />
-                  </p:tab>
-
-                  <p:tab title="Global">
-                    <h:outputText value="Global refleja la naturaleza internacional de TOP-Racing. La participación de competidores de todo el mundo no solo amplía la competencia, sino que también fomenta el intercambio de tecnología y conocimientos. A medida que los competidores de diferentes regiones traen consigo tecnologías únicas y enfoques innovadores, estos se comparten a través de la participación internacional y la subasta de vehículos. Esto permite que las mejores prácticas y avances tecnológicos se distribuyan globalmente, elevando el nivel de competición en todos los rincones del mundo." />
-                  </p:tab>
-
-                  <p:tab title="Versátil">
-                    <h:outputText value="Versátil describe la adaptabilidad de TOP-Racing a diferentes tecnologías, estrategias y tipos de vehículos. Esta versatilidad permite una competencia rica y variada, donde la innovación es constantemente recompensada." />
-                  </p:tab>
-                </p:accordionPanel>
-              </p:tab>
-            </p:accordionPanel>
-          </p:tab>
-        </p:accordionPanel>
-      </p:tab>
-
-      <p:tab title="#{viewBean.getWhatIsTOPRacing()}" >
-        <div align="left">
-          <p>#{viewBean.getWhatIsP1()}</p>
-          <p>#{viewBean.getWhatIsP2()}</p>
-          <p>#{viewBean.getWhatIsP3()}</p>
-          <p>#{viewBean.getWhatIsP4()}</p>
-          <p>#{viewBean.getWhatIsP5()}</p>
+    <section class="welcome-page">
+      <div class="welcome-hero">
+        <div class="welcome-hero-copy">
+          <p class="welcome-kicker">Open lightweight racing league</p>
+          <h1>TOP-Racing Championships</h1>
+          <p class="welcome-lead">
+            Race, build, promote and compare lightweight vehicles in a league
+            where results reward speed, driving technique and efficient
+            engineering.
+          </p>
+          <div class="welcome-actions">
+            <a class="welcome-cta welcome-cta-primary"
+               href="#{facesContext.externalContext.requestContextPath}/faces/listpointscounts.xhtml">
+              View standings
+            </a>
+            <a class="welcome-cta"
+               href="#{facesContext.externalContext.requestContextPath}/faces/login.xhtml">
+              Join or log in
+            </a>
+            <a class="welcome-cta welcome-cta-quiet"
+               href="#welcome-venues">
+              Explore venues
+            </a>
+          </div>
         </div>
-      </p:tab>
-      <p:tab title="#{viewBean.getTOPRacingFeatures()}">
-        <div align="left">
-          <p:accordionPanel multiple="false" activeIndex="-1">
+      </div>
 
-            <!-- General Features Section -->
-            <p:tab title="#{viewBean.getGeneralFeatures()}">
-              <ul>
-                <li>#{viewBean.getGeneralFeature1()}</li>
-                <li>#{viewBean.getGeneralFeature2()}</li>
-                <li>#{viewBean.getGeneralFeature3()}</li>
-                <li>#{viewBean.getGeneralFeature4()}</li>
-                <li>#{viewBean.getGeneralFeature5()}</li>
-                <li>#{viewBean.getGeneralFeature6()}</li>
-                <li>#{viewBean.getGeneralFeature7()}</li>
-                <li>#{viewBean.getGeneralFeature8()}</li>
-                <li>#{viewBean.getGeneralFeature9()}</li>
-                <li>#{viewBean.getGeneralFeature10()}</li>
-              </ul>
+      <div class="welcome-content">
+        <section class="welcome-copy-panel" aria-labelledby="welcome-summary">
+          <p class="welcome-section-label">What makes it different</p>
+          <h2 id="welcome-summary">A racing format built around efficiency</h2>
+          <p>
+            TOP-Racing is open to low-weight racing vehicles and encourages
+            different designs, technologies and driving styles. The public
+            standings show competition progress while promoters keep event
+            safety, legality and organization under control.
+          </p>
+
+          <div class="welcome-summary-grid">
+            <article>
+              <h3>Open technology</h3>
+              <p>
+                Participants can bring varied lightweight vehicles instead of
+                racing under a single standardized design.
+              </p>
+            </article>
+            <article>
+              <h3>Efficiency prizes</h3>
+              <p>
+                Results value performance in relation to market value, so smart
+                engineering can compete with larger budgets.
+              </p>
+            </article>
+            <article>
+              <h3>Public progress</h3>
+              <p>
+                Visitors can follow championship standings, event priorities and
+                registration history from the public area of the site.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="welcome-copy-panel welcome-paths"
+                 aria-labelledby="welcome-paths">
+          <p class="welcome-section-label">Where to start</p>
+          <h2 id="welcome-paths">Choose your role</h2>
+          <div class="welcome-path-list">
+            <article>
+              <h3>Drivers</h3>
+              <p>
+                Create a profile, register for events and measure progress
+                across speed, race and efficiency results.
+              </p>
+            </article>
+            <article>
+              <h3>Vehicle owners</h3>
+              <p>
+                Bring a vehicle, track its competitive value and participate in
+                results that separate performance from spending.
+              </p>
+            </article>
+            <article>
+              <h3>Promoters and sponsors</h3>
+              <p>
+                Organize venues, publish events and support prizes, teams or
+                specific championship levels.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section id="welcome-venues"
+                 class="welcome-copy-panel welcome-map-section"
+                 aria-labelledby="welcome-venues-title">
+          <div>
+            <p class="welcome-section-label">Venues</p>
+            <h2 id="welcome-venues-title">Find TOP-Racing places</h2>
+            <p>
+              Explore the current public venue map and use it as a starting
+              point for nearby tracks, promoters and future event planning.
+            </p>
+          </div>
+          <iframe class="welcome-map-frame"
+                  title="#{viewBean.getTOPRacingVenues()}"
+                  src="https://www.google.com/maps/d/embed?mid=1judLBk90B6vMMje5k9fVu3QOVelX-HTn&amp;ll=10%2C-00&amp;z=2">
+          </iframe>
+        </section>
+
+        <section class="welcome-copy-panel welcome-faq"
+                 aria-labelledby="welcome-faq-title">
+          <p class="welcome-section-label">Reference</p>
+          <h2 id="welcome-faq-title">Common questions</h2>
+          <p:accordionPanel multiple="false" activeIndex="-1"
+                            styleClass="welcome-faq-accordion">
+            <p:tab title="What vehicles are allowed?">
+              <h:outputText
+                value="TOP-Racing is open to low-weight racing vehicles. Promoters can define event-specific safety and legal requirements." />
             </p:tab>
-
-            <!-- Website Features Section -->
-            <p:tab title="#{viewBean.getWebsiteFeatures()}">
-              <ul>
-                <li>#{viewBean.getWebsiteFeature1()}</li>
-                <li>#{viewBean.getWebsiteFeature2()}</li>
-                <li>#{viewBean.getWebsiteFeature3()}</li>
-                <li>#{viewBean.getWebsiteFeature4()}</li>
-                <li>#{viewBean.getWebsiteFeature5()}</li>
-                <li>#{viewBean.getWebsiteFeature6()}</li>
-                <li>#{viewBean.getWebsiteFeature7()}</li>
-                <li>#{viewBean.getWebsiteFeature8()}</li>
-              </ul>
+            <p:tab title="How are prizes distributed?">
+              <h:outputText
+                value="Prize logic emphasizes the relationship between performance and market value, rewarding efficient engineering as well as driving." />
             </p:tab>
-
-            <!-- Championship Levels Section -->
-            <p:tab title="#{viewBean.getChampionshipLevels()}">
-              <p:accordionPanel multiple="false" activeIndex="-1">
-
-                <!-- Territorial Hierarchy -->
-                <p:tab title="#{viewBean.getTerritorialHierarchy()}">
-                  <p>#{viewBean.getTerritorialHierarchyLong()}</p>
-                </p:tab>
-
-                <!-- Temporal Hierarchy -->
-                <p:tab title="#{viewBean.getTemporalHierarchy()}">
-                  <p>#{viewBean.getTemporalHierarchyLong()}</p>
-                </p:tab>
-
-              </p:accordionPanel>
+            <p:tab title="Can newcomers participate?">
+              <h:outputText
+                value="Yes. The format is designed for different skill levels, with public standings and event data helping participants understand where they fit." />
             </p:tab>
-
-          </p:accordionPanel>
-        </div>
-      </p:tab>
-      <p:tab title="#{viewBean.getTOPRacingFAQ()}">
-        <div align="left">
-          <p:accordionPanel multiple="false" activeIndex="-1">
-            <p:tab title="¿Qué es TOP-racing?">
-              <h:outputText value="TOP-racing es una liga de carreras emocionante que reúne a pilotos de todos los niveles de habilidad para competir en un entorno seguro y divertido." />
+            <p:tab title="Who is responsible for event safety?">
+              <h:outputText
+                value="Promoters are responsible for legal, safety and organizational requirements for each physical event." />
             </p:tab>
-
-            <p:tab title="¿Qué tipos de vehículos de carreras son permitidos en TOP-racing?">
-              <h:outputText value="TOP-racing está abierto a todo tipo de vehículos de carreras de bajo peso, lo cual permite una diversidad de diseños y tecnologías." />
-            </p:tab>
-
-            <p:tab title="¿Cómo puedo registrarme como usuario en TOP-racing?">
-              <h:outputText value="Puedes registrarte como usuario en TOP-racing a través de nuestro sistema de registro en línea en nuestro sitio web." />
-            </p:tab>
-
-            <p:tab title="¿Cuál es la jerarquía territorial de los campeonatos en TOP-racing?">
-              <h:outputText value="TOP-racing cuenta con una jerarquía territorial única que va desde campeonatos locales hasta campeonatos mundiales, con varios niveles intermedios." />
-            </p:tab>
-
-            <p:tab title="¿Cuál es la jerarquía temporal de los campeonatos en TOP-racing?">
-              <h:outputText value="TOP-racing cuenta con una jerarquía temporal que incluye campeonatos celebrados semanalmente, mensualmente, trimestralmente, anualmente, cada década y de manera continua, lo cual brinda opciones para participar con la frecuencia que prefieras." />
-            </p:tab>
-
-            <p:tab title="¿Cómo se distribuyen los premios en TOP-racing?">
-              <h:outputText value="En TOP-racing, los premios se distribuyen basados en la relación entre el rendimiento del vehículo y su valor de mercado, lo cual promueve la eficiencia en el uso del dinero y la creatividad en el diseño y tecnología de los vehículos." />
-            </p:tab>
-
-            <p:tab title="¿Hay un foro o plataforma de discusión en TOP-racing?">
-              <h:outputText value="Sí, TOP-racing cuenta con un foro para que los pilotos puedan discutir y establecer contactos con otros entusiastas de las carreras." />
-            </p:tab>
-
-            <p:tab title="¿Hay requisitos de seguridad y legalidad para participar en los eventos de TOP-racing?">
-              <h:outputText value="Los promotores de TOP-racing son responsables de cumplir con los requisitos de seguridad y legalidad en todos los eventos organizados por la liga." />
-            </p:tab>
-
-            <p:tab title="¿Hay oportunidades de patrocinio en TOP-racing?">
-              <h:outputText value="Sí, TOP-racing ofrece oportunidades de patrocinio para pilotos y equipos interesados en obtener apoyo financiero para sus carreras." />
-            </p:tab>
-
-            <p:tab title="¿Cuál es la edad mínima para participar como competidor?">
-              <h:outputText value="La edad mínima para participar como competidor en TOP-racing es de 18 años. Si eres menor, deberás presentar un permiso de tu padre o tutor." />
-            </p:tab>
-
-            <p:tab title="¿Cuáles son los requisitos para los vehículos?">
-              <h:outputText value="Los vehículos en TOP-racing deben tener un peso máximo sin piloto de 120kg y capacidad para llevar lastre, de manera que el peso del piloto con su equipo de protección más el lastre sea de al menos 90kg." />
-            </p:tab>
-
-            <p:tab title="¿Se requiere licencia de piloto?">
-              <h:outputText value="Sí, se requiere licencia de piloto en TOP-racing: en caso de utilizar karts de la FEMADAC y en caso de motos de la FMM." />
-            </p:tab>
-
-            <p:tab title="¿Puedo ser promotor?">
-              <h:outputText value="Sí, puedes ser promotor en TOP-racing si cuentas con los permisos legales correspondientes para organizar eventos y competiciones." />
-            </p:tab>
-
-            <p:tab title="¿Cómo puedo ser patrocinador?">
-              <h:outputText value="Puedes acercarte a un promotor de TOP-racing y ofrecer dinero para ser utilizado en premios, o también puedes acercarte a tu piloto favorito y solicitarle que porte tu marca a cambio de patrocinio. También puedes ofrecer premios a los primeros lugares de un campeonato específico. Comunícate con nosotros para obtener más detalles." />
-            </p:tab>
-
-            <p:tab title="¿Hay apuestas en TOP-racing?">
-              <h:outputText value="Sí, en TOP-racing se permite realizar apuestas, pero únicamente puedes apostar por ti mismo. Los premios son proporcionales a tu apuesta y a tu resultado en las carreras." />
+            <p:tab title="How can I contact TOP-Racing?">
+              <h:outputText
+                value="Use the contact link in the navigation bar or write to top.racing.org@gmail.com." />
             </p:tab>
           </p:accordionPanel>
-        </div>
-      </p:tab>
-      <p:tab title="TOP-Racing Venues">
-        <iframe title="#{viewBean.getTOPRacingVenues()}"
-                src="https://www.google.com/maps/d/embed?mid=1judLBk90B6vMMje5k9fVu3QOVelX-HTn&amp;ll=10%2C-00&amp;z=2"
-                width="100%" height="100%">
-        </iframe>
-      </p:tab>
-    </p:accordionPanel>
-    <h1>
-      <br />
-    </h1>
+        </section>
+      </div>
+    </section>
   </ui:define>
 </ui:composition>
-
