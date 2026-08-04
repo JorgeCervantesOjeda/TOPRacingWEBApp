@@ -3,6 +3,7 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { geographyForCachedVenue } from "./venue-geography-model.mjs";
 
 const DEFAULT_MYSQL = "C:\\Program Files\\MySQL\\MySQL Server 8.0\\bin\\mysql.exe";
 const DEFAULT_CSV = "TOP-Racing venues- Saved_Places.csv";
@@ -69,15 +70,16 @@ for( const [ index, row ] of uniqueRows.entries() ) {
   if( cleanName !== normalizedName.name ) {
     sanitizedRows += 1;
   }
+  const resolvedGeography = geographyForCachedVenue( geography );
 
   resolvedRows.push( {
     ...row,
     name: cleanName,
-    planetRegion: sanitizeMysqlText( geography.planetRegion ),
-    country: sanitizeMysqlText( geography.country ),
-    countryRegion: sanitizeMysqlText( geography.countryRegion ),
-    province: sanitizeMysqlText( geography.province ),
-    provinceRegion: sanitizeMysqlText( geography.provinceRegion ),
+    planetRegion: sanitizeMysqlText( resolvedGeography.planetRegion ),
+    country: sanitizeMysqlText( resolvedGeography.country ),
+    countryRegion: sanitizeMysqlText( resolvedGeography.countryRegion ),
+    province: sanitizeMysqlText( resolvedGeography.province ),
+    provinceRegion: sanitizeMysqlText( resolvedGeography.localUnit ),
   } );
 }
 await writeJsonCache( cachePath,
@@ -296,8 +298,6 @@ function geographyFromGeocode( row,
   const administrativeCountry = textOrNull( countryRecord?.name );
   const country = administrativeCountry
                   ?? textOrNull( geocode.countryName );
-  const planetRegion = textOrNull( geocode.continent )
-                       ?? textOrNull( geocode.continentCode );
   const principalSubdivision = textOrNull( geocode.principalSubdivision );
   const belowCountry = administrative
     .filter( ( item ) => item.adminLevel && item.adminLevel > 2 )
@@ -306,21 +306,23 @@ function geographyFromGeocode( row,
     .map( ( item ) => textOrNull( item.name ) )
     .filter( ( item ) => item && item !== country && item !== administrativeCountry );
   const uniqueBelowCountry = [ ...new Set( belowCountry ) ];
-  const countryRegion = principalSubdivision
-                        ?? uniqueBelowCountry[ 0 ];
-  const province = uniqueBelowCountry.find( ( item ) => item !== countryRegion )
-                   ?? countryRegion;
+  const planetRegion = textOrNull( geocode.continent )
+                       ?? textOrNull( geocode.continentCode );
+  const rawCountryRegion = principalSubdivision
+                           ?? uniqueBelowCountry[ 0 ];
+  const rawProvince = uniqueBelowCountry.find( ( item ) => item !== rawCountryRegion )
+                      ?? rawCountryRegion;
   const provinceRegion = textOrNull( geocode.locality )
                          ?? textOrNull( geocode.city )
                          ?? uniqueBelowCountry.at( -1 )
-                         ?? province;
+                         ?? rawProvince;
 
   const missing = [];
   for( const [ key, value ] of Object.entries( {
     planetRegion,
     country,
-    countryRegion,
-    province,
+    countryRegion: rawCountryRegion,
+    province: rawProvince,
     provinceRegion,
   } ) ) {
     if( !value ) {
@@ -334,8 +336,8 @@ function geographyFromGeocode( row,
   return {
     planetRegion,
     country,
-    countryRegion,
-    province,
+    countryRegion: rawCountryRegion,
+    province: rawProvince,
     provinceRegion,
   };
 }
