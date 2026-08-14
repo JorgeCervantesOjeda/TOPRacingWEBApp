@@ -371,6 +371,11 @@ public class Controller {
       return;
     }
 
+    if( !RegattaStatus.hasNextStatus( regatta.getStatus() ) ) {
+      theView.showUI( UI.EDIT_REGATTA );
+      return;
+    }
+
     switch( regatta.getStatus() ) {
       case RegattaStatus.CREATED:
         if( regatta.getVariant() == null ) {
@@ -428,9 +433,6 @@ public class Controller {
         );
         break;
 
-      case RegattaStatus.PUBLISHED:
-        theView.showUI( UI.EDIT_REGATTA );
-        return;
     }
 
     // Assign next status
@@ -537,7 +539,7 @@ public class Controller {
     }
 
     if( regatta.getStatus() == RegattaStatus.RACE_TEST
-        && incoming.getStatus() != RegistrationStatus.INVALID ) {
+        && RegistrationStatus.isComputable( incoming.getStatus() ) ) {
       persisted.setPosRace( incoming.getPosRace() );
       persisted.setLapsRace( incoming.getLapsRace() );
     }

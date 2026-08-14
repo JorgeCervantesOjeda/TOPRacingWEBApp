@@ -53,7 +53,7 @@ Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes
 | --- | --- | --- |
 | REG-001 | El sistema debe permitir registrar participantes en eventos abiertos. | Parcial |
 | REG-002 | La inscripción debe asociar evento, dueño, vehículo y piloto cuando aplique. | Parcial |
-| REG-003 | Una inscripción cancelada debe conservarse como historial y excluirse de resultados, puntos y subastas. | Objetivo |
+| REG-003 | Una inscripción cancelada debe conservarse como historial y excluirse de resultados, puntos y subastas. | Parcial |
 | REG-004 | Solo inscripciones computables deben participar en resultados oficiales. | Parcial |
 
 ## VEH: Vehículos Y Tecnología Abierta

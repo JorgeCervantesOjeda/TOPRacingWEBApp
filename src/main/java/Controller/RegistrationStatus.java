@@ -16,13 +16,19 @@ public class RegistrationStatus {
   public static final byte INVALID = 2;
   public static final byte DISQUALIFIED = 3;
   public static final byte DIDNOTFINISH = 4;
+  public static final byte CANCELLED = 5;
 
   public static final String[] NAME = {
     "Incomplete",
     "OK",
     "Invalid",
     "Disqualified",
-    "Did not finish"
+    "Did not finish",
+    "Cancelled"
   };
+
+  public static boolean isComputable( byte status ) {
+    return status == OK;
+  }
 }
 

@@ -29,5 +29,9 @@ public class RegattaStatus {
     "CANCELLED",
     "NULL"
   };
+
+  public static boolean hasNextStatus( byte status ) {
+    return status >= CREATED && status < PUBLISHED;
+  }
 }
 

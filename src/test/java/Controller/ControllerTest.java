@@ -260,6 +260,35 @@ class ControllerTest {
   }
 
   @Test
+  void clickSetRegattaStatusToNextStatusDoesNotAdvanceCancelledRegatta()
+    throws Exception {
+    Participant current = participant( 5L,
+                                       true );
+    setPrivateField( controller,
+                     "currentParticipant",
+                     current );
+
+    Regatta detached = new Regatta();
+    detached.setId( 99L );
+
+    Regatta persisted = new Regatta();
+    persisted.setId( 99L );
+    persisted.setParticipant( current );
+    persisted.setStatus( (byte) RegattaStatus.CANCELLED );
+
+    when( modelBean.getValidParticipant( current ) ).thenReturn( current );
+    when( modelBean.getRegattaById( 99L ) ).thenReturn( persisted );
+
+    controller.clickSetRegattaStatusToNextStatus( detached );
+
+    org.junit.jupiter.api.Assertions.assertEquals( RegattaStatus.CANCELLED,
+                                                  persisted.getStatus() );
+    verify( view ).showUI( UI.EDIT_REGATTA );
+    verify( modelBean,
+            never() ).save( any( Regatta.class ) );
+  }
+
+  @Test
   void clickAddRegistrationRejectsLocalPromoterBlock() throws Exception {
     Participant current = participant( 5L,
                                        true );
@@ -320,6 +349,51 @@ class ControllerTest {
       .get( 0 );
     org.junit.jupiter.api.Assertions.assertEquals( 0.0,
                                                   sanitizedBid.getAmmount() );
+  }
+
+  @Test
+  void clickSaveRegattaResultsDoesNotPersistRaceValuesForDisqualifiedRegistration()
+    throws Exception {
+    Participant current = participant( 5L,
+                                       true );
+    Participant promoter = participant( 5L,
+                                        true );
+    Regatta regatta = new Regatta();
+    regatta.setId( 99L );
+    regatta.setParticipant( promoter );
+    regatta.setStatus( RegattaStatus.RACE_TEST );
+    Registration persistedRegistration = new Registration();
+    persistedRegistration.setId( 55L );
+    persistedRegistration.setRegatta( regatta );
+    persistedRegistration.setStatus( RegistrationStatus.OK );
+    persistedRegistration.setPosRace( (short) 0 );
+    persistedRegistration.setLapsRace( (short) 0 );
+
+    Registration incomingRegistration = new Registration();
+    incomingRegistration.setId( 55L );
+    incomingRegistration.setStatus( RegistrationStatus.DISQUALIFIED );
+    incomingRegistration.setPosRace( (short) 1 );
+    incomingRegistration.setLapsRace( (short) 20 );
+    incomingRegistration.setRegatta( regatta );
+
+    Bid bid = new Bid();
+    bid.setRegistration( incomingRegistration );
+    setPrivateField( controller,
+                     "currentParticipant",
+                     current );
+
+    when( modelBean.getValidParticipant( current ) ).thenReturn( current );
+    when( modelBean.getRegistrationById( 55L ) )
+      .thenReturn( persistedRegistration );
+
+    controller.clickSaveRegattaResults( List.of( bid ) );
+
+    org.junit.jupiter.api.Assertions.assertEquals( RegistrationStatus.DISQUALIFIED,
+                                                  persistedRegistration.getStatus() );
+    org.junit.jupiter.api.Assertions.assertEquals( 0,
+                                                  persistedRegistration.getPosRace() );
+    org.junit.jupiter.api.Assertions.assertEquals( 0,
+                                                  persistedRegistration.getLapsRace() );
   }
 
   private static Participant participant( Long id,

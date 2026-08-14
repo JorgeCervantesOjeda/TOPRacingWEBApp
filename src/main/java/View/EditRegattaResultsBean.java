@@ -166,7 +166,7 @@ public class EditRegattaResultsBean
     return this.regatta.getParticipant().getId().longValue()
            != viewBean.getCurrentParticipant().getId().longValue()
            || this.regatta.getStatus() != RegattaStatus.RACE_TEST
-           || r.getStatus() == RegistrationStatus.INVALID;
+           || !RegistrationStatus.isComputable( r.getStatus() );
   }
 
   public String getRaceLapsStyle() {
@@ -181,7 +181,7 @@ public class EditRegattaResultsBean
     return this.regatta.getParticipant().getId().longValue()
            != viewBean.getCurrentParticipant().getId().longValue()
            || this.regatta.getStatus() != RegattaStatus.RACE_TEST
-           || r.getStatus() == RegistrationStatus.INVALID;
+           || !RegistrationStatus.isComputable( r.getStatus() );
   }
 
   public String getRacePosStyle() {
@@ -196,14 +196,14 @@ public class EditRegattaResultsBean
     return this.regatta.getParticipant().getId().longValue()
            != viewBean.getCurrentParticipant().getId().longValue()
            || this.regatta.getStatus() != RegattaStatus.AUCTION
-           || r.getStatus() == RegistrationStatus.INVALID;
+           || !RegistrationStatus.isComputable( r.getStatus() );
   }
 
   public boolean disableEditSoldto( Registration r ) {
     return this.regatta.getParticipant().getId().longValue()
            != viewBean.getCurrentParticipant().getId().longValue()
            || this.regatta.getStatus() != RegattaStatus.AUCTION
-           || r.getStatus() == RegistrationStatus.INVALID;
+           || !RegistrationStatus.isComputable( r.getStatus() );
   }
 
   public boolean disableEditBid( Registration r ) {

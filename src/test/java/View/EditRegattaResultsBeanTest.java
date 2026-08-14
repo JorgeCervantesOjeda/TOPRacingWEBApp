@@ -186,6 +186,46 @@ class EditRegattaResultsBeanTest {
     registration.setStatus( RegistrationStatus.INVALID );
     assertTrue( bean.disableEditRacepos( registration ) );
     assertTrue( bean.disableEditRacelaps( registration ) );
+
+    registration.setStatus( RegistrationStatus.DISQUALIFIED );
+    assertTrue( bean.disableEditRacepos( registration ) );
+    assertTrue( bean.disableEditRacelaps( registration ) );
+
+    registration.setStatus( RegistrationStatus.DIDNOTFINISH );
+    assertTrue( bean.disableEditRacepos( registration ) );
+    assertTrue( bean.disableEditRacelaps( registration ) );
+
+    registration.setStatus( RegistrationStatus.CANCELLED );
+    assertTrue( bean.disableEditRacepos( registration ) );
+    assertTrue( bean.disableEditRacelaps( registration ) );
+  }
+
+  @Test
+  void auctionEditorsAreEnabledOnlyForOwnerWithOkRegistration() {
+    when( model.getBids( currentParticipant,
+                         regatta ) ).thenReturn( new ArrayList<>() );
+    when( model.getRegattaRegistrations( regatta ) ).thenReturn( List.of() );
+    bean.init();
+
+    Registration registration = registration( 404L );
+    registration.setRegatta( regatta );
+    registration.setStatus( RegistrationStatus.OK );
+
+    regatta.setStatus( (byte) RegattaStatus.AUCTION );
+    assertFalse( bean.disableEditAuctionvalue( registration ) );
+    assertFalse( bean.disableEditSoldto( registration ) );
+
+    registration.setStatus( RegistrationStatus.DISQUALIFIED );
+    assertTrue( bean.disableEditAuctionvalue( registration ) );
+    assertTrue( bean.disableEditSoldto( registration ) );
+
+    registration.setStatus( RegistrationStatus.DIDNOTFINISH );
+    assertTrue( bean.disableEditAuctionvalue( registration ) );
+    assertTrue( bean.disableEditSoldto( registration ) );
+
+    registration.setStatus( RegistrationStatus.CANCELLED );
+    assertTrue( bean.disableEditAuctionvalue( registration ) );
+    assertTrue( bean.disableEditSoldto( registration ) );
   }
 
   @Test

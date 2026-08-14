@@ -107,6 +107,9 @@ public class EditRegattaBean {
   }
 
   public String getNextStatusName() {
+    if( !RegattaStatus.hasNextStatus( this.regatta.getStatus() ) ) {
+      return "";
+    }
     return RegattaStatus.NAME[ this.regatta.getStatus() + 1 ];
   }
 
@@ -242,7 +245,7 @@ public class EditRegattaBean {
           .getId(),
         viewBean.getCurrentParticipant()
           .getId() )
-           || this.regatta.getStatus() >= RegattaStatus.PUBLISHED;
+           || !RegattaStatus.hasNextStatus( this.regatta.getStatus() );
   }
 
   /*
