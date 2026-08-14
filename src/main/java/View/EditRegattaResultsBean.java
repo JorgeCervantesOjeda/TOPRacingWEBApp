@@ -147,6 +147,10 @@ public class EditRegattaResultsBean
            || this.regatta.getStatus() >= RegattaStatus.PUBLISHED;
   }
 
+  public boolean getDisableEditStatusNote( Registration r ) {
+    return getDisableEditStatus( r );
+  }
+
   public boolean getDisableEditLaptime( Registration r ) {
     return r.getStatus() != RegistrationStatus.OK
            || this.regatta.getParticipant().getId().longValue()

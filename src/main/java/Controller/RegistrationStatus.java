@@ -30,5 +30,9 @@ public class RegistrationStatus {
   public static boolean isComputable( byte status ) {
     return status == OK;
   }
+
+  public static boolean requiresStatusNote( byte status ) {
+    return status == DISQUALIFIED || status == CANCELLED;
+  }
 }
 

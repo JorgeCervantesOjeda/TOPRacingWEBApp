@@ -229,6 +229,23 @@ class EditRegattaResultsBeanTest {
   }
 
   @Test
+  void statusNoteEditorUsesStatusEditRules() {
+    when( model.getBids( currentParticipant,
+                         regatta ) ).thenReturn( new ArrayList<>() );
+    when( model.getRegattaRegistrations( regatta ) ).thenReturn( List.of() );
+    bean.init();
+
+    Registration registration = registration( 405L );
+    registration.setRegatta( regatta );
+
+    regatta.setStatus( (byte) RegattaStatus.RACE_TEST );
+    assertFalse( bean.getDisableEditStatusNote( registration ) );
+
+    regatta.setStatus( (byte) RegattaStatus.PUBLISHED );
+    assertTrue( bean.getDisableEditStatusNote( registration ) );
+  }
+
+  @Test
   void bidEditorTracksStatusAndLocalPromoterBlockRules() {
     when( model.getBids( currentParticipant,
                          regatta ) ).thenReturn( new ArrayList<>() );

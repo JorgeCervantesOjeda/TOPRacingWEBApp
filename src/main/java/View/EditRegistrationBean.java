@@ -199,6 +199,11 @@ public class EditRegistrationBean {
       "STATUS" );
   }
 
+  public String getStatusNoteLabel() {
+    return viewBean.bundle(
+      "STATUS NOTE" );
+  }
+
   public String getDriverLabel() {
     return viewBean.bundle(
       "DRIVER" );

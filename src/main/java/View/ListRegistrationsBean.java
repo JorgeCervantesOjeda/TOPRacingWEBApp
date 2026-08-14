@@ -148,6 +148,11 @@ public class ListRegistrationsBean
       "STATUS" );
   }
 
+  public String getStatusNoteTxt() {
+    return viewBean.bundle(
+      "STATUS NOTE" );
+  }
+
   public String getRegattaTxt() {
     return viewBean.bundle(
       "REGATTA" );

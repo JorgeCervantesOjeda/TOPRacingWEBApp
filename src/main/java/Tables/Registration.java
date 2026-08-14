@@ -31,6 +31,7 @@ public class Registration  implements java.io.Serializable {
      private double prizeEfficiency;
      private double balance;
      private byte status;
+     private String statusNote;
      private Set<Bid> bids = new HashSet<Bid>(0);
 
     public Registration() {
@@ -220,6 +221,13 @@ public class Registration  implements java.io.Serializable {
     
     public void setStatus(byte status) {
         this.status = status;
+    }
+    public String getStatusNote() {
+        return this.statusNote;
+    }
+
+    public void setStatusNote(String statusNote) {
+        this.statusNote = statusNote;
     }
     public Set<Bid> getBids() {
         return this.bids;

@@ -63,6 +63,7 @@ public class UI {
   public static final int ERROR_EDIT_REGISTRATION_USER = 401;
   public static final int ERROR_EDIT_REGISTRATION_CLOSED = 402;
   public static final int ERROR_CREATE_REGISTRATION_DUPLICATE = 403;
+  public static final int ERROR_REGISTRATION_STATUS_NOTE_REQUIRED = 404;
   public static final int ERROR_CREATE_USER = 405;
   public static final int EDIT_REGISTRATION = 410;
 

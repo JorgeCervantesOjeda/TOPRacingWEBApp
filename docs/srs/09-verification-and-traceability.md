@@ -40,6 +40,7 @@
 - Las transiciones rechazan datos incompletos o usuario no autorizado.
 - Los eventos cancelados no avanzan a otro estado operativo.
 - Los resultados de velocidad y carrera se calculan con registros válidos.
+- La cancelación o descalificación de una inscripción exige nota escrita y esa nota permanece visible en resultados, historial y ficha de inscripción.
 - Las inscripciones no computables permanecen visibles, pero no aceptan captura de resultados ni pujas.
 - La eficiencia relativa al mercado calcula una tendencia log-lineal `ln(C)=a+bS`, guarda el precio de tendencia por inscripción y ordena por `C_hat(S)-C`.
 - Los puntos se recalculan desde datos oficiales.

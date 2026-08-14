@@ -65,6 +65,9 @@
         <property name="status" type="byte">
             <column name="status" not-null="true" />
         </property>
+        <property name="statusNote" type="string">
+            <column name="status_note" length="512" />
+        </property>
         <set name="bids" table="bid" inverse="true" lazy="true" fetch="select">
             <key>
                 <column name="id_registration" not-null="true" />

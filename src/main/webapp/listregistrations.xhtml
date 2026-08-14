@@ -64,6 +64,16 @@
         <h:outputText value="#{listRegistrationsBean.getStatusName( item.status )}" />
       </p:column>
 
+      <p:column headerText="#{listRegistrationsBean.getStatusNoteTxt()}"
+        footerText="#{listRegistrationsBean.getStatusNoteTxt()}" filterBy="#{item.statusNote}"
+        sortBy="#{item.statusNote}" filterMatchMode="contains"
+        style="white-space: pre-line; text-align: left; width: 140px;">
+        <f:facet name="filter">
+          <p:inputText size="8" onkeyup="PF('registrationsTable').filter()" />
+        </f:facet>
+        <h:outputText value="#{item.statusNote}" />
+      </p:column>
+
       <p:column headerText="#{listRegistrationsBean.getRegattaTxt()}"
         footerText="#{listRegistrationsBean.getRegattaTxt()}" filterBy="#{item.regatta.id}" sortBy="#{item.regatta.id}"
         filterMatchMode="exact"

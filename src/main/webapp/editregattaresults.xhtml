@@ -90,6 +90,27 @@
           </p:selectOneMenu>
         </p:column>
 
+        <p:column headerText="Status note" footerText="Status note"
+                  sortBy="#{item.registration.statusNote}"
+                  style="white-space: pre-line; text-align: left; width: 180px">
+          <p:cellEditor>
+            <f:facet name="output">
+              <h:outputText value="#{item.registration.statusNote}"/>
+            </f:facet>
+            <f:facet name="input">
+              <p:inputTextarea
+                value="#{item.registration.statusNote}"
+                disabled="#{editRegattaResultsBean.getDisableEditStatusNote( item.registration )}"
+                rows="2"
+                maxlength="512"
+                style="width:160px; resize: vertical">
+                <p:ajax event="blur"
+                        listener="#{editRegattaResultsBean.clickSave()}"/>
+              </p:inputTextarea>
+            </f:facet>
+          </p:cellEditor>
+        </p:column>
+
         <p:column headerText="Driver" footerText="Driver"
                   style="white-space: pre-line; text-align: left; width: 80px">
           <h:outputText value="#{editRegattaResultsBean.getParticipantName( item.registration.participantByIdDriver )}"/>

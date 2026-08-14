@@ -28,6 +28,11 @@
                                          class="field_output"/></td></tr>
 
       <tr>
+        <td align="right" class="field_label">#{editRegistrationBean.getStatusNoteLabel()}</td>
+        <td align="left"> <h:outputText  value="#{editRegistrationBean.registration.statusNote}"
+                                         class="field_output"/></td></tr>
+
+      <tr>
         <td align="right" class="field_label">#{editRegistrationBean.getDriverLabel()}</td>
         <td align="left">
           <h:outputText  value="#{editRegistrationBean.registration.participantByIdDriver.id} #{editRegistrationBean.registration.participantByIdDriver.namesGiven} #{editRegistrationBean.registration.participantByIdDriver.namesFamily}"

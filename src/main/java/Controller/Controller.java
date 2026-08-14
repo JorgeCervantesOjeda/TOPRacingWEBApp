@@ -483,6 +483,9 @@ public class Controller {
     }
 
     List<Bid> sanitizedBids = sanitizeRegattaResultsEdits( bids );
+    if( sanitizedBids == null ) {
+      return;
+    }
     modelBean.save( sanitizedBids );
     modelBean.requestRecalculateRegattaPenalties(
       ( p )
@@ -493,6 +496,8 @@ public class Controller {
 
   private List<Bid> sanitizeRegattaResultsEdits( List<Bid> bids ) {
     List<Bid> sanitizedBids = new ArrayList<>();
+    List<Bid> validIncomingBids = new ArrayList<>();
+    List<Registration> persistedRegistrations = new ArrayList<>();
     if( bids == null ) {
       return sanitizedBids;
     }
@@ -511,6 +516,18 @@ public class Controller {
         continue;
       }
 
+      if( !hasRequiredStatusNoteForEdit( persistedRegistration,
+                                         incomingBid.getRegistration() ) ) {
+        theView.showUI( UI.ERROR_REGISTRATION_STATUS_NOTE_REQUIRED );
+        return null;
+      }
+      validIncomingBids.add( incomingBid );
+      persistedRegistrations.add( persistedRegistration );
+    }
+
+    for( int i = 0; i < validIncomingBids.size(); i++ ) {
+      Bid incomingBid = validIncomingBids.get( i );
+      Registration persistedRegistration = persistedRegistrations.get( i );
       applyAllowedRegattaResultEdits( persistedRegistration,
                                       incomingBid.getRegistration() );
       sanitizedBids.add( buildSanitizedBid( incomingBid,
@@ -520,18 +537,35 @@ public class Controller {
     return sanitizedBids;
   }
 
+  private boolean hasRequiredStatusNoteForEdit( Registration persisted,
+                                                Registration incoming ) {
+    if( !canApplyRegattaResultEdits( persisted ) ) {
+      return true;
+    }
+    return hasRequiredStatusNote( incoming );
+  }
+
+  private boolean canApplyRegattaResultEdits( Registration persisted ) {
+    Regatta regatta = persisted.getRegatta();
+    return isCurrentParticipantRegattaOwner( persisted )
+           && regatta != null
+           && regatta.getStatus() < RegattaStatus.PUBLISHED;
+  }
+
   private void applyAllowedRegattaResultEdits( Registration persisted,
                                                Registration incoming ) {
-    if( !isCurrentParticipantRegattaOwner( persisted ) ) {
+    if( !canApplyRegattaResultEdits( persisted ) ) {
+      return;
+    }
+
+    if( !hasRequiredStatusNote( incoming ) ) {
+      theView.showUI( UI.ERROR_REGISTRATION_STATUS_NOTE_REQUIRED );
       return;
     }
 
     Regatta regatta = persisted.getRegatta();
-    if( regatta == null || regatta.getStatus() >= RegattaStatus.PUBLISHED ) {
-      return;
-    }
-
     persisted.setStatus( incoming.getStatus() );
+    persisted.setStatusNote( normalizedStatusNoteOf( incoming ) );
 
     if( regatta.getStatus() == RegattaStatus.SPEED_TEST
         && incoming.getStatus() == RegistrationStatus.OK ) {
@@ -543,6 +577,19 @@ public class Controller {
       persisted.setPosRace( incoming.getPosRace() );
       persisted.setLapsRace( incoming.getLapsRace() );
     }
+  }
+
+  private boolean hasRequiredStatusNote( Registration registration ) {
+    return !RegistrationStatus.requiresStatusNote( registration.getStatus() )
+           || !normalizedStatusNoteOf( registration ).isEmpty();
+  }
+
+  private String normalizedStatusNoteOf( Registration registration ) {
+    if( registration.getStatusNote() == null ) {
+      return "";
+    }
+    return registration.getStatusNote()
+      .trim();
   }
 
   private Bid buildSanitizedBid( Bid incomingBid,

@@ -579,6 +579,12 @@ public class ViewBean
               "ERROR CREATE REGISTRATION DUPLICATE" ),
             "" );
           return;
+        case UI.ERROR_REGISTRATION_STATUS_NOTE_REQUIRED:
+          showModal(
+            bundle(
+              "ERROR REGISTRATION STATUS NOTE REQUIRED" ),
+            "" );
+          return;
         case UI.ERROR_EDIT_REGISTRATION_USER:
           showModal(
             bundle(

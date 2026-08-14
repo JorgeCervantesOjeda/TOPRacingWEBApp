@@ -372,6 +372,7 @@ class ControllerTest {
     Registration incomingRegistration = new Registration();
     incomingRegistration.setId( 55L );
     incomingRegistration.setStatus( RegistrationStatus.DISQUALIFIED );
+    incomingRegistration.setStatusNote( "Car failed inspection" );
     incomingRegistration.setPosRace( (short) 1 );
     incomingRegistration.setLapsRace( (short) 20 );
     incomingRegistration.setRegatta( regatta );
@@ -394,6 +395,134 @@ class ControllerTest {
                                                   persistedRegistration.getPosRace() );
     org.junit.jupiter.api.Assertions.assertEquals( 0,
                                                   persistedRegistration.getLapsRace() );
+  }
+
+  @Test
+  void clickSaveRegattaResultsRejectsCancelledRegistrationWithoutStatusNote()
+    throws Exception {
+    Participant current = participant( 5L,
+                                       true );
+    Regatta regatta = ownedRegatta( 99L,
+                                    current,
+                                    RegattaStatus.RACE_TEST );
+    Registration persistedRegistration = registrationForRegatta(
+      55L,
+      regatta,
+      RegistrationStatus.OK );
+    Registration incomingRegistration = registrationForRegatta(
+      55L,
+      regatta,
+      RegistrationStatus.CANCELLED );
+    incomingRegistration.setStatusNote( "   " );
+    Bid bid = new Bid();
+    bid.setRegistration( incomingRegistration );
+    setPrivateField( controller,
+                     "currentParticipant",
+                     current );
+
+    when( modelBean.getValidParticipant( current ) ).thenReturn( current );
+    when( modelBean.getRegistrationById( 55L ) )
+      .thenReturn( persistedRegistration );
+
+    controller.clickSaveRegattaResults( List.of( bid ) );
+
+    org.junit.jupiter.api.Assertions.assertEquals( RegistrationStatus.OK,
+                                                  persistedRegistration.getStatus() );
+    verify( view ).showUI( UI.ERROR_REGISTRATION_STATUS_NOTE_REQUIRED );
+    verify( modelBean,
+            never() ).save( any( List.class ) );
+    verify( modelBean,
+            never() ).requestRecalculateRegattaPenalties( any() );
+  }
+
+  @Test
+  void clickSaveRegattaResultsPersistsStatusNoteForCancelledRegistration()
+    throws Exception {
+    Participant current = participant( 5L,
+                                       true );
+    Regatta regatta = ownedRegatta( 99L,
+                                    current,
+                                    RegattaStatus.RACE_TEST );
+    Registration persistedRegistration = registrationForRegatta(
+      55L,
+      regatta,
+      RegistrationStatus.OK );
+    Registration incomingRegistration = registrationForRegatta(
+      55L,
+      regatta,
+      RegistrationStatus.CANCELLED );
+    incomingRegistration.setStatusNote( "  Event entry withdrawn  " );
+    Bid bid = new Bid();
+    bid.setRegistration( incomingRegistration );
+    setPrivateField( controller,
+                     "currentParticipant",
+                     current );
+
+    when( modelBean.getValidParticipant( current ) ).thenReturn( current );
+    when( modelBean.getRegistrationById( 55L ) )
+      .thenReturn( persistedRegistration );
+
+    controller.clickSaveRegattaResults( List.of( bid ) );
+
+    org.junit.jupiter.api.Assertions.assertEquals( RegistrationStatus.CANCELLED,
+                                                  persistedRegistration.getStatus() );
+    org.junit.jupiter.api.Assertions.assertEquals( "Event entry withdrawn",
+                                                  persistedRegistration.getStatusNote() );
+    verify( modelBean ).save( any( List.class ) );
+  }
+
+  @Test
+  void clickSaveRegattaResultsRejectsMissingStatusNoteBeforeMutatingAnyRegistration()
+    throws Exception {
+    Participant current = participant( 5L,
+                                       true );
+    Regatta regatta = ownedRegatta( 99L,
+                                    current,
+                                    RegattaStatus.RACE_TEST );
+    Registration firstPersistedRegistration = registrationForRegatta(
+      55L,
+      regatta,
+      RegistrationStatus.OK );
+    Registration secondPersistedRegistration = registrationForRegatta(
+      56L,
+      regatta,
+      RegistrationStatus.OK );
+
+    Registration firstIncomingRegistration = registrationForRegatta(
+      55L,
+      regatta,
+      RegistrationStatus.CANCELLED );
+    firstIncomingRegistration.setStatusNote( "Canceled before race" );
+    Registration secondIncomingRegistration = registrationForRegatta(
+      56L,
+      regatta,
+      RegistrationStatus.CANCELLED );
+    secondIncomingRegistration.setStatusNote( "" );
+
+    Bid firstBid = new Bid();
+    firstBid.setRegistration( firstIncomingRegistration );
+    Bid secondBid = new Bid();
+    secondBid.setRegistration( secondIncomingRegistration );
+    setPrivateField( controller,
+                     "currentParticipant",
+                     current );
+
+    when( modelBean.getValidParticipant( current ) ).thenReturn( current );
+    when( modelBean.getRegistrationById( 55L ) )
+      .thenReturn( firstPersistedRegistration );
+    when( modelBean.getRegistrationById( 56L ) )
+      .thenReturn( secondPersistedRegistration );
+
+    controller.clickSaveRegattaResults( List.of( firstBid,
+                                                 secondBid ) );
+
+    org.junit.jupiter.api.Assertions.assertEquals( RegistrationStatus.OK,
+                                                  firstPersistedRegistration.getStatus() );
+    org.junit.jupiter.api.Assertions.assertEquals( RegistrationStatus.OK,
+                                                  secondPersistedRegistration.getStatus() );
+    verify( view ).showUI( UI.ERROR_REGISTRATION_STATUS_NOTE_REQUIRED );
+    verify( modelBean,
+            never() ).save( any( List.class ) );
   }
 
   private static Participant participant( Long id,
@@ -422,6 +551,26 @@ class ControllerTest {
     registration.setId( registrationId );
     registration.setParticipantByIdOwner( owner );
     registration.setRegatta( regatta );
+    return registration;
+  }
+
+  private static Regatta ownedRegatta( Long regattaId,
+                                       Participant owner,
+                                       byte status ) {
+    Regatta regatta = new Regatta();
+    regatta.setId( regattaId );
+    regatta.setParticipant( owner );
+    regatta.setStatus( status );
+    return regatta;
+  }
+
+  private static Registration registrationForRegatta( Long registrationId,
+                                                      Regatta regatta,
+                                                      byte status ) {
+    Registration registration = new Registration();
+    registration.setId( registrationId );
+    registration.setRegatta( regatta );
+    registration.setStatus( status );
     return registration;
   }
 
