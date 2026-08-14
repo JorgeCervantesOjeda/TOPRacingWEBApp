@@ -2,6 +2,12 @@
 
 Aplicacion web Java para gestionar la liga TOP-Racing: participantes, autos, campeonatos (regattas), sedes y registros.
 
+## Licencias
+
+- El código fuente de la aplicación se publica bajo GNU Affero General Public License v3.0 only (`AGPL-3.0-only`). Consulta `LICENSE`.
+- La documentación, incluidos `docs/`, la SRS, los materiales de investigación y `CITATION.cff`, se publica bajo Creative Commons Attribution 4.0 International (`CC-BY-4.0`). Consulta `docs/LICENSE-CC-BY-4.0.txt`.
+- Los datos, dependencias y materiales de terceros conservan sus propias licencias.
+
 ## Stack actual
 - Java 11 o superior
 - Jakarta Faces / CDI

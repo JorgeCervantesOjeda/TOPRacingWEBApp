@@ -1,0 +1,12 @@
+TOPRacingWEBApp
+Copyright (C) 2026 Jorge Cervantes
+
+Source code in this repository is licensed under the GNU Affero General
+Public License v3.0 only (AGPL-3.0-only). See LICENSE.
+
+Documentation and research materials in this repository, including docs/,
+SRS files, CITATION.cff, and project notes, are licensed under Creative
+Commons Attribution 4.0 International (CC-BY-4.0). See
+docs/LICENSE-CC-BY-4.0.txt.
+
+Third-party dependencies, data, and materials keep their own licenses.
