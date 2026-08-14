@@ -1,0 +1,19 @@
+{
+  "title": "TOP Racing Web App",
+  "upload_type": "software",
+  "description": "Java/MySQL web application for TOP Racing event operations, results, access controls, and SRS-backed workflow implementation.",
+  "creators": [
+    {
+      "name": "Cervantes, Jorge"
+    }
+  ],
+  "version": "1.0.15",
+  "publication_date": "2026-08-14",
+  "keywords": [
+    "TOP Racing",
+    "racing",
+    "software requirements",
+    "Java",
+    "MySQL"
+  ]
+}

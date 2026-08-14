@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata from this file."
+title: "TOP Racing Web App"
+type: software
+authors:
+  - family-names: "Cervantes"
+    given-names: "Jorge"
+version: "1.0.15"
+date-released: "2026-08-14"
+repository-code: "https://github.com/JorgeCervantesOjeda/TOPRacingWEBApp"

@@ -9,8 +9,6 @@ import os from "node:os";
 import path from "node:path";
 import { spawn } from "node:child_process";
 
-const DEFAULT_CLIENT_SECRET_JSON =
-  "C:/Users/usuario/ownCloud2/TOP-Racing React Firebase/top_racing/client_secret_648563198004-90j85iqe795a04tvc8qualapn7f8ivu1.apps.googleusercontent.com.json";
 const DEFAULT_OUTPUT = "scripts/local-env.ps1";
 const DEFAULT_PORT = 53682;
 const DEFAULT_SENDER = "top.racing.org@gmail.com";
@@ -23,9 +21,10 @@ main().catch((error) => {
 
 async function main() {
   const options = parseArgs(process.argv.slice(2));
-  const clientSecretPath = path.resolve(
-    options.clientSecretJson || DEFAULT_CLIENT_SECRET_JSON
-  );
+  if (!options.clientSecretJson) {
+    throw new Error("--client-secret-json is required.");
+  }
+  const clientSecretPath = path.resolve(options.clientSecretJson);
   const outputPath = path.resolve(options.output || DEFAULT_OUTPUT);
   const clientIndex = Number.parseInt(options.clientIndex || "0", 10);
   const port = Number.parseInt(options.port || String(DEFAULT_PORT), 10);
