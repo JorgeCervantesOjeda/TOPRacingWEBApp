@@ -4,15 +4,15 @@ Esta carpeta contiene la especificación de requisitos de software de TOP Racing
 
 La SRS oficial de este proyecto es el documento completo:
 
-- [SRS_TOP_Racing_v2_6_tecnologia_abierta_obligatoria.tex](./SRS_TOP_Racing_v2_6_tecnologia_abierta_obligatoria.tex)
+- [SRS_TOP_Racing_v2_7.tex](./SRS_TOP_Racing_v2_7.tex)
 
-Ese archivo parte de la SRS fuente completa ubicada originalmente en `C:\Users\usuario\ownCloud2\TOP-Racing React Firebase` y conserva el documento detallado dentro de este proyecto. Las correcciones normativas aprobadas para TOPRacingWEBApp deben aplicarse sobre ese documento completo, no mediante resúmenes ni adaptaciones parciales.
+Ese archivo parte de la SRS fuente completa ubicada originalmente en `C:\Users\usuario\ownCloud2\TOP-Racing React Firebase` y conserva el documento detallado dentro de este proyecto. La versión 2.6 queda como antecedente histórico. Las correcciones normativas aprobadas para TOPRacingWEBApp deben aplicarse sobre la SRS vigente completa, no mediante resúmenes ni adaptaciones parciales.
 
 Los archivos Markdown de esta carpeta son auxiliares operativos para ubicar estado de implementación, verificaciones y decisiones pendientes de la app Java/MySQL. No reemplazan ni reducen la SRS oficial.
 
 ## Alcance Normativo
 
-La SRS v2.6 completa es la referencia normativa funcional. Los archivos auxiliares pueden distinguir estado observado de la app Java actual con estas etiquetas:
+La SRS v2.7 completa es la referencia normativa funcional vigente. Los archivos auxiliares pueden distinguir estado observado de la app Java actual con estas etiquetas:
 
 - `Implementado`: existe en esta app y cuenta como requisito vigente.
 - `Parcial`: existe una parte, pero no cubre todo el requisito de producto.
@@ -23,7 +23,7 @@ Cuando haya conflicto entre la SRS oficial completa y el código observado, se d
 
 ## Orden Recomendado De Lectura
 
-1. [SRS_TOP_Racing_v2_6_tecnologia_abierta_obligatoria.tex](./SRS_TOP_Racing_v2_6_tecnologia_abierta_obligatoria.tex)
+1. [SRS_TOP_Racing_v2_7.tex](./SRS_TOP_Racing_v2_7.tex)
 2. [00-system-purpose.md](./00-system-purpose.md)
 3. [01-stakeholders-and-users.md](./01-stakeholders-and-users.md)
 4. [02-scope.md](./02-scope.md)

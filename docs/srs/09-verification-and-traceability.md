@@ -1,4 +1,4 @@
-# Verificación Y Trazabilidad
+# Verificación Y Rastro Verificable
 
 ## Criterios De Aceptación Por Área
 
@@ -41,7 +41,14 @@
 - Los resultados de velocidad y carrera se calculan con registros válidos.
 - La eficiencia relativa al mercado calcula una tendencia log-lineal `ln(C)=a+bS`, guarda el precio de tendencia por inscripción y ordena por `C_hat(S)-C`.
 - Los puntos se recalculan desde datos oficiales.
-- Los resultados publicados no cambian sin trazabilidad.
+- Los resultados publicados no cambian sin rastro verificable.
+
+### Acceso, Bloqueos Y Exclusiones
+
+- La exclusión global activa bloquea login operativo.
+- La morosidad local y el bloqueo local se conservan por participante y promotor.
+- El bloqueo local impide operar solo en eventos del promotor aplicable.
+- Cada creación o resolución de exclusión global, morosidad local o bloqueo local conserva historial verificable con actor, participante afectado, promotor cuando aplica, motivo, efecto y fecha.
 
 ### Subastas Y Economía
 
@@ -50,14 +57,14 @@ Estos criterios son objetivo hasta que los flujos estén implementados:
 - durante una subasta abierta no se publican pujas ni consecuencias provisionales;
 - cada usuario mantiene una sola puja vigente por subasta;
 - una puja vigente solo puede reemplazarse por otra mayor;
-- el cierre produce resultado oficial trazable;
+- el cierre produce resultado oficial con rastro verificable;
 - pagos, retenciones, devoluciones y comisiones quedan reconciliados.
 
 ## Evidencia Actual
 
 Observación:
 
-- La versión actual del proyecto es `1.0.4`.
+- La versión actual del proyecto es `1.0.15`.
 - La configuración local principal apunta a MySQL `topracing26`.
 - La documentación operativa define `topracing26_test` para pruebas automáticas.
 - El filtro de autenticación permite Standings como página pública.
@@ -65,7 +72,7 @@ Observación:
 
 Inferencia:
 
-- La app está alineada con la SRS oficial completa v2.6 en acceso público a clasificaciones, jerarquía territorial y separación operativa de datos.
+- La app está alineada con la SRS oficial completa v2.7 en acceso público a clasificaciones, jerarquía territorial y separación operativa de datos.
 - La app todavía no demuestra cumplimiento completo de subastas, eficiencia relativa, pagos, patrocinio, comunidad y verificación reforzada.
 
 Demostración pendiente:
@@ -76,11 +83,12 @@ Demostración pendiente:
 - pruebas de ciclo completo de evento;
 - pruebas futuras de subastas y economía cuando esos flujos se completen.
 
-## Trazabilidad De Fuentes
+## Rastro De Fuentes
 
 | Fuente | Uso En Esta SRS |
 | --- | --- |
-| `SRS_TOP_Racing_v2_6_tecnologia_abierta_obligatoria.tex` | SRS oficial completa y fuente normativa funcional. |
+| `SRS_TOP_Racing_v2_7.tex` | SRS oficial completa y fuente normativa funcional vigente. |
+| `SRS_TOP_Racing_v2_6_tecnologia_abierta_obligatoria.tex` | Antecedente histórico de la SRS oficial. |
 | Código Java actual | Estado implementado observado. |
 | `README.md` | Operación local, GlassFish, MySQL y separación de bases. |
 | `docs/testing/README.md` | Estrategia de pruebas automáticas con base aislada. |

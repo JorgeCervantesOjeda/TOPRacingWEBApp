@@ -10,15 +10,18 @@ Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes
 | IAM-002 | El sistema debe impedir operación autenticada a participantes no confirmados. | Implementado |
 | IAM-003 | El sistema debe permitir confirmación de correo mediante clave pública validada. | Parcial |
 | IAM-004 | El sistema debe permitir recuperación de contraseña mediante clave pública validada. | Parcial |
-| IAM-005 | El sistema debe distinguir sesión autenticada, correo confirmado, identidad verificada, verificación reforzada, términos aceptados y exclusión. | Objetivo |
+| IAM-005 | El sistema debe distinguir sesión autenticada, correo confirmado, identidad verificada, verificación reforzada, términos aceptados, exclusión global y bloqueos locales por promotor. | Parcial |
 | IAM-006 | El sistema debe requerir verificación reforzada para operaciones de mayor riesgo. | Objetivo |
 | IAM-007 | El sistema debe registrar rechazos de acceso relevantes. | Parcial |
+| IAM-008 | El sistema debe tratar `confirmed` como cuenta operativa derivada de correo confirmado y cuenta de pagos utilizable; en esta implementación `paypal_usable` satisface esa cuenta mediante PayPal Seller Onboarding. | Implementado |
+| IAM-009 | El sistema debe permitir iniciar PayPal Seller Onboarding y confirmar `paypal_usable` solo tras retorno validado y consulta de estado PayPal. | Parcial |
+| IAM-010 | El sistema debe conservar historial verificable de creación y resolución de exclusiones globales, morosidad local y bloqueos locales por promotor. | Implementado |
 
 ## PUB: Publicación Y Reserva
 
 | ID | Requisito | Estado |
 | --- | --- | --- |
-| PUB-001 | El visitante anónimo debe poder acceder a bienvenida, login, confirmación, recuperación y Standings. | Implementado |
+| PUB-001 | El visitante anónimo debe poder acceder a bienvenida, login, alta inicial de participante, Standings y enlaces con clave validada para confirmación, recuperación y quejas. | Implementado |
 | PUB-002 | Toda vista no pública debe requerir sesión válida. | Implementado |
 | PUB-003 | Standings público no debe exponer datos sensibles. | Parcial |
 | PUB-004 | Los eventos publicados deben conservar historial consultable. | Objetivo |
@@ -41,7 +44,7 @@ Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes
 | EVT-001 | El sistema debe gestionar eventos competitivos con estado oficial. | Parcial |
 | EVT-002 | Los estados normativos deben ser `creado`, `inscripciones`, `velocidad`, `carrera`, `subasta`, `publicado` y `cancelado`. | Parcial |
 | EVT-003 | Toda transición de estado debe validar precondiciones, permisos y reglas de negocio. | Parcial |
-| EVT-004 | Un evento publicado debe bloquear capturas que alteren resultados oficiales sin trazabilidad. | Objetivo |
+| EVT-004 | Un evento publicado debe bloquear capturas que alteren resultados oficiales sin rastro verificable. | Objetivo |
 | EVT-005 | Un evento cancelado debe conservar historial y excluir resultados oficiales. | Objetivo |
 
 ## REG: Inscripciones
@@ -82,9 +85,9 @@ Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes
 | AUC-001 | La subasta de acceso corresponde a espectadores, no a competidores. | Objetivo |
 | AUC-002 | La subasta de vehículos debe ser sellada. | Objetivo |
 | AUC-003 | Antes del cierre no deben publicarse pujas, conteos, posiciones, precios, adjudicatarios, eficiencia ni premios provisionales. | Objetivo |
-| AUC-004 | Cada usuario debe tener una sola puja vigente por vehículo y solo puede sustituirla al alza. | Objetivo |
+| AUC-004 | Cada usuario debe tener una sola puja vigente por vehículo y solo puede sustituirla al alza con respaldo de dinero real confirmado antes de modificar la vigente. | Objetivo |
 | AUC-005 | El dueño puede pujar por su propio vehículo. | Objetivo |
-| AUC-006 | La subasta debe producir resultado oficial trazable y reglas de entrega/disputa. | Objetivo |
+| AUC-006 | La subasta debe producir resultado oficial con rastro verificable y reglas de entrega/disputa. | Objetivo |
 
 ## EFF: Eficiencia Relativa Al Mercado
 
@@ -102,8 +105,9 @@ Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes
 | ECO-001 | El sistema debe modelar pozo económico oficial del evento. | Objetivo |
 | ECO-002 | El sistema debe gestionar aportaciones directas y contribuciones a participantes. | Objetivo |
 | ECO-003 | El sistema debe calcular premios de eficiencia y terminación. | Objetivo |
-| ECO-004 | El sistema debe gestionar pagos, retenciones, devoluciones y comisiones con trazabilidad. | Objetivo |
+| ECO-004 | El sistema debe gestionar pagos, retenciones, devoluciones y comisiones con rastro verificable. | Objetivo |
 | ECO-005 | Las cantidades de terceros deben publicarse sin identidad cuando la regla lo exija. | Objetivo |
+| ECO-006 | PayPal Seller Onboarding es el proveedor vigente para activar cuenta de pagos utilizable; PayPal sigue como candidato preferente para autorizaciones, capturas, liberaciones, devoluciones y webhooks de subastas y economía real, sin quedar cerrado como proveedor único hasta decisión operativa. | Parcial |
 
 ## COM: Comunidad, Seguridad Y Moderación
 
@@ -112,7 +116,7 @@ Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes
 | COM-001 | El sistema debe permitir protestas u objeciones de seguridad dentro de ventanas publicadas. | Objetivo |
 | COM-002 | La identidad de quien protesta debe mantenerse reservada en consulta pública cuando aplique. | Objetivo |
 | COM-003 | El sistema debe permitir foro y canal de novedades con moderación administrativa. | Objetivo |
-| COM-004 | Las decisiones de moderación y seguridad deben conservar trazabilidad. | Objetivo |
+| COM-004 | Las decisiones de moderación y seguridad deben conservar rastro verificable. | Objetivo |
 
 ## INT: Integraciones Y Operación
 
@@ -123,6 +127,7 @@ Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes
 | INT-003 | La app debe poder importar circuitos reales desde CSV de My Maps. | Implementado |
 | INT-004 | El correo saliente debe usarse para confirmación, recuperación y notificaciones cuando haya transporte SMTP u OAuth configurado. | Implementado |
 | INT-005 | Las pruebas automáticas deben usar base aislada. | Implementado |
+| INT-006 | La integración PayPal debe configurarse por variables de entorno o propiedades equivalentes, sin credenciales en código fuente. | Implementado |
 
 ## NFR: Requisitos No Funcionales
 

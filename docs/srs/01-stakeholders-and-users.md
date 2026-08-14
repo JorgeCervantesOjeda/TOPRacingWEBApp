@@ -36,14 +36,14 @@ Estados relevantes del usuario:
 - identidad verificada;
 - verificación reforzada;
 - aceptación vigente de términos;
-- exclusión activa o inexistente.
+- exclusión global activa o inexistente, y bloqueos locales por promotor cuando correspondan.
 
 ## Reglas De Acceso Por Tipo De Usuario
 
 - La consulta pública no debe requerir cuenta cuando la información haya sido declarada pública.
 - La participación operativa debe requerir cuenta autenticada.
 - Las operaciones de mayor riesgo deben requerir verificación reforzada: promover eventos, inscribir vehículos y pujar por vehículos.
-- Un usuario excluido no debe poder participar en operaciones competitivas o económicas mientras la exclusión esté activa.
+- Un usuario con exclusión global activa no debe poder participar en operaciones competitivas o económicas mientras esa exclusión esté activa. Un usuario con bloqueo local vigente no debe operar en eventos del promotor aplicable mientras ese bloqueo esté vigente.
 
 ## Estado De Implementación
 

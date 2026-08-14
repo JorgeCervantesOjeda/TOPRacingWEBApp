@@ -16,7 +16,7 @@ La app Java/MySQL debe cubrir:
 
 ## Alcance De Producto Objetivo
 
-La SRS v2.6 define además:
+La SRS v2.7 define además:
 
 - ciclo completo de evento: `creado`, `inscripciones`, `velocidad`, `carrera`, `subasta`, `publicado`, `cancelado`;
 - convocatorias con reglas publicadas;

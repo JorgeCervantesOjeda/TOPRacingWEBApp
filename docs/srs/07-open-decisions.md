@@ -4,7 +4,7 @@ Esta lista auxiliar contiene decisiones que siguen abiertas después de comparar
 
 ## Producto
 
-1. Definir el modelo formal de verificación reforzada, aceptación de términos y exclusión.
+1. Definir la interfaz administrativa y la migración de datos para operar verificación reforzada, aceptación de términos, bloqueos locales por promotor, morosidad local y exclusión global conforme a SRS v2.7.
 2. Decidir si `Variant` debe aparecer como nivel territorial visible en todas las consultas o solo como nivel interno para eventos y sedes.
 3. Definir el nombre público preferido del participante en Standings: nombre legal, alias deportivo o ambos.
 4. Definir qué historial público mínimo debe mostrarse para eventos publicados.
@@ -12,17 +12,18 @@ Esta lista auxiliar contiene decisiones que siguen abiertas después de comparar
 
 ## Eventos Y Clasificaciones
 
-1. Confirmar la correspondencia exacta entre estados actuales de `Regatta` y estados normativos v2.6.
+1. Confirmar la correspondencia exacta entre estados actuales de `Regatta` y estados normativos v2.7.
 2. Definir criterios de inmutabilidad para resultados publicados en esta app.
 3. Definir cuándo recalcular puntos automáticamente y cuándo exigir acción explícita.
 4. Definir si las clasificaciones de eficiencia deben bloquearse totalmente hasta cerrar subasta de vehículos.
 
 ## Economía Y Subastas
 
-1. Seleccionar proveedor o mecanismo para pagos, retenciones y devoluciones.
+1. Validar el producto PayPal concreto para pagos de subasta y economía real: PayPal Checkout directo, Braintree u otra modalidad PayPal que cubra autorizaciones, capturas, liberaciones, devoluciones, webhooks, moneda y país de operación requeridos. PayPal Seller Onboarding ya queda seleccionado para activar la cuenta de pagos utilizable de participantes en la app Java/MySQL vigente.
 2. Definir reglas legales y operativas para transferencia obligatoria de vehículos.
 3. Definir comisiones aplicables por participante, postor, comprador, patrocinador y aportante.
 4. Definir ventanas y evidencias para disputas de entrega.
+5. Definir política de reautorización o bloqueo cuando una autorización de pago expire antes del cierre de subasta.
 
 ## Comunidad
 
