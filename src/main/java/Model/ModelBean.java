@@ -929,10 +929,10 @@ public class ModelBean
     if( participant == null ) {
       return "-";
     }
-    return ( participant.isConfirmed()
-             ? ""
-             : "*" )
-           + participant.getNamesFamily() + ", "
+    if( !participant.isConfirmed() ) {
+      return "Participant pending";
+    }
+    return participant.getNamesFamily() + ", "
            + participant.getNamesGiven();
   }
 
@@ -4690,10 +4690,10 @@ public class ModelBean
       }
 
       boolean confirmed = Boolean.TRUE.equals( participantName[ 0 ] );
-      return ( confirmed
-               ? ""
-               : "*" )
-             + participantName[ 1 ] + ", "
+      if( !confirmed ) {
+        return "Participant pending";
+      }
+      return participantName[ 1 ] + ", "
              + participantName[ 2 ];
     } catch( RuntimeException ex ) {
       if( t != null && t.isActive() ) {
