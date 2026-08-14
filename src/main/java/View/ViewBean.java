@@ -369,6 +369,13 @@ public class ViewBean
             bundle(
               "ERROR REGATTA NOT OPEN LONG" ) );
           return;
+        case UI.ERROR_LOCAL_PROMOTER_BLOCKED:
+          showModal(
+            bundle(
+              "ERROR LOCAL PROMOTER BLOCKED" ),
+            bundle(
+              "ERROR LOCAL PROMOTER BLOCKED LONG" ) );
+          return;
         case UI.ERROR_REGATTA_PUBLISHED:
           showModal(
             bundle(

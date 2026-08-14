@@ -16,6 +16,9 @@ import Tables.Country;
 import Tables.Countryregion;
 import Tables.Currency;
 import Tables.Participant;
+import Tables.ParticipantAccessDecisionRecord;
+import Tables.ParticipantGlobalExclusion;
+import Tables.ParticipantLocalRestriction;
 import Tables.Penaltiespl;
 import Tables.PenaltiesplId;
 import Tables.Planetregion;
@@ -287,11 +290,416 @@ public class ModelBean
         || u.getPassword() == null
         || !u.getPassword()
         .equals( user.getPassword() )
-        || u.getDefaulter() > 0 ) {
+        || hasActiveGlobalExclusion( u ) ) {
       return null;
     }
 
     return u;
+  }
+
+  @Override
+  public synchronized boolean hasActiveGlobalExclusion( Participant participant ) {
+    if( participant == null || participant.getId() == null ) {
+      return false;
+    }
+
+    SessionFactory sf = U_HibernateUtil.getSessionFactory();
+    Session s = sf.openSession();
+    Transaction t = s.beginTransaction();
+    Query q = s.createQuery(
+      "select count(exclusion.id)"
+      + " from Tables.ParticipantGlobalExclusion as exclusion"
+      + " where exclusion.participant.id = :participantId"
+      + " and exclusion.active = true" );
+    q.setParameter( "participantId",
+                    participant.getId() );
+    Long count = (Long) q.uniqueResult();
+
+    t.commit();
+    s.close();
+
+    return count != null && count > 0;
+  }
+
+  @Override
+  public synchronized boolean hasActiveLocalPromoterBlock( Participant participant,
+                                                           Participant promoter ) {
+    return hasActiveLocalRestriction( participant,
+                                      promoter,
+                                      ParticipantLocalRestriction.KIND_LOCAL_BLOCK );
+  }
+
+  public synchronized boolean hasActiveLocalDefault( Participant participant,
+                                                     Participant promoter ) {
+    return hasActiveLocalRestriction( participant,
+                                      promoter,
+                                      ParticipantLocalRestriction.KIND_LOCAL_DEFAULT );
+  }
+
+  private boolean hasActiveLocalRestriction( Participant participant,
+                                             Participant promoter,
+                                             String kind ) {
+    if( participant == null
+        || participant.getId() == null
+        || promoter == null
+        || promoter.getId() == null
+        || kind == null ) {
+      return false;
+    }
+
+    SessionFactory sf = U_HibernateUtil.getSessionFactory();
+    Session s = sf.openSession();
+    Transaction t = s.beginTransaction();
+    Query q = s.createQuery(
+      "select count(restriction.id)"
+      + " from Tables.ParticipantLocalRestriction as restriction"
+      + " where restriction.participant.id = :participantId"
+      + " and restriction.promoter.id = :promoterId"
+      + " and restriction.kind = :kind"
+      + " and restriction.active = true" );
+    q.setParameter( "participantId",
+                    participant.getId() );
+    q.setParameter( "promoterId",
+                    promoter.getId() );
+    q.setParameter( "kind",
+                    kind );
+    Long count = (Long) q.uniqueResult();
+
+    t.commit();
+    s.close();
+
+    return count != null && count > 0;
+  }
+
+  public synchronized ParticipantGlobalExclusion recordGlobalExclusion(
+    Participant participant,
+    Participant createdByParticipant,
+    String reason ) {
+
+    if( participant == null || participant.getId() == null ) {
+      throw new IllegalArgumentException(
+        "Global exclusion requires a persisted participant." );
+    }
+
+    SessionFactory sf = U_HibernateUtil.getSessionFactory();
+    Session s = sf.openSession();
+    Transaction t = s.beginTransaction();
+    Query existingQuery = s.createQuery(
+      "from Tables.ParticipantGlobalExclusion as exclusion"
+      + " where exclusion.participant.id = :participantId"
+      + " and exclusion.active = true" );
+    existingQuery.setParameter( "participantId",
+                                participant.getId() );
+    existingQuery.setMaxResults( 1 );
+    List<ParticipantGlobalExclusion> existingExclusions = existingQuery.list();
+    if( !existingExclusions.isEmpty() ) {
+      t.commit();
+      s.close();
+      return existingExclusions.get( 0 );
+    }
+
+    ParticipantGlobalExclusion exclusion = new ParticipantGlobalExclusion();
+    exclusion.setParticipant( participant );
+    exclusion.setCreatedByParticipant( createdByParticipant );
+    exclusion.setReason( reason );
+    exclusion.setCreatedAt( new Date() );
+    exclusion.setActive( true );
+    s.save( exclusion );
+    saveAccessDecisionRecord(
+      s,
+      ParticipantAccessDecisionRecord.EVENT_GLOBAL_EXCLUSION_CREATED,
+      createdByParticipant,
+      participant,
+      null,
+      null,
+      null,
+      exclusion,
+      null,
+      reason,
+      "GLOBAL_EXCLUSION_ACTIVE" );
+
+    t.commit();
+    s.close();
+    return exclusion;
+  }
+
+  public synchronized ParticipantLocalRestriction recordLocalRestriction(
+    Participant participant,
+    Participant promoter,
+    Participant createdByParticipant,
+    String kind,
+    String reason ) {
+
+    if( participant == null
+        || participant.getId() == null
+        || promoter == null
+        || promoter.getId() == null ) {
+      throw new IllegalArgumentException(
+        "Local restriction requires persisted participant and promoter." );
+    }
+    if( kind == null || kind.isBlank() ) {
+      throw new IllegalArgumentException(
+        "Local restriction requires a kind." );
+    }
+
+    SessionFactory sf = U_HibernateUtil.getSessionFactory();
+    Session s = sf.openSession();
+    Transaction t = s.beginTransaction();
+    Query existingQuery = s.createQuery(
+      "from Tables.ParticipantLocalRestriction as restriction"
+      + " where restriction.participant.id = :participantId"
+      + " and restriction.promoter.id = :promoterId"
+      + " and restriction.kind = :kind"
+      + " and restriction.active = true" );
+    existingQuery.setParameter( "participantId",
+                                participant.getId() );
+    existingQuery.setParameter( "promoterId",
+                                promoter.getId() );
+    existingQuery.setParameter( "kind",
+                                kind );
+    existingQuery.setMaxResults( 1 );
+    List<ParticipantLocalRestriction> existingRestrictions =
+      existingQuery.list();
+    if( !existingRestrictions.isEmpty() ) {
+      t.commit();
+      s.close();
+      return existingRestrictions.get( 0 );
+    }
+
+    ParticipantLocalRestriction restriction = new ParticipantLocalRestriction();
+    restriction.setParticipant( participant );
+    restriction.setPromoter( promoter );
+    restriction.setCreatedByParticipant( createdByParticipant );
+    restriction.setKind( kind );
+    restriction.setReason( reason );
+    restriction.setCreatedAt( new Date() );
+    restriction.setActive( true );
+    s.save( restriction );
+    saveAccessDecisionRecord(
+      s,
+      eventTypeForLocalRestrictionCreated( kind ),
+      createdByParticipant,
+      participant,
+      promoter,
+      null,
+      null,
+      null,
+      restriction,
+      reason,
+      effectForLocalRestriction( kind,
+                                 true ) );
+
+    t.commit();
+    s.close();
+    return restriction;
+  }
+
+  public synchronized void resolveActiveGlobalExclusions(
+    Participant participant,
+    Participant resolvedByParticipant ) {
+
+    if( participant == null || participant.getId() == null ) {
+      return;
+    }
+
+    SessionFactory sf = U_HibernateUtil.getSessionFactory();
+    Session s = sf.openSession();
+    Transaction t = s.beginTransaction();
+    Query q = s.createQuery(
+      "from Tables.ParticipantGlobalExclusion as exclusion"
+      + " where exclusion.participant.id = :participantId"
+      + " and exclusion.active = true" );
+    q.setParameter( "participantId",
+                    participant.getId() );
+    List<ParticipantGlobalExclusion> exclusions = q.list();
+    Date resolvedAt = new Date();
+    for( ParticipantGlobalExclusion exclusion : exclusions ) {
+      exclusion.setActive( false );
+      exclusion.setResolvedAt( resolvedAt );
+      exclusion.setResolvedByParticipant( resolvedByParticipant );
+      s.update( exclusion );
+      saveAccessDecisionRecord(
+        s,
+        ParticipantAccessDecisionRecord.EVENT_GLOBAL_EXCLUSION_RESOLVED,
+        resolvedByParticipant,
+        exclusion.getParticipant(),
+        null,
+        null,
+        null,
+        exclusion,
+        null,
+        exclusion.getReason(),
+        "GLOBAL_EXCLUSION_INACTIVE" );
+    }
+
+    t.commit();
+    s.close();
+  }
+
+  public synchronized void resolveActiveLocalRestrictions(
+    Participant participant,
+    Participant promoter,
+    Participant resolvedByParticipant,
+    String kind ) {
+
+    if( participant == null
+        || participant.getId() == null
+        || promoter == null
+        || promoter.getId() == null
+        || kind == null ) {
+      return;
+    }
+
+    SessionFactory sf = U_HibernateUtil.getSessionFactory();
+    Session s = sf.openSession();
+    Transaction t = s.beginTransaction();
+    Query q = s.createQuery(
+      "from Tables.ParticipantLocalRestriction as restriction"
+      + " where restriction.participant.id = :participantId"
+      + " and restriction.promoter.id = :promoterId"
+      + " and restriction.kind = :kind"
+      + " and restriction.active = true" );
+    q.setParameter( "participantId",
+                    participant.getId() );
+    q.setParameter( "promoterId",
+                    promoter.getId() );
+    q.setParameter( "kind",
+                    kind );
+    List<ParticipantLocalRestriction> restrictions = q.list();
+    Date resolvedAt = new Date();
+    for( ParticipantLocalRestriction restriction : restrictions ) {
+      restriction.setActive( false );
+      restriction.setResolvedAt( resolvedAt );
+      restriction.setResolvedByParticipant( resolvedByParticipant );
+      s.update( restriction );
+      saveAccessDecisionRecord(
+        s,
+        eventTypeForLocalRestrictionResolved( kind ),
+        resolvedByParticipant,
+        restriction.getParticipant(),
+        restriction.getPromoter(),
+        null,
+        null,
+        null,
+        restriction,
+        restriction.getReason(),
+        effectForLocalRestriction( kind,
+                                   false ) );
+    }
+
+    t.commit();
+    s.close();
+  }
+
+  public synchronized List<ParticipantAccessDecisionRecord>
+      getParticipantAccessDecisionRecords( Participant participant ) {
+    if( participant == null || participant.getId() == null ) {
+      return new ArrayList<>();
+    }
+
+    SessionFactory sf = U_HibernateUtil.getSessionFactory();
+    Session s = sf.openSession();
+    Transaction t = s.beginTransaction();
+    Query q = s.createQuery(
+      "from Tables.ParticipantAccessDecisionRecord as record"
+      + " join fetch record.targetParticipant"
+      + " left join fetch record.actorParticipant"
+      + " left join fetch record.promoter"
+      + " left join fetch record.regatta"
+      + " left join fetch record.registration"
+      + " left join fetch record.globalExclusion"
+      + " left join fetch record.localRestriction"
+      + " where record.targetParticipant.id = :participantId"
+      + " order by record.createdAt asc, record.id asc" );
+    q.setParameter( "participantId",
+                    participant.getId() );
+    List<ParticipantAccessDecisionRecord> records = q.list();
+
+    t.commit();
+    s.close();
+    return records;
+  }
+
+  private void saveAccessDecisionRecord(
+    Session session,
+    String eventType,
+    Participant actorParticipant,
+    Participant targetParticipant,
+    Participant promoter,
+    Regatta regatta,
+    Registration registration,
+    ParticipantGlobalExclusion globalExclusion,
+    ParticipantLocalRestriction localRestriction,
+    String reason,
+    String effect ) {
+
+    if( eventType == null
+        || eventType.isBlank()
+        || targetParticipant == null
+        || targetParticipant.getId() == null
+        || effect == null
+        || effect.isBlank() ) {
+      LOGGER.log( Level.WARNING,
+                  "Participant access decision record was not saved because required data was missing; eventType={0}, targetParticipant={1}, effect={2}, impact=decision may lack verifiable record.",
+                  new Object[]{ eventType,
+                                targetParticipant == null
+                                ? null
+                                : targetParticipant.getId(),
+                                effect } );
+      return;
+    }
+
+    ParticipantAccessDecisionRecord record =
+      new ParticipantAccessDecisionRecord();
+    record.setEventType( eventType );
+    record.setActorParticipant( actorParticipant );
+    record.setTargetParticipant( targetParticipant );
+    record.setPromoter( promoter );
+    record.setRegatta( regatta );
+    record.setRegistration( registration );
+    record.setGlobalExclusion( globalExclusion );
+    record.setLocalRestriction( localRestriction );
+    record.setReason( reason );
+    record.setEffect( effect );
+    record.setCreatedAt( new Date() );
+    session.save( record );
+  }
+
+  private String eventTypeForLocalRestrictionCreated( String kind ) {
+    if( ParticipantLocalRestriction.KIND_LOCAL_DEFAULT.equals( kind ) ) {
+      return ParticipantAccessDecisionRecord.EVENT_LOCAL_DEFAULT_CREATED;
+    }
+    if( ParticipantLocalRestriction.KIND_LOCAL_BLOCK.equals( kind ) ) {
+      return ParticipantAccessDecisionRecord.EVENT_LOCAL_BLOCK_CREATED;
+    }
+    return "LOCAL_RESTRICTION_CREATED";
+  }
+
+  private String eventTypeForLocalRestrictionResolved( String kind ) {
+    if( ParticipantLocalRestriction.KIND_LOCAL_DEFAULT.equals( kind ) ) {
+      return ParticipantAccessDecisionRecord.EVENT_LOCAL_DEFAULT_RESOLVED;
+    }
+    if( ParticipantLocalRestriction.KIND_LOCAL_BLOCK.equals( kind ) ) {
+      return ParticipantAccessDecisionRecord.EVENT_LOCAL_BLOCK_RESOLVED;
+    }
+    return "LOCAL_RESTRICTION_RESOLVED";
+  }
+
+  private String effectForLocalRestriction( String kind,
+                                            boolean active ) {
+    if( ParticipantLocalRestriction.KIND_LOCAL_DEFAULT.equals( kind ) ) {
+      return active
+             ? "LOCAL_DEFAULT_ACTIVE"
+             : "LOCAL_DEFAULT_INACTIVE";
+    }
+    if( ParticipantLocalRestriction.KIND_LOCAL_BLOCK.equals( kind ) ) {
+      return active
+             ? "LOCAL_BLOCK_ACTIVE"
+             : "LOCAL_BLOCK_INACTIVE";
+    }
+    return active
+           ? "LOCAL_RESTRICTION_ACTIVE"
+           : "LOCAL_RESTRICTION_INACTIVE";
   }
 
   @Override
@@ -908,6 +1316,11 @@ public class ModelBean
     );
     save( buyer,
           false );
+    recordLocalDefaultAndPromoterBlock(
+      buyer,
+      r.getRegatta().getParticipant(),
+      seller,
+      "Buyer default reported for registration " + r.getId() );
 
     BidId bidId = new BidId(
           buyer.getId(),
@@ -945,6 +1358,11 @@ public class ModelBean
     );
     save( seller,
           false );
+    recordLocalDefaultAndPromoterBlock(
+      seller,
+      r.getRegatta().getParticipant(),
+      r.getRegatta().getParticipant(),
+      "Seller default reported for registration " + r.getId() );
 
     // revert car owner change
     r.getCar().setParticipant( seller );
@@ -969,6 +1387,50 @@ public class ModelBean
     persisted.setDefaulter( (currentDefaulter == null ? 0 : currentDefaulter) + 1 );
     save( persisted,
           false );
+  }
+
+  public synchronized void setParticipantAsLocalDefaulter( Participant participant,
+                                                           Participant promoter,
+                                                           Participant createdByParticipant,
+                                                           String reason ) {
+    setParticipantAsDefaulter( participant );
+    Participant persisted = participant == null
+                            ? null
+                            : getParticipantById( participant );
+    if( persisted == null ) {
+      return;
+    }
+    recordLocalDefaultAndPromoterBlock( persisted,
+                                        promoter,
+                                        createdByParticipant,
+                                        reason );
+  }
+
+  private void recordLocalDefaultAndPromoterBlock( Participant participant,
+                                                   Participant promoter,
+                                                   Participant createdByParticipant,
+                                                   String reason ) {
+    if( participant == null
+        || participant.getId() == null
+        || promoter == null
+        || promoter.getId() == null ) {
+      LOGGER.log( Level.WARNING,
+                  "Local participant restriction was not recorded because participant or promoter was missing; participant={0}, promoter={1}, impact=legacy defaulter count may exist without local restriction.",
+                  new Object[]{ participant == null ? null : participant.getId(),
+                                promoter == null ? null : promoter.getId() } );
+      return;
+    }
+
+    recordLocalRestriction( participant,
+                            promoter,
+                            createdByParticipant,
+                            ParticipantLocalRestriction.KIND_LOCAL_DEFAULT,
+                            reason );
+    recordLocalRestriction( participant,
+                            promoter,
+                            createdByParticipant,
+                            ParticipantLocalRestriction.KIND_LOCAL_BLOCK,
+                            reason );
   }
 
   public synchronized void assignRegattaSpeedPos( long regattaId ) {

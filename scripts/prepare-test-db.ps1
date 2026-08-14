@@ -48,6 +48,15 @@ if (-not (Test-Path -LiteralPath $mysql)) {
   throw "No se encontró mysql.exe en $MysqlBin"
 }
 
+powershell -ExecutionPolicy Bypass -File "$PSScriptRoot\migrate-participant-access-status.ps1" `
+  -MysqlBin $MysqlBin `
+  -Database $SourceDb `
+  -Username $Username `
+  -Password $Password
+if ($LASTEXITCODE -ne 0) {
+  throw "No fue posible preparar las tablas de acceso de participantes en $SourceDb."
+}
+
 $schemaTables = @(
   "appstats",
   "bid",
@@ -56,6 +65,9 @@ $schemaTables = @(
   "countryregion",
   "currency",
   "participant",
+  "participant_global_exclusion",
+  "participant_local_restriction",
+  "participant_access_decision_record",
   "penaltiespl",
   "planetregion",
   "pointscount",

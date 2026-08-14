@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="Tables.ParticipantAccessDecisionRecord" table="participant_access_decision_record" catalog="topracing26" optimistic-lock="version">
+        <id name="id" type="java.lang.Long">
+            <column name="id" />
+            <generator class="identity" />
+        </id>
+        <property name="eventType" type="string">
+            <column name="event_type" length="64" not-null="true" />
+        </property>
+        <many-to-one name="actorParticipant" class="Tables.Participant" fetch="select">
+            <column name="id_actor_participant" />
+        </many-to-one>
+        <many-to-one name="targetParticipant" class="Tables.Participant" fetch="select">
+            <column name="id_target_participant" not-null="true" />
+        </many-to-one>
+        <many-to-one name="promoter" class="Tables.Participant" fetch="select">
+            <column name="id_promoter" />
+        </many-to-one>
+        <many-to-one name="regatta" class="Tables.Regatta" fetch="select">
+            <column name="id_regatta" />
+        </many-to-one>
+        <many-to-one name="registration" class="Tables.Registration" fetch="select">
+            <column name="id_registration" />
+        </many-to-one>
+        <many-to-one name="globalExclusion" class="Tables.ParticipantGlobalExclusion" fetch="select">
+            <column name="id_global_exclusion" />
+        </many-to-one>
+        <many-to-one name="localRestriction" class="Tables.ParticipantLocalRestriction" fetch="select">
+            <column name="id_local_restriction" />
+        </many-to-one>
+        <property name="reason" type="string">
+            <column name="reason" length="512" />
+        </property>
+        <property name="effect" type="string">
+            <column name="effect" length="64" not-null="true" />
+        </property>
+        <property name="createdAt" type="timestamp">
+            <column name="created_at" length="19" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>

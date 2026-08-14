@@ -65,6 +65,11 @@ public interface ModelForView {
 
   public Participant getParticipantById( Participant _user );
 
+  public boolean hasActiveGlobalExclusion( Participant participant );
+
+  public boolean hasActiveLocalPromoterBlock( Participant participant,
+                                              Participant promoter );
+
   public Car getCarById( long _carId );
 
   public Country getCountryById( long _countryId );

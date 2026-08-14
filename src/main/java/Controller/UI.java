@@ -24,6 +24,7 @@ public class UI {
 
   public static final int LIST_REGATTAS = 300;
   public static final int ERROR_REGATTA_NOT_FOUND = 307;
+  public static final int ERROR_LOCAL_PROMOTER_BLOCKED = 308;
   public static final int ERROR_REGATTA_NOT_OPEN = 301;
   public static final int ERROR_REGATTA_NOT_OWNED = 302;
   public static final int ERROR_REGATTA_PUBLISHED = 303;

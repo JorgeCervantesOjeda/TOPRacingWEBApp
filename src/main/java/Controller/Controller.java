@@ -114,6 +114,17 @@ public class Controller {
     return true;
   }
 
+  private boolean hasCurrentParticipantLocalPromoterBlock( Regatta regatta ) {
+    if( regatta == null
+        || regatta.getParticipant() == null
+        || currentParticipant == null ) {
+      return false;
+    }
+
+    return modelBean.hasActiveLocalPromoterBlock( currentParticipant,
+                                                  regatta.getParticipant() );
+  }
+
   public void clickEditProfile() {
     if( !isValidParticipant() ) {
       return;
@@ -568,7 +579,7 @@ public class Controller {
            && regatta.getStatus() >= RegattaStatus.SPEED_TEST
            && regatta.getStatus() <= RegattaStatus.AUCTION
            && registration.getStatus() == RegistrationStatus.OK
-           && currentParticipant.getDefaulter() <= 0;
+           && !hasCurrentParticipantLocalPromoterBlock( regatta );
   }
 
   public void clickAddToFinishingPrize( Regatta regatta ) {
@@ -661,6 +672,11 @@ public class Controller {
       return;
     }
 
+    if( hasCurrentParticipantLocalPromoterBlock( regatta ) ) {
+      theView.showUI( UI.ERROR_LOCAL_PROMOTER_BLOCKED );
+      return;
+    }
+
     if( regatta.getStatus() != RegattaStatus.REGISTRATIONS_OPEN ) {
       theView.showUI( UI.ERROR_REGATTA_NOT_OPEN );
       return;
@@ -721,6 +737,11 @@ public class Controller {
                    registration,
                    UI.ERROR_EDIT_REGISTRATION_USER );
     if( persistedRegistration == null ) {
+      return;
+    }
+
+    if( hasCurrentParticipantLocalPromoterBlock( persistedRegistration.getRegatta() ) ) {
+      theView.showUI( UI.ERROR_LOCAL_PROMOTER_BLOCKED );
       return;
     }
 
@@ -1296,6 +1317,10 @@ public class Controller {
     if( persistedRegistration == null ) {
       return;
     }
+    if( hasCurrentParticipantLocalPromoterBlock( persistedRegistration.getRegatta() ) ) {
+      theView.showUI( UI.ERROR_LOCAL_PROMOTER_BLOCKED );
+      return;
+    }
     if( currentParticipant.getId().longValue()
         != car.getParticipant().getId().longValue() ) {
 
@@ -1327,6 +1352,14 @@ public class Controller {
                    registration,
                    UI.ERROR_EDIT_REGISTRATION_USER );
     if( persistedRegistration == null ) {
+      return;
+    }
+
+    if( hasCurrentParticipantLocalPromoterBlock( persistedRegistration.getRegatta() )
+        || modelBean.hasActiveLocalPromoterBlock(
+          driver,
+          persistedRegistration.getRegatta().getParticipant() ) ) {
+      theView.showUI( UI.ERROR_LOCAL_PROMOTER_BLOCKED );
       return;
     }
 
@@ -1680,7 +1713,11 @@ public class Controller {
   }
 
   public void promoterBalanceComplaint( Registration r ) {
-    modelBean.setParticipantAsDefaulter( r.getRegatta().getParticipant() );
+    modelBean.setParticipantAsLocalDefaulter(
+      r.getRegatta().getParticipant(),
+      r.getRegatta().getParticipant(),
+      currentParticipant,
+      "Promoter balance default reported for registration " + r.getId() );
     modelBean.requestRecalculateRegattaPenalties(
       ( p )
       -> this.theView.setProgress( p )

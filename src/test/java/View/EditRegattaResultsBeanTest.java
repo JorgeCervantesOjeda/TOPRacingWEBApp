@@ -123,7 +123,7 @@ class EditRegattaResultsBeanTest {
   }
 
   @Test
-  void addRegistrationButtonDependsOnStatusAndDefaulterFlag() {
+  void addRegistrationButtonDependsOnStatusAndLocalPromoterBlock() {
     when( model.getBids( currentParticipant,
                          regatta ) ).thenReturn( new ArrayList<>() );
     when( model.getRegattaRegistrations( regatta ) ).thenReturn( List.of() );
@@ -135,7 +135,9 @@ class EditRegattaResultsBeanTest {
     assertTrue( bean.disableAddRegistrationButton() );
 
     regatta.setStatus( (byte) RegattaStatus.REGISTRATIONS_OPEN );
-    currentParticipant.setDefaulter( 1 );
+    when( model.hasActiveLocalPromoterBlock( currentParticipant,
+                                             regatta.getParticipant() ) )
+      .thenReturn( true );
     assertTrue( bean.disableAddRegistrationButton() );
   }
 
@@ -187,7 +189,7 @@ class EditRegattaResultsBeanTest {
   }
 
   @Test
-  void bidEditorTracksStatusAndDefaulterRules() {
+  void bidEditorTracksStatusAndLocalPromoterBlockRules() {
     when( model.getBids( currentParticipant,
                          regatta ) ).thenReturn( new ArrayList<>() );
     when( model.getRegattaRegistrations( regatta ) ).thenReturn( List.of() );
@@ -210,10 +212,14 @@ class EditRegattaResultsBeanTest {
     assertTrue( bean.disableEditBid( registration ) );
 
     regatta.setStatus( (byte) RegattaStatus.AUCTION );
-    currentParticipant.setDefaulter( 1 );
+    when( model.hasActiveLocalPromoterBlock( currentParticipant,
+                                             regatta.getParticipant() ) )
+      .thenReturn( true );
     assertTrue( bean.disableEditBid( registration ) );
 
-    currentParticipant.setDefaulter( 0 );
+    when( model.hasActiveLocalPromoterBlock( currentParticipant,
+                                             regatta.getParticipant() ) )
+      .thenReturn( false );
     registration.setStatus( RegistrationStatus.INVALID );
     assertTrue( bean.disableEditBid( registration ) );
   }

@@ -10,15 +10,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import Model.ModelBean;
+import Tables.Bid;
 import Tables.Participant;
 import Tables.Regatta;
 import Tables.Registration;
 import View.ViewForController;
+import java.util.List;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
+import org.mockito.ArgumentCaptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -168,7 +171,11 @@ class ControllerTest {
 
     controller.promoterBalanceComplaint( registration );
 
-    verify( modelBean ).setParticipantAsDefaulter( registration.getRegatta().getParticipant() );
+    verify( modelBean ).setParticipantAsLocalDefaulter(
+      eq( registration.getRegatta().getParticipant() ),
+      eq( registration.getRegatta().getParticipant() ),
+      any(),
+      eq( "Promoter balance default reported for registration 55" ) );
     verify( modelBean ).requestRecalculateRegattaPenalties( any() );
     verify( modelBean ).sendMonitorMail( eq( registration.getRegatta().getParticipant() ),
                                          eq( "A PROMOTER DEFAULTER HAS BEEN REPORTED"

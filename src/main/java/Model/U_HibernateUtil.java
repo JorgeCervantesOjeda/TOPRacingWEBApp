@@ -38,6 +38,9 @@ public class U_HibernateUtil {
     "Tables/Car.hbm.xml",
     "Tables/Planetregion.hbm.xml",
     "Tables/Venue.hbm.xml",
+    "Tables/ParticipantAccessDecisionRecord.hbm.xml",
+    "Tables/ParticipantGlobalExclusion.hbm.xml",
+    "Tables/ParticipantLocalRestriction.hbm.xml",
     "Tables/Participant.hbm.xml",
   };
 

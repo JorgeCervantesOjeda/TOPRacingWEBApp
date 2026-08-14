@@ -109,14 +109,20 @@ public class ListDriversBean
   }
 
   public boolean disableSelectDriver( Participant driver ) {
+    Participant promoter = viewBean.getCurrentRegistration()
+      .getRegatta()
+      .getParticipant();
     return viewBean.getCurrentParticipant() == null
            || viewBean.getCurrentParticipant().getId() == null
            || viewBean.getCurrentRegistration().getStatus() == RegistrationStatus.DISQUALIFIED
            || viewBean.getCurrentRegistration().getStatus() == RegistrationStatus.INVALID
            || viewBean.getCurrentRegistration().getRegatta().getStatus() > RegattaStatus.REGISTRATIONS_OPEN
-           || driver.getDefaulter() > 0
+           || theModel.hasActiveLocalPromoterBlock( driver,
+                                                    promoter )
            || !driver.isConfirmed()
-           || viewBean.getCurrentParticipant().getDefaulter() > 0;
+           || theModel.hasActiveLocalPromoterBlock(
+             viewBean.getCurrentParticipant(),
+             promoter );
   }
 
   public String getVenueName( Participant driver ) {

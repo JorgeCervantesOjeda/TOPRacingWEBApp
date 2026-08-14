@@ -209,9 +209,9 @@ public class EditRegattaResultsBean
   public boolean disableEditBid( Registration r ) {
     return r.getRegatta().getStatus() > RegattaStatus.AUCTION
            || r.getRegatta().getStatus() < RegattaStatus.SPEED_TEST
-           || viewBean
-        .getCurrentParticipant()
-        .getDefaulter() > 0
+           || theModel.hasActiveLocalPromoterBlock(
+             viewBean.getCurrentParticipant(),
+             r.getRegatta().getParticipant() )
            || r.getStatus() != RegistrationStatus.OK;
   }
 
@@ -269,7 +269,9 @@ public class EditRegattaResultsBean
   public boolean disableAddRegistrationButton() {
     return this.regatta.getStatus()
            != RegattaStatus.REGISTRATIONS_OPEN
-           || viewBean.getCurrentParticipant().getDefaulter() > 0;
+           || theModel.hasActiveLocalPromoterBlock(
+             viewBean.getCurrentParticipant(),
+             this.regatta.getParticipant() );
   }
 
   public double getExpectedLaps( Bid b ) {
