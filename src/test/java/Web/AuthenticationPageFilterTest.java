@@ -80,6 +80,44 @@ class AuthenticationPageFilterTest {
   }
 
   @Test
+  void allowsAnonymousAccessToPaypalReturn() throws IOException,
+                                                    ServletException {
+    HttpServletRequest request = mock( HttpServletRequest.class );
+    HttpServletResponse response = mock( HttpServletResponse.class );
+    FilterChain chain = mock( FilterChain.class );
+
+    when( request.getRequestURI() ).thenReturn( "/topracingwebapp/faces/paypalreturn.xhtml" );
+    when( request.getContextPath() ).thenReturn( "/topracingwebapp" );
+    when( request.getSession( false ) ).thenReturn( null );
+
+    filter.doFilter( request,
+                     response,
+                     chain );
+
+    verify( chain ).doFilter( request,
+                              response );
+  }
+
+  @Test
+  void allowsAnonymousAccessToPaypalSandboxMock() throws IOException,
+                                                         ServletException {
+    HttpServletRequest request = mock( HttpServletRequest.class );
+    HttpServletResponse response = mock( HttpServletResponse.class );
+    FilterChain chain = mock( FilterChain.class );
+
+    when( request.getRequestURI() ).thenReturn( "/topracingwebapp/faces/paypalsandboxmock.xhtml" );
+    when( request.getContextPath() ).thenReturn( "/topracingwebapp" );
+    when( request.getSession( false ) ).thenReturn( null );
+
+    filter.doFilter( request,
+                     response,
+                     chain );
+
+    verify( chain ).doFilter( request,
+                              response );
+  }
+
+  @Test
   void allowsAnonymousAccessToStandings() throws IOException,
                                                  ServletException {
     HttpServletRequest request = mock( HttpServletRequest.class );

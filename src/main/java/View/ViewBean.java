@@ -161,6 +161,34 @@ public class ViewBean
     theController.clickResetPasswordRequest( this.currentParticipant );
   }
 
+  public void clickConnectPaypal() {
+    ensureCurrentParticipant();
+    try {
+      String signupLink = modelBean.createPaypalSignupLink( this.currentParticipant );
+      FacesContext instance = FacesContext.getCurrentInstance();
+      if( instance == null ) {
+        return;
+      }
+      ExternalContext context = instance.getExternalContext();
+      context.redirect( signupLink );
+      instance.responseComplete();
+    } catch( IOException e ) {
+      throw new RuntimeException( "Unable to redirect to PayPal onboarding.",
+                                  e );
+    } catch( RuntimeException e ) {
+      showModal( bundle( "ERROR PAYPAL REQUIRED" ),
+                 bundle( "ERROR PAYPAL CONFIGURATION LONG" ) );
+    }
+  }
+
+  public boolean renderPaypalConnectButton() {
+    return currentParticipant != null
+           && currentParticipant.getId() != null
+           && currentParticipant.getId() > 0
+           && currentParticipant.isEmailConfirmed()
+           && !currentParticipant.isPaypalUsable();
+  }
+
   public boolean disableResetButton() {
     boolean disable =
             this.currentParticipant == null
@@ -329,6 +357,20 @@ public class ViewBean
 
             bundle(
               "ERROR LOGIN LONG" ) );
+          return;
+        case UI.ERROR_EMAIL_CONFIRMATION_REQUIRED:
+          showModal(
+            bundle(
+              "ERROR EMAIL CONFIRMATION REQUIRED" ),
+            bundle(
+              "ERROR EMAIL CONFIRMATION REQUIRED LONG" ) );
+          return;
+        case UI.ERROR_PAYPAL_REQUIRED:
+          showModal(
+            bundle(
+              "ERROR PAYPAL REQUIRED" ),
+            bundle(
+              "ERROR PAYPAL REQUIRED LONG" ) );
           return;
 
         case UI.EDIT_USER:
@@ -906,6 +948,10 @@ public class ViewBean
 
   public String getNewParticipantButtonTxt() {
     return bundle( "NEW USER BUTTON" );
+  }
+
+  public String getConnectPaypalButtonLabel() {
+    return bundle( "CONNECT PAYPAL" );
   }
 
   public String getWelcomeButtonTitle() {

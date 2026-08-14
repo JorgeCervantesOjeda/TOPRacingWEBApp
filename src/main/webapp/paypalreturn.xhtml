@@ -1,0 +1,18 @@
+<!-- src/main/webapp/paypalreturn.xhtml - PayPal onboarding return result page. -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./TemplateBasic.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+    <h2>#{paypalReturnBean.resultHeader}</h2>
+    <p>
+      <h:outputText value="#{paypalReturnBean.resultDetail}" />
+    </p>
+    <p:button outcome="login"
+              value="#{viewBean.loginButtonTxt}"
+              styleClass="mybutton" />
+  </ui:define>
+
+</ui:composition>

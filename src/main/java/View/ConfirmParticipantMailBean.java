@@ -1,3 +1,5 @@
+// src/main/java/View/ConfirmParticipantMailBean.java
+// Confirms the participant e-mail key and exposes the confirmation result.
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -52,7 +54,7 @@ public class ConfirmParticipantMailBean {
       .getExternalContext()
       .getRequestParameterMap();
     key = params.get( "key" );
-    participant = modelBean.getParticipantByEMailKey( key );
+    participant = modelBean.confirmParticipantEmailByKey( key );
   }
 
   // ...

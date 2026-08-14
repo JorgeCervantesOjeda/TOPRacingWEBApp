@@ -38,4 +38,23 @@ class ViewBeanTest {
     assertEquals( "",
                   participant.getEmail() );
   }
+
+  @Test
+  void paypalConnectButtonIsVisibleOnlyWhenEmailIsConfirmedAndPaypalIsMissing() {
+    ViewBean viewBean = new ViewBean();
+    Participant participant = new Participant();
+    participant.setId( 12L );
+    participant.setEmailConfirmed( true );
+    participant.setPaypalUsable( false );
+
+    viewBean.setCurrentParticipant( participant );
+
+    assertEquals( true,
+                  viewBean.renderPaypalConnectButton() );
+
+    participant.setPaypalUsable( true );
+
+    assertEquals( false,
+                  viewBean.renderPaypalConnectButton() );
+  }
 }

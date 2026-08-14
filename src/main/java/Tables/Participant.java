@@ -1,7 +1,10 @@
+// src/main/java/Tables/Participant.java
+// Hibernate entity for TOP Racing account identity and operational status.
 package Tables;
 // Generated 17-Jul-2024 12:43:50 by Hibernate Tools 4.3.1
 
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +13,12 @@ import java.util.Set;
  */
 public class Participant  implements java.io.Serializable {
 
+     public static final String PAYPAL_STATUS_UNVERIFIED = "UNVERIFIED";
+     public static final String PAYPAL_STATUS_USABLE = "USABLE";
+     public static final String PAYPAL_STATUS_ONBOARDING_STARTED = "ONBOARDING_STARTED";
+     public static final String PAYPAL_STATUS_PERMISSION_DENIED = "PERMISSION_DENIED";
+     public static final String PAYPAL_STATUS_REMOTE_PENDING = "REMOTE_PENDING";
+     public static final String PAYPAL_STATUS_VERIFICATION_FAILED = "VERIFICATION_FAILED";
 
      private Long id;
      private Venue venue;
@@ -19,6 +28,13 @@ public class Participant  implements java.io.Serializable {
      private String email;
      private String phone;
      private String emailKey;
+     private boolean emailConfirmed;
+     private boolean paypalUsable;
+     private String paypalPayerId;
+     private String paypalMerchantId;
+     private String paypalStatus;
+     private Date confirmedAt;
+     private Date paypalVerifiedAt;
      private boolean confirmed;
      private int defaulter;
      private Set<Pointscount> pointscounts = new HashSet<Pointscount>(0);
@@ -42,7 +58,7 @@ public class Participant  implements java.io.Serializable {
         this.email = email;
         this.phone = phone;
         this.emailKey = emailKey;
-        this.confirmed = confirmed;
+        this.setConfirmed( confirmed );
         this.defaulter = defaulter;
     }
     public Participant(Venue venue, String password, String namesGiven, String namesFamily, String email, String phone, String emailKey, boolean confirmed, int defaulter, Set<Pointscount> pointscounts, Set<Registration> registrationsForIdBuyer, Set<Regatta> regattas, Set<Venue> venues, Set<Registration> registrationsForIdDriver, Set<Registration> registrationsForIdOwner, Set<Car> cars, Set<Bid> bids) {
@@ -53,7 +69,7 @@ public class Participant  implements java.io.Serializable {
        this.email = email;
        this.phone = phone;
        this.emailKey = emailKey;
-       this.confirmed = confirmed;
+       this.setConfirmed( confirmed );
        this.defaulter = defaulter;
        this.pointscounts = pointscounts;
        this.registrationsForIdBuyer = registrationsForIdBuyer;
@@ -121,12 +137,94 @@ public class Participant  implements java.io.Serializable {
     public void setEmailKey(String emailKey) {
         this.emailKey = emailKey;
     }
+    public boolean isEmailConfirmed() {
+        return this.emailConfirmed;
+    }
+    
+    public void setEmailConfirmed(boolean emailConfirmed) {
+        this.emailConfirmed = emailConfirmed;
+    }
+    public boolean isPaypalUsable() {
+        return this.paypalUsable;
+    }
+    
+    public void setPaypalUsable(boolean paypalUsable) {
+        this.paypalUsable = paypalUsable;
+        if( paypalUsable ) {
+            if( this.paypalStatus == null
+                || PAYPAL_STATUS_UNVERIFIED.equals( this.paypalStatus ) ) {
+                this.paypalStatus = PAYPAL_STATUS_USABLE;
+            }
+            if( this.paypalVerifiedAt == null ) {
+                this.paypalVerifiedAt = new Date();
+            }
+            return;
+        }
+        if( this.paypalStatus == null
+            || PAYPAL_STATUS_USABLE.equals( this.paypalStatus ) ) {
+            this.paypalStatus = PAYPAL_STATUS_UNVERIFIED;
+        }
+        this.paypalVerifiedAt = null;
+    }
+    public String getPaypalPayerId() {
+        return this.paypalPayerId;
+    }
+    
+    public void setPaypalPayerId(String paypalPayerId) {
+        this.paypalPayerId = paypalPayerId;
+    }
+    public String getPaypalMerchantId() {
+        return this.paypalMerchantId;
+    }
+    
+    public void setPaypalMerchantId(String paypalMerchantId) {
+        this.paypalMerchantId = paypalMerchantId;
+    }
+    public String getPaypalStatus() {
+        return this.paypalStatus;
+    }
+    
+    public void setPaypalStatus(String paypalStatus) {
+        this.paypalStatus = paypalStatus;
+    }
+    public Date getConfirmedAt() {
+        return this.confirmedAt;
+    }
+    
+    public void setConfirmedAt(Date confirmedAt) {
+        this.confirmedAt = confirmedAt;
+    }
+    public Date getPaypalVerifiedAt() {
+        return this.paypalVerifiedAt;
+    }
+    
+    public void setPaypalVerifiedAt(Date paypalVerifiedAt) {
+        this.paypalVerifiedAt = paypalVerifiedAt;
+    }
     public boolean isConfirmed() {
         return this.confirmed;
     }
     
     public void setConfirmed(boolean confirmed) {
         this.confirmed = confirmed;
+        if( confirmed ) {
+            this.emailConfirmed = true;
+            this.setPaypalUsable( true );
+            if( this.confirmedAt == null ) {
+                this.confirmedAt = new Date();
+            }
+            return;
+        }
+        this.confirmedAt = null;
+    }
+    public void refreshOperationalConfirmation() {
+        this.confirmed = this.emailConfirmed && this.paypalUsable;
+        if( this.confirmed && this.confirmedAt == null ) {
+            this.confirmedAt = new Date();
+        }
+        if( !this.confirmed ) {
+            this.confirmedAt = null;
+        }
     }
     public int getDefaulter() {
         return this.defaulter;
@@ -196,5 +294,3 @@ public class Participant  implements java.io.Serializable {
 
 
 }
-
-

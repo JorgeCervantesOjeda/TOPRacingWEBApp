@@ -163,12 +163,7 @@ public class Controller {
       return;
     }
 
-    long numUsuariosActivos = modelBean.incNumUsuariosActivos();
-    System.out.println(
-      "---- Ya hay " + numUsuariosActivos + " usuarios activos. ----" );
-
-    // sendMonitorMail( Messages.LOGIN, userNumber );
-    if( !currentParticipant.isConfirmed() ) {
+    if( !currentParticipant.isEmailConfirmed() ) {
       // we save the user to produce a confirmation key
       // and send a confirmation e-mail to the user
       // problems: currentParticipant = modelBean.save( currentParticipant );
@@ -179,8 +174,28 @@ public class Controller {
           "PLEASE FOLLOW THIS LINK TO CONFIRM YOUR E-MAIL ADDRESS THANK YOU" ),
         this.session );
 
+      theView.showUI( UI.ERROR_EMAIL_CONFIRMATION_REQUIRED,
+                      currentParticipant );
+      return;
     }
 
+    if( !currentParticipant.isPaypalUsable() ) {
+      theView.showUI( UI.ERROR_PAYPAL_REQUIRED,
+                      currentParticipant );
+      return;
+    }
+
+    currentParticipant.refreshOperationalConfirmation();
+    if( !currentParticipant.isConfirmed() ) {
+      theView.showUI( UI.ERROR_LOGIN );
+      return;
+    }
+
+    long numUsuariosActivos = modelBean.incNumUsuariosActivos();
+    System.out.println(
+      "---- Ya hay " + numUsuariosActivos + " usuarios activos. ----" );
+
+    // sendMonitorMail( Messages.LOGIN, userNumber );
     modelBean.sendEmail( currentParticipant,
                          "You have logged in to TOP Racing.",
                          this.session );
@@ -1734,7 +1749,11 @@ public class Controller {
   }
 
   public void ownerBalanceComplaint( Registration r ) {
-    modelBean.setParticipantAsDefaulter( r.getParticipantByIdOwner() );
+    modelBean.setParticipantAsLocalDefaulter(
+      r.getParticipantByIdOwner(),
+      r.getRegatta().getParticipant(),
+      currentParticipant,
+      "Owner balance default reported for registration " + r.getId() );
     modelBean.requestRecalculateRegattaPenalties(
       ( p )
       -> this.theView.setProgress( p )

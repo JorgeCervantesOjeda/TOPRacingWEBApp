@@ -1,0 +1,25 @@
+<!-- src/main/webapp/paypalsandboxmock.xhtml - Local PayPal sandbox mock approval page. -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                template="./TemplateBasic.xhtml"
+                xmlns:p="http://primefaces.org/ui">
+
+  <ui:define name="content">
+    <h2>PayPal sandbox local</h2>
+    <p>
+      Esta pantalla simula la autorización de PayPal sandbox para pruebas locales.
+    </p>
+    <p:button outcome="paypalreturn"
+              value="Aprobar PayPal sandbox"
+              styleClass="mybutton">
+      <f:param name="merchantId"
+               value="#{param.merchantId}" />
+      <f:param name="merchantIdInPayPal"
+               value="#{param.merchantIdInPayPal}" />
+      <f:param name="permissionsGranted"
+               value="true" />
+    </p:button>
+  </ui:define>
+
+</ui:composition>

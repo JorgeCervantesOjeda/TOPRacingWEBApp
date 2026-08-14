@@ -65,6 +65,12 @@ public interface ModelForView {
 
   public Participant getParticipantById( Participant _user );
 
+  public String createPaypalSignupLink( Participant participant );
+
+  public Participant confirmPaypalOnboardingReturn( String trackingId,
+                                                    String merchantIdInPayPal,
+                                                    boolean permissionsGranted );
+
   public boolean hasActiveGlobalExclusion( Participant participant );
 
   public boolean hasActiveLocalPromoterBlock( Participant participant,

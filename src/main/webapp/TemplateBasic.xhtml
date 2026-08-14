@@ -137,6 +137,16 @@
                            styleClass="mybutton"
                            >
           </p:commandButton>
+          <p:commandButton id="connectPaypalButton"
+                           value="#{viewBean.connectPaypalButtonLabel}"
+                           actionListener="#{viewBean.clickConnectPaypal()}"
+                           ajax="false"
+                           rendered="#{viewBean.renderPaypalConnectButton()}"
+                           class="myloginbutton"
+                           onclick="PF('dlgInfo').hide(); PF('dlgWait').show();"
+                           styleClass="mybutton"
+                           >
+          </p:commandButton>
         </p:dialog>
       </h:form>
     </div>

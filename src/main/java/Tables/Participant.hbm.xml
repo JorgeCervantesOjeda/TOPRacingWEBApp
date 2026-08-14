@@ -29,6 +29,27 @@
         <property name="emailKey" type="string">
             <column name="email_key" not-null="true" />
         </property>
+        <property name="emailConfirmed" type="boolean">
+            <column name="email_confirmed" not-null="true" />
+        </property>
+        <property name="paypalUsable" type="boolean">
+            <column name="paypal_usable" not-null="true" />
+        </property>
+        <property name="paypalPayerId" type="string">
+            <column name="paypal_payer_id" />
+        </property>
+        <property name="paypalMerchantId" type="string">
+            <column name="paypal_merchant_id" />
+        </property>
+        <property name="paypalStatus" type="string">
+            <column name="paypal_status" not-null="true" />
+        </property>
+        <property name="confirmedAt" type="timestamp">
+            <column name="confirmed_at" length="19" />
+        </property>
+        <property name="paypalVerifiedAt" type="timestamp">
+            <column name="paypal_verified_at" length="19" />
+        </property>
         <property name="confirmed" type="boolean">
             <column name="confirmed" not-null="true" />
         </property>

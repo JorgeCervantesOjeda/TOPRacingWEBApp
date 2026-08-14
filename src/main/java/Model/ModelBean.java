@@ -979,13 +979,17 @@ public class ModelBean
         );
     List<Participant> participants = q.list();
 
-    t.commit();
-    s.close();
-
     Participant p = null;
     Crypto crypto = new Crypto();
     if( participants.size() > 0 ) {
       p = participants.get( 0 );
+      ensureParticipantOperationalStatus( p );
+    }
+
+    t.commit();
+    s.close();
+
+    if( p != null ) {
       p.setPassword( crypto.decryptString( p.getPassword() ) );
     }
 
@@ -1012,17 +1016,105 @@ public class ModelBean
         );
     List<Participant> participants = q.list();
 
-    t.commit();
-    s.close();
-
     Participant p = null;
     Crypto crypto = new Crypto();
     if( participants.size() == 1 ) {
       p = participants.get( 0 );
+      ensureParticipantOperationalStatus( p );
+    }
+
+    t.commit();
+    s.close();
+
+    if( p != null ) {
       p.setPassword( crypto.decryptString( p.getPassword() ) );
     }
 
     return p;
+  }
+
+  @Override
+  public synchronized String createPaypalSignupLink( Participant participant ) {
+    if( participant == null
+        || participant.getId() == null ) {
+      throw new IllegalArgumentException(
+        "PayPal onboarding requires a persisted participant." );
+    }
+
+    Participant persisted = getParticipantById( participant );
+    if( persisted == null
+        || !persisted.isEmailConfirmed() ) {
+      throw new IllegalStateException(
+        "PayPal onboarding requires a participant with confirmed e-mail." );
+    }
+
+    String trackingId = paypalTrackingId( persisted );
+    String signupLink = PaypalOnboardingService.fromRuntime()
+      .createSignupLink( persisted,
+                         trackingId,
+                         paypalReturnUrl() );
+    updatePaypalStatus( persisted.getId(),
+                        Participant.PAYPAL_STATUS_ONBOARDING_STARTED,
+                        false,
+                        null );
+    return signupLink;
+  }
+
+  @Override
+  public synchronized Participant confirmPaypalOnboardingReturn(
+    String trackingId,
+    String merchantIdInPayPal,
+    boolean permissionsGranted ) {
+
+    SessionFactory sf = U_HibernateUtil.getSessionFactory();
+    Session s = sf.openSession();
+    Transaction t = s.beginTransaction();
+    Participant participant = getParticipantByPaypalTrackingId( s,
+                                                                trackingId );
+    if( participant == null ) {
+      t.commit();
+      s.close();
+      LOGGER.log( Level.WARNING,
+                  "PayPal onboarding return rejected because tracking id was invalid." );
+      return null;
+    }
+
+    if( !permissionsGranted
+        || merchantIdInPayPal == null
+        || merchantIdInPayPal.isBlank() ) {
+      participant.setPaypalMerchantId( merchantIdInPayPal );
+      participant.setPaypalUsable( false );
+      participant.setPaypalStatus( Participant.PAYPAL_STATUS_PERMISSION_DENIED );
+      participant.refreshOperationalConfirmation();
+      t.commit();
+      s.close();
+      return participant;
+    }
+
+    try {
+      PaypalMerchantStatus status = PaypalOnboardingService.fromRuntime()
+        .getMerchantStatus( merchantIdInPayPal );
+      participant.setPaypalMerchantId( merchantIdInPayPal );
+      participant.setPaypalUsable( status.isUsable() );
+      participant.setPaypalStatus( status.isUsable()
+                                   ? Participant.PAYPAL_STATUS_USABLE
+                                   : Participant.PAYPAL_STATUS_REMOTE_PENDING );
+      participant.refreshOperationalConfirmation();
+    } catch( RuntimeException e ) {
+      participant.setPaypalMerchantId( merchantIdInPayPal );
+      participant.setPaypalUsable( false );
+      participant.setPaypalStatus( Participant.PAYPAL_STATUS_VERIFICATION_FAILED );
+      participant.refreshOperationalConfirmation();
+      LOGGER.log( Level.WARNING,
+                  "PayPal onboarding status verification failed for participant={0}, merchant={1}, cause={2}",
+                  new Object[]{ participant.getId(),
+                                merchantIdInPayPal,
+                                e.getMessage() } );
+    }
+
+    t.commit();
+    s.close();
+    return participant;
   }
 
   @Override
@@ -3626,6 +3718,9 @@ public class ModelBean
     p.setVenue( this.getVenueById( 1L ) );
     p.setEmailKey( "" );
     p.setConfirmed( false );
+    p.setEmailConfirmed( false );
+    p.setPaypalUsable( false );
+    p.setPaypalStatus( Participant.PAYPAL_STATUS_UNVERIFIED );
     p.setDefaulter( 0 );
 
     p.setPassword( "password" );
@@ -3646,8 +3741,9 @@ public class ModelBean
       UUID.randomUUID()
         .toString() );
     if( resetConfirmed ) {
-      user.setConfirmed( false );
+      resetOperationalStatus( user );
     }
+    ensureParticipantOperationalStatus( user );
     try {
       s.saveOrUpdate( user );
     } catch( Exception e ) {
@@ -3660,6 +3756,87 @@ public class ModelBean
       user.setPassword( password ); // decoded for internal use
     }
     return user;
+  }
+
+  private void resetOperationalStatus( Participant user ) {
+    user.setEmailConfirmed( false );
+    user.setPaypalUsable( false );
+    user.setPaypalStatus( Participant.PAYPAL_STATUS_UNVERIFIED );
+    user.setPaypalVerifiedAt( null );
+    user.setConfirmedAt( null );
+    user.setConfirmed( false );
+  }
+
+  private void ensureParticipantOperationalStatus( Participant user ) {
+    if( user.getPaypalStatus() == null ) {
+      user.setPaypalStatus( Participant.PAYPAL_STATUS_UNVERIFIED );
+    }
+    user.refreshOperationalConfirmation();
+  }
+
+  private void updatePaypalStatus( Long participantId,
+                                   String paypalStatus,
+                                   boolean paypalUsable,
+                                   String paypalMerchantId ) {
+    SessionFactory sf = U_HibernateUtil.getSessionFactory();
+    Session s = sf.openSession();
+    Transaction t = s.beginTransaction();
+    Participant participant = (Participant) s.get( Participant.class,
+                                                   participantId );
+    if( participant != null ) {
+      participant.setPaypalMerchantId( paypalMerchantId );
+      participant.setPaypalUsable( paypalUsable );
+      participant.setPaypalStatus( paypalStatus );
+      participant.refreshOperationalConfirmation();
+    }
+    t.commit();
+    s.close();
+  }
+
+  private Participant getParticipantByPaypalTrackingId( Session session,
+                                                        String trackingId ) {
+    Long participantId = participantIdFromPaypalTrackingId( trackingId );
+    if( participantId == null ) {
+      return null;
+    }
+    Participant participant = (Participant) session.get( Participant.class,
+                                                         participantId );
+    if( participant == null
+        || !paypalTrackingId( participant ).equals( trackingId ) ) {
+      return null;
+    }
+    return participant;
+  }
+
+  private Long participantIdFromPaypalTrackingId( String trackingId ) {
+    String prefix = "topracing-participant-";
+    if( trackingId == null
+        || !trackingId.startsWith( prefix ) ) {
+      return null;
+    }
+    int idStart = prefix.length();
+    int idEnd = trackingId.indexOf( '-',
+                                    idStart );
+    if( idEnd <= idStart ) {
+      return null;
+    }
+    try {
+      return Long.valueOf( trackingId.substring( idStart,
+                                                 idEnd ) );
+    } catch( NumberFormatException e ) {
+      return null;
+    }
+  }
+
+  private String paypalTrackingId( Participant participant ) {
+    return "topracing-participant-"
+           + participant.getId()
+           + "-"
+           + participant.getEmailKey();
+  }
+
+  private String paypalReturnUrl() {
+    return getAppURL() + "faces/paypalreturn.xhtml";
   }
 
   private long getFirstId( Session session,
@@ -4449,6 +4626,17 @@ public class ModelBean
    *
    */
   public synchronized Participant getParticipantByEMailKey( String key ) {
+    return getParticipantByEmailKey( key,
+                                     false );
+  }
+
+  public synchronized Participant confirmParticipantEmailByKey( String key ) {
+    return getParticipantByEmailKey( key,
+                                     true );
+  }
+
+  private Participant getParticipantByEmailKey( String key,
+                                                boolean confirmEmail ) {
     if( null == key ) {
       return null;
     }
@@ -4461,11 +4649,14 @@ public class ModelBean
       new Date() + " !!! " + "---- getting participant by e-mail key: " + key );
 
     Query q = s.createQuery(
-          "from Tables.Participant as user where user.emailKey = " + key );
+          "from Tables.Participant as user where user.emailKey = :key" );
+    q.setString( "key",
+                 key );
     Participant user = (Participant) q.uniqueResult();
 
-    if( user != null ) {
-      user.setConfirmed( true );
+    if( user != null && confirmEmail ) {
+      user.setEmailConfirmed( true );
+      ensureParticipantOperationalStatus( user );
     }
 
     t.commit();

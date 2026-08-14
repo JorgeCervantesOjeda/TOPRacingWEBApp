@@ -3,6 +3,15 @@
 
 $env:TOPRACING_APP_URL = "http://localhost:8080/topracingwebapp/"
 
+# PayPal seller onboarding. Use sandbox values for local testing.
+$env:TOPRACING_PAYPAL_BASE_URL = "https://api-m.sandbox.paypal.com"
+$env:TOPRACING_PAYPAL_ALLOW_LIVE = "false"
+$env:TOPRACING_PAYPAL_SANDBOX_MOCK = "true"
+$env:TOPRACING_PAYPAL_CLIENT_ID = "replace-with-paypal-client-id"
+$env:TOPRACING_PAYPAL_CLIENT_SECRET = "replace-with-paypal-client-secret"
+$env:TOPRACING_PAYPAL_PARTNER_ID = "replace-with-paypal-merchant-account-id"
+$env:TOPRACING_PAYPAL_PRODUCT = "EXPRESS_CHECKOUT"
+
 # Recommended local sending mode:
 $env:MAIL_DELIVERY_MODE = "smtp"
 $env:MAIL_SENDER_EMAIL = "top.racing.org@gmail.com"

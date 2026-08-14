@@ -62,12 +62,61 @@ class ControllerTest {
   }
 
   @Test
-  void clickLoginSendsConfirmationForUnconfirmedUsers() {
+  void clickLoginSendsConfirmationForUsersWithoutConfirmedEmail() {
     Participant attempt = participant( 10L,
                                        false );
+    attempt.setEmailConfirmed( false );
+    attempt.setPaypalUsable( false );
     when( modelBean.getValidParticipant( attempt ) ).thenReturn( attempt );
     when( view.bundle( "PLEASE FOLLOW THIS LINK TO CONFIRM YOUR E-MAIL ADDRESS THANK YOU" ) )
       .thenReturn( "confirm-message" );
+
+    controller.clickLogin( attempt );
+
+    verify( modelBean ).sendConfirmationRequest( attempt,
+                                                 "confirm-message",
+                                                 42L );
+    verify( modelBean,
+            never() ).sendEmail( any(),
+                                 any(),
+                                 anyLong() );
+    verify( modelBean,
+            never() ).incNumUsuariosActivos();
+    verify( view ).showUI( UI.ERROR_EMAIL_CONFIRMATION_REQUIRED,
+                           attempt );
+  }
+
+  @Test
+  void clickLoginRequiresUsablePaypalAfterEmailConfirmation() {
+    Participant attempt = participant( 10L,
+                                       false );
+    attempt.setEmailConfirmed( true );
+    attempt.setPaypalUsable( false );
+    when( modelBean.getValidParticipant( attempt ) ).thenReturn( attempt );
+
+    controller.clickLogin( attempt );
+
+    verify( modelBean,
+            never() ).sendConfirmationRequest( any(),
+                                               any(),
+                                               anyLong() );
+    verify( modelBean,
+            never() ).sendEmail( any(),
+                                 any(),
+                                 anyLong() );
+    verify( modelBean,
+            never() ).incNumUsuariosActivos();
+    verify( view ).showUI( UI.ERROR_PAYPAL_REQUIRED,
+                           attempt );
+  }
+
+  @Test
+  void clickLoginCreatesSessionOnlyForOperationallyConfirmedUsers() {
+    Participant attempt = participant( 10L,
+                                       true );
+    attempt.setEmailConfirmed( true );
+    attempt.setPaypalUsable( true );
+    when( modelBean.getValidParticipant( attempt ) ).thenReturn( attempt );
     when( modelBean.incNumUsuariosActivos() ).thenReturn( 1L );
     FacesContext facesContext = mock( FacesContext.class );
     ExternalContext externalContext = mock( ExternalContext.class );
@@ -82,9 +131,6 @@ class ControllerTest {
       controller.clickLogin( attempt );
     }
 
-    verify( modelBean ).sendConfirmationRequest( attempt,
-                                                 "confirm-message",
-                                                 42L );
     verify( modelBean ).sendEmail( attempt,
                                    "You have logged in to TOP Racing.",
                                    42L );
@@ -211,6 +257,69 @@ class ControllerTest {
     verify( view ).showUI( UI.ERROR_REGATTA_NOT_OWNED );
     verify( modelBean,
             never() ).save( any( Regatta.class ) );
+  }
+
+  @Test
+  void clickAddRegistrationRejectsLocalPromoterBlock() throws Exception {
+    Participant current = participant( 5L,
+                                       true );
+    Participant promoter = participant( 7L,
+                                        true );
+    Regatta regatta = new Regatta();
+    regatta.setId( 99L );
+    regatta.setParticipant( promoter );
+    regatta.setStatus( RegattaStatus.REGISTRATIONS_OPEN );
+    setPrivateField( controller,
+                     "currentParticipant",
+                     current );
+
+    when( modelBean.getValidParticipant( current ) ).thenReturn( current );
+    when( modelBean.hasActiveLocalPromoterBlock( current,
+                                                 promoter ) ).thenReturn( true );
+
+    controller.clickAddRegistration( regatta );
+
+    verify( view ).showUI( UI.ERROR_LOCAL_PROMOTER_BLOCKED );
+    verify( modelBean,
+            never() ).createRegistration( regatta,
+                                          current );
+  }
+
+  @Test
+  void clickSaveRegattaResultsDoesNotPersistBidAmountWhenLocalPromoterBlocked()
+    throws Exception {
+    Participant current = participant( 5L,
+                                       true );
+    Participant promoter = participant( 7L,
+                                        true );
+    Regatta regatta = new Regatta();
+    regatta.setId( 99L );
+    regatta.setParticipant( promoter );
+    regatta.setStatus( RegattaStatus.AUCTION );
+    Registration registration = new Registration();
+    registration.setId( 55L );
+    registration.setRegatta( regatta );
+    registration.setStatus( RegistrationStatus.OK );
+    Bid bid = new Bid();
+    bid.setAmmount( 50.0 );
+    bid.setRegistration( registration );
+    setPrivateField( controller,
+                     "currentParticipant",
+                     current );
+
+    when( modelBean.getValidParticipant( current ) ).thenReturn( current );
+    when( modelBean.getRegistrationById( 55L ) ).thenReturn( registration );
+    when( modelBean.hasActiveLocalPromoterBlock( current,
+                                                 promoter ) ).thenReturn( true );
+
+    controller.clickSaveRegattaResults( List.of( bid ) );
+
+    ArgumentCaptor<List> captor = ArgumentCaptor.forClass( List.class );
+    verify( modelBean ).save( captor.capture() );
+    Bid sanitizedBid = (Bid) captor.getValue()
+      .get( 0 );
+    org.junit.jupiter.api.Assertions.assertEquals( 0.0,
+                                                  sanitizedBid.getAmmount() );
   }
 
   private static Participant participant( Long id,
