@@ -34,9 +34,11 @@ En la app Java/MySQL, `Participant.confirmed` representa confirmación operativa
 - `email_confirmed`: el correo fue confirmado mediante enlace con clave válida;
 - `paypal_usable`: existe una cuenta PayPal verificada que satisface la cuenta de pagos utilizable requerida por TOP Racing en la app Java/MySQL vigente.
 
-La app puede conservar campos de soporte de PayPal como `paypal_payer_id`, `paypal_merchant_id`, `paypal_status` y `paypal_verified_at` para rastro verificable y reconciliación. `confirmed_at` registra cuándo una cuenta queda operativamente confirmada.
+La aceptación vigente de reglas se conserva en campos separados y no sustituye a la confirmación operativa básica. Las operaciones protegidas requieren, además de `confirmed = true`, que el participante tenga registrada la aceptación de la versión vigente de reglas.
 
-Regla vigente para esta implementación: `confirmed = email_confirmed AND paypal_usable`. Una llave de recuperación o queja puede identificar al participante, pero no debe confirmar correo ni habilitar la cuenta.
+La app puede conservar campos de soporte de PayPal como `paypal_payer_id`, `paypal_merchant_id`, `paypal_status` y `paypal_verified_at` para rastro verificable y reconciliación. `terms_version_accepted` y `terms_accepted_at` registran la versión aceptada de reglas y la fecha/hora de aceptación. `confirmed_at` registra cuándo una cuenta queda operativamente confirmada.
+
+Regla vigente para esta implementación: `confirmed = email_confirmed AND paypal_usable`. Una llave de recuperación o queja puede identificar al participante, pero no debe confirmar correo ni habilitar la cuenta. La falta de aceptación vigente no desconfirma la cuenta, pero bloquea operaciones protegidas hasta que el participante consulte y acepte las reglas vigentes.
 
 ## Jerarquía Territorial
 

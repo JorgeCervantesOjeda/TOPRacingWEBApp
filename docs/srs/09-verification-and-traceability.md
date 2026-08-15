@@ -70,11 +70,12 @@ Estos criterios son objetivo hasta que los flujos estén implementados:
 
 Observación:
 
-- La versión actual del proyecto es `1.0.17`.
+- La versión actual del proyecto es `1.0.18`.
 - La configuración local principal apunta a MySQL `topracing26`.
 - La documentación operativa define `topracing26_test` para pruebas automáticas.
 - El filtro de autenticación permite Standings como página pública.
 - La base real fue limpiada de datos automáticos reconocibles y cargada con circuitos reales.
+- La aceptación versionada de reglas tiene base técnica mínima: consulta desde perfil, versión, fecha de vigencia, texto operativo, aceptación explícita y registro de participante, versión aceptada y fecha/hora.
 
 Inferencia:
 

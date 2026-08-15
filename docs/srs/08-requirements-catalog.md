@@ -16,7 +16,7 @@ Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes
 | IAM-008 | El sistema debe tratar `confirmed` como cuenta operativa derivada de correo confirmado y cuenta de pagos utilizable; en esta implementación `paypal_usable` satisface esa cuenta mediante PayPal Seller Onboarding. | Implementado |
 | IAM-009 | El sistema debe permitir iniciar PayPal Seller Onboarding y confirmar `paypal_usable` solo tras retorno validado y consulta de estado PayPal. | Parcial |
 | IAM-010 | El sistema debe conservar historial verificable de creación y resolución de exclusiones globales, morosidad local y bloqueos locales por promotor. | Implementado |
-| IAM-011 | La aceptación versionada de términos debe permitir consultar reglas vigentes, mostrar versión y fecha de vigencia, informar consecuencias económicas materiales y registrar participante, versión aceptada y fecha/hora. | Objetivo |
+| IAM-011 | La aceptación versionada de términos debe permitir consultar reglas vigentes, mostrar versión y fecha de vigencia, informar consecuencias económicas materiales y registrar participante, versión aceptada y fecha/hora. | Parcial: base técnica implementada; pendiente revisión legal por país |
 
 ## PUB: Publicación Y Reserva
 

@@ -4,7 +4,7 @@ Esta lista auxiliar contiene decisiones que siguen abiertas después de comparar
 
 ## Producto
 
-1. Definir la interfaz administrativa y la migración de datos para operar verificación reforzada, aceptación de términos, bloqueos locales por promotor, morosidad local y exclusión global conforme a SRS v2.7.
+1. Definir la interfaz administrativa y la migración de datos para operar verificación reforzada, bloqueos locales por promotor, morosidad local y exclusión global conforme a SRS v2.7. La aceptación versionada de reglas ya tiene base técnica mínima en la app Java/MySQL, pero conserva pendiente la revisión legal por país antes de operar pagos reales.
 2. Decidir si `Variant` debe aparecer como nivel territorial visible en todas las consultas o solo como nivel interno para eventos y sedes.
 3. Definir el nombre público preferido del participante en Standings: nombre legal, alias deportivo o ambos.
 4. Definir qué historial público mínimo debe mostrarse para eventos publicados.
