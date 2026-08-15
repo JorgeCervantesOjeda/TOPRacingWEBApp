@@ -15,6 +15,7 @@ public class UI {
   public static final int ERROR_LOGIN = 101;
   public static final int ERROR_EMAIL_CONFIRMATION_REQUIRED = 102;
   public static final int ERROR_PAYPAL_REQUIRED = 103;
+  public static final int ERROR_TERMS_ACCEPTANCE_REQUIRED = 104;
   public static final int EDIT_USER = 110;
   public static final int ERROR_EDIT_USER_PASSWORD = 111;
   public static final int ERROR_EDIT_USER_EXISTS = 112;

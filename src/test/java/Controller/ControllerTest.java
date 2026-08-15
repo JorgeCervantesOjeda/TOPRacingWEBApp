@@ -111,6 +111,38 @@ class ControllerTest {
   }
 
   @Test
+  void clickLoginOpensProfileWhenCurrentTermsArePending() {
+    Participant attempt = participant( 10L,
+                                       false );
+    attempt.setEmailConfirmed( true );
+    attempt.setPaypalUsable( true );
+    attempt.setTermsVersionAccepted( "SRS-2.6-legacy" );
+    attempt.setTermsAcceptedAt( new java.util.Date() );
+    when( modelBean.getValidParticipant( attempt ) ).thenReturn( attempt );
+    FacesContext facesContext = mock( FacesContext.class );
+    ExternalContext externalContext = mock( ExternalContext.class );
+    Map<String, Object> sessionMap = new HashMap<>();
+    when( facesContext.getExternalContext() ).thenReturn( externalContext );
+    when( externalContext.getSessionMap() ).thenReturn( sessionMap );
+
+    try( MockedStatic<FacesContext> facesContextMock = mockStatic( FacesContext.class ) ) {
+      facesContextMock.when( FacesContext::getCurrentInstance )
+        .thenReturn( facesContext );
+
+      controller.clickLogin( attempt );
+    }
+
+    verify( modelBean,
+            never() ).sendEmail( any(),
+                                 any(),
+                                 anyLong() );
+    verify( modelBean,
+            never() ).incNumUsuariosActivos();
+    verify( view ).showUI( UI.EDIT_USER,
+                           attempt );
+  }
+
+  @Test
   void clickLoginCreatesSessionOnlyForOperationallyConfirmedUsers() {
     Participant attempt = participant( 10L,
                                        true );
@@ -157,6 +189,25 @@ class ControllerTest {
     controller.clickNewParticipant();
 
     verify( view ).showUI( UI.ERROR_CREATE_REGISTRATION_DUPLICATE );
+  }
+
+  @Test
+  void clickNewRegattaRejectsParticipantWithoutCurrentTerms() throws Exception {
+    Participant current = participant( 12L,
+                                       false );
+    current.setEmailConfirmed( true );
+    current.setPaypalUsable( true );
+    setPrivateField( controller,
+                     "currentParticipant",
+                     current );
+    when( modelBean.getValidParticipant( current ) ).thenReturn( current );
+
+    controller.clickNewRegatta( UI.WELCOME );
+
+    verify( view ).showUI( UI.ERROR_TERMS_ACCEPTANCE_REQUIRED,
+                           current );
+    verify( modelBean,
+            never() ).createRegatta( current );
   }
 
   @Test

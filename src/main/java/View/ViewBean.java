@@ -372,6 +372,13 @@ public class ViewBean
             bundle(
               "ERROR PAYPAL REQUIRED LONG" ) );
           return;
+        case UI.ERROR_TERMS_ACCEPTANCE_REQUIRED:
+          showModal(
+            bundle(
+              "ERROR TERMS ACCEPTANCE REQUIRED" ),
+            bundle(
+              "ERROR TERMS ACCEPTANCE REQUIRED LONG" ) );
+          return;
 
         case UI.EDIT_USER:
           redirect( context,

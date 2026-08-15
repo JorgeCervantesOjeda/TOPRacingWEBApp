@@ -104,13 +104,20 @@ public class Controller {
   }
 
   private boolean isValidParticipant() {
-    if( null == modelBean.getValidParticipant( currentParticipant ) ) {
+    Participant validParticipant = modelBean.getValidParticipant( currentParticipant );
+    if( null == validParticipant ) {
       theView.showUI( UI.LOGIN );
       return false;
-    } else {
-      System.out.println(
-        " >>>> is Valid: " + currentParticipant.getEmail() + " <<<<" );
     }
+    currentParticipant = validParticipant;
+    currentParticipant.refreshOperationalConfirmation();
+    if( !currentParticipant.hasAcceptedCurrentTerms() ) {
+      theView.showUI( UI.ERROR_TERMS_ACCEPTANCE_REQUIRED,
+                      currentParticipant );
+      return false;
+    }
+    System.out.println(
+      " >>>> is Valid: " + currentParticipant.getEmail() + " <<<<" );
     return true;
   }
 
@@ -186,6 +193,13 @@ public class Controller {
     }
 
     currentParticipant.refreshOperationalConfirmation();
+    if( !currentParticipant.hasAcceptedCurrentTerms() ) {
+      updateAuthenticatedSession( currentParticipant );
+      theView.showUI( UI.EDIT_USER,
+                      currentParticipant );
+      return;
+    }
+
     if( !currentParticipant.isConfirmed() ) {
       theView.showUI( UI.ERROR_LOGIN );
       return;
