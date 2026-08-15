@@ -92,6 +92,28 @@
                            value="View Venues"
                            /></td></tr>
 
+      <tr><td align="right" class="field_label">Current rules:</td>
+        <td align="left">
+          <h:outputText class="field_output"
+                        value="Version #{editParticipantBean.currentTermsVersion}, effective #{editParticipantBean.currentTermsEffectiveDate}" />
+          <br/>
+          <p:commandButton id="viewCurrentRulesButton"
+                           type="button"
+                           styleClass="mybutton"
+                           onclick="PF('currentRulesDialog').show();"
+                           value="View current rules"
+                           />
+          <br/>
+          <p:selectBooleanCheckbox id="acceptCurrentTerms"
+                                   value="#{editParticipantBean.acceptCurrentTerms}" />
+          <p:outputLabel for="acceptCurrentTerms"
+                         value="I accept the current TOP Racing rules version shown above." />
+          <br/>
+          <h:outputText class="field_output"
+                        rendered="#{!editParticipantBean.currentTermsAccepted}"
+                        value="You must accept the current rules before using protected operations." />
+        </td></tr>
+
     </table>
     <br/>
     <p:commandButton id="saveParticipantButton"
@@ -103,6 +125,15 @@
                      value="Save data"
                      />
     <br/>
+    <p:dialog id="currentRulesDialog"
+              widgetVar="currentRulesDialog"
+              header="Current TOP Racing rules"
+              modal="true"
+              resizable="false"
+              width="640">
+      <h:outputText value="#{editParticipantBean.currentTermsText}"
+                    style="white-space: pre-line;" />
+    </p:dialog>
   </ui:define>
 
 </ui:composition>

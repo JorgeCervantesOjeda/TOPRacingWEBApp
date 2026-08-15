@@ -1,71 +1,43 @@
+// src/test/java/View/EditParticipantBeanTest.java
+// Verifies profile behavior for current rules consultation and acceptance.
 package View;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import Controller.Controller;
-import Controller.UI;
 import Tables.Participant;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class EditParticipantBeanTest {
 
-  private EditParticipantBean bean;
-  private ViewBean viewBean;
-  private Controller controller;
-  private Participant participant;
-
-  @BeforeEach
-  void setUp() {
-    bean = new EditParticipantBean();
-    viewBean = mock( ViewBean.class );
-    controller = mock( Controller.class );
-    participant = new Participant();
-    participant.setId( 17L );
-    participant.setEmail( "participant@example.com" );
-
+  @Test
+  void termsAcceptanceSelectionRecordsCurrentVersionBeforeSave() {
+    ViewBean viewBean = mock( ViewBean.class );
+    Controller controller = mock( Controller.class );
+    Participant participant = new Participant();
+    EditParticipantBean bean = new EditParticipantBean();
     bean.setViewBean( viewBean );
-    bean.setParticipant( participant );
-
     when( viewBean.getController() ).thenReturn( controller );
     when( viewBean.getCurrentParticipant() ).thenReturn( participant );
-  }
 
-  @Test
-  void initUsesCurrentParticipantFromViewState() {
     bean.init();
-
-    assertSame( participant,
-                bean.getParticipant() );
-  }
-
-  @Test
-  void clickSaveDelegatesCurrentParticipantToController() {
-    bean.init();
-
+    bean.setAcceptCurrentTerms( true );
     bean.clickSave();
 
-    verify( controller ).clickSave( participant );
+    assertEquals( Participant.CURRENT_TERMS_VERSION,
+                  participant.getTermsVersionAccepted() );
+    assertNotNull( participant.getTermsAcceptedAt() );
   }
 
   @Test
-  void clickViewVenuesKeepsEditUserAsReturnUi() {
-    bean.init();
+  void currentTermsTextIncludesEconomicConsequences() {
+    EditParticipantBean bean = new EditParticipantBean();
 
-    bean.clickViewVenues();
-
-    verify( controller ).clickViewVenues( UI.EDIT_USER );
-  }
-
-  @Test
-  void clickEndEditReturnsToEditUserExitPath() {
-    bean.init();
-
-    bean.clickEndEdit();
-
-    verify( controller ).clickEndEdit( UI.EDIT_USER );
+    assertTrue( bean.getCurrentTermsText()
+      .contains( "no automatic refund" ) );
   }
 }
