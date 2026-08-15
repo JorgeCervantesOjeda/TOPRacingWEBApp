@@ -520,6 +520,7 @@ class LocalAppCalculationInvariantsIT {
     participant.setEmail( unique + "@example.com" );
     participant.setPhone( "5555555555" );
     participant.setConfirmed( true );
+    participant.acceptCurrentTerms();
     participant.setDefaulter( 0 );
     return model.save( participant,
                        false );

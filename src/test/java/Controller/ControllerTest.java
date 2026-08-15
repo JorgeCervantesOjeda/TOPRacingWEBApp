@@ -616,6 +616,9 @@ class ControllerTest {
     Participant participant = new Participant();
     participant.setId( id );
     participant.setConfirmed( confirmed );
+    if( confirmed ) {
+      participant.acceptCurrentTerms();
+    }
     participant.setEmail( "user" + id + "@example.com" );
     participant.setPassword( "pw" );
     return participant;

@@ -28,6 +28,16 @@ class ParticipantTermsAcceptanceTest {
   }
 
   @Test
+  void legacyConfirmedSetterDoesNotAcceptCurrentTermsImplicitly() {
+    Participant participant = new Participant();
+
+    participant.setConfirmed( true );
+
+    assertTrue( participant.isConfirmed() );
+    assertFalse( participant.hasAcceptedCurrentTerms() );
+  }
+
+  @Test
   void staleAcceptedTermsDoNotSatisfyCurrentTerms() {
     Participant participant = new Participant();
     participant.setTermsVersionAccepted( "SRS-2.6-legacy" );

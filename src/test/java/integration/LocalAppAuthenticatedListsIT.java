@@ -219,6 +219,7 @@ class LocalAppAuthenticatedListsIT {
     participant.setEmail( unique + "@example.com" );
     participant.setPhone( "5555555555" );
     participant.setConfirmed( true );
+    participant.acceptCurrentTerms();
     participant.setDefaulter( 0 );
     return MODEL.save( participant,
                        false );

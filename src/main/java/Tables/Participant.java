@@ -236,9 +236,6 @@ public class Participant  implements java.io.Serializable {
         if( confirmed ) {
             this.emailConfirmed = true;
             this.setPaypalUsable( true );
-            if( !hasAcceptedCurrentTerms() ) {
-                acceptCurrentTerms();
-            }
             if( this.confirmedAt == null ) {
                 this.confirmedAt = new Date();
             }
