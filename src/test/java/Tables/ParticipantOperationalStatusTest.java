@@ -1,5 +1,5 @@
 // src/test/java/Tables/ParticipantOperationalStatusTest.java
-// Verifies account confirmation semantics for e-mail, PayPal, and rules readiness.
+// Verifies account confirmation semantics for e-mail and PayPal readiness.
 package Tables;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,15 +21,15 @@ class ParticipantOperationalStatusTest {
   }
 
   @Test
-  void emailConfirmationUsablePaypalAndCurrentTermsConfirmOperationalAccount() {
+  void emailConfirmationAndUsablePaypalConfirmOperationalAccount() {
     Participant participant = new Participant();
     participant.setEmailConfirmed( true );
     participant.setPaypalUsable( true );
-    participant.acceptCurrentTerms();
 
     participant.refreshOperationalConfirmation();
 
     assertTrue( participant.isConfirmed() );
+    assertFalse( participant.hasAcceptedCurrentTerms() );
   }
 
   @Test

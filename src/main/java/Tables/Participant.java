@@ -248,8 +248,7 @@ public class Participant  implements java.io.Serializable {
     }
     public void refreshOperationalConfirmation() {
         this.confirmed = this.emailConfirmed
-                         && this.paypalUsable
-                         && hasAcceptedCurrentTerms();
+                         && this.paypalUsable;
         if( this.confirmed && this.confirmedAt == null ) {
             this.confirmedAt = new Date();
         }

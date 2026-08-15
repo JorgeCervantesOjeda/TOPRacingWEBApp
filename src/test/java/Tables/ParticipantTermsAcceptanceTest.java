@@ -5,7 +5,6 @@ package Tables;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -13,21 +12,19 @@ import org.junit.jupiter.api.Test;
 class ParticipantTermsAcceptanceTest {
 
   @Test
-  void operationalConfirmationRequiresCurrentTermsAcceptance() {
+  void currentTermsAcceptanceIsSeparateFromOperationalConfirmation() {
     Participant participant = new Participant();
     participant.setEmailConfirmed( true );
     participant.setPaypalUsable( true );
 
     participant.refreshOperationalConfirmation();
 
-    assertFalse( participant.isConfirmed() );
-    assertNull( participant.getConfirmedAt() );
+    assertTrue( participant.isConfirmed() );
+    assertFalse( participant.hasAcceptedCurrentTerms() );
 
     participant.acceptCurrentTerms();
-    participant.refreshOperationalConfirmation();
 
-    assertTrue( participant.isConfirmed() );
-    assertNotNull( participant.getConfirmedAt() );
+    assertTrue( participant.hasAcceptedCurrentTerms() );
   }
 
   @Test
