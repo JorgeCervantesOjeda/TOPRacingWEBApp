@@ -260,7 +260,7 @@ class EditRegattaResultsBeanTest {
     assertTrue( bean.disableEditBid( registration ) );
 
     regatta.setStatus( (byte) RegattaStatus.SPEED_TEST );
-    assertFalse( bean.disableEditBid( registration ) );
+    assertTrue( bean.disableEditBid( registration ) );
 
     regatta.setStatus( (byte) RegattaStatus.AUCTION );
     assertFalse( bean.disableEditBid( registration ) );

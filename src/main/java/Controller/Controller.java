@@ -654,8 +654,7 @@ public class Controller {
   private boolean canCurrentParticipantEditBid( Registration registration ) {
     Regatta regatta = registration.getRegatta();
     return regatta != null
-           && regatta.getStatus() >= RegattaStatus.SPEED_TEST
-           && regatta.getStatus() <= RegattaStatus.AUCTION
+           && regatta.getStatus() == RegattaStatus.AUCTION
            && registration.getStatus() == RegistrationStatus.OK
            && !hasCurrentParticipantLocalPromoterBlock( regatta );
   }

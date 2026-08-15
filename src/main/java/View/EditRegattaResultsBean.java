@@ -211,8 +211,7 @@ public class EditRegattaResultsBean
   }
 
   public boolean disableEditBid( Registration r ) {
-    return r.getRegatta().getStatus() > RegattaStatus.AUCTION
-           || r.getRegatta().getStatus() < RegattaStatus.SPEED_TEST
+    return r.getRegatta().getStatus() != RegattaStatus.AUCTION
            || theModel.hasActiveLocalPromoterBlock(
              viewBean.getCurrentParticipant(),
              r.getRegatta().getParticipant() )
@@ -220,7 +219,7 @@ public class EditRegattaResultsBean
   }
 
   public String getEditBidStyle() {
-    return this.regatta.getStatus() > RegattaStatus.AUCTION
+    return this.regatta.getStatus() != RegattaStatus.AUCTION
            ? ""
            : "background-color: burlywood;";
   }

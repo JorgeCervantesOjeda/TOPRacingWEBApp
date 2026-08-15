@@ -403,6 +403,41 @@ class ControllerTest {
   }
 
   @Test
+  void clickSaveRegattaResultsDoesNotPersistBidAmountBeforeAuction()
+    throws Exception {
+    Participant current = participant( 5L,
+                                       true );
+    Participant promoter = participant( 7L,
+                                        true );
+    Regatta regatta = new Regatta();
+    regatta.setId( 99L );
+    regatta.setParticipant( promoter );
+    regatta.setStatus( RegattaStatus.SPEED_TEST );
+    Registration registration = new Registration();
+    registration.setId( 55L );
+    registration.setRegatta( regatta );
+    registration.setStatus( RegistrationStatus.OK );
+    Bid bid = new Bid();
+    bid.setAmmount( 50.0 );
+    bid.setRegistration( registration );
+    setPrivateField( controller,
+                     "currentParticipant",
+                     current );
+
+    when( modelBean.getValidParticipant( current ) ).thenReturn( current );
+    when( modelBean.getRegistrationById( 55L ) ).thenReturn( registration );
+
+    controller.clickSaveRegattaResults( List.of( bid ) );
+
+    ArgumentCaptor<List> captor = ArgumentCaptor.forClass( List.class );
+    verify( modelBean ).save( captor.capture() );
+    Bid sanitizedBid = (Bid) captor.getValue()
+      .get( 0 );
+    org.junit.jupiter.api.Assertions.assertEquals( 0.0,
+                                                  sanitizedBid.getAmmount() );
+  }
+
+  @Test
   void clickSaveRegattaResultsDoesNotPersistRaceValuesForDisqualifiedRegistration()
     throws Exception {
     Participant current = participant( 5L,
