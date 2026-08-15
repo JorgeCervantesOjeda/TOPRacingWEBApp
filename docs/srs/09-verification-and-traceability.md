@@ -51,6 +51,7 @@
 - La exclusión global activa bloquea login operativo.
 - La morosidad local y el bloqueo local se conservan por participante y promotor.
 - El bloqueo local impide operar solo en eventos del promotor aplicable.
+- La aceptación versionada de términos informa antes de participar las reglas económicas materiales, incluidas devoluciones y casos no reembolsables por descalificación o incumplimiento.
 - Cada creación o resolución de exclusión global, morosidad local o bloqueo local conserva historial verificable con actor, participante afectado, promotor cuando aplica, motivo, efecto y fecha.
 
 ### Subastas Y Economía
@@ -61,6 +62,7 @@ Estos criterios son objetivo hasta que los flujos estén implementados:
 - cada usuario mantiene una sola puja vigente por subasta;
 - una puja vigente solo puede reemplazarse por otra mayor;
 - el cierre produce resultado oficial con rastro verificable;
+- la cancelación reembolsable genera devolución aplicable y la descalificación por incumplimiento no genera devolución automática al participante descalificado;
 - pagos, retenciones, devoluciones y comisiones quedan reconciliados.
 
 ## Evidencia Actual

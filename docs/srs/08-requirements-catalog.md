@@ -16,6 +16,7 @@ Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes
 | IAM-008 | El sistema debe tratar `confirmed` como cuenta operativa derivada de correo confirmado y cuenta de pagos utilizable; en esta implementación `paypal_usable` satisface esa cuenta mediante PayPal Seller Onboarding. | Implementado |
 | IAM-009 | El sistema debe permitir iniciar PayPal Seller Onboarding y confirmar `paypal_usable` solo tras retorno validado y consulta de estado PayPal. | Parcial |
 | IAM-010 | El sistema debe conservar historial verificable de creación y resolución de exclusiones globales, morosidad local y bloqueos locales por promotor. | Implementado |
+| IAM-011 | La aceptación versionada de términos debe informar consecuencias económicas materiales, incluidas devoluciones y casos no reembolsables por descalificación o incumplimiento. | Objetivo |
 
 ## PUB: Publicación Y Reserva
 
@@ -105,7 +106,7 @@ Este catálogo auxiliar ubica requisitos funcionales y no funcionales relevantes
 | ECO-001 | El sistema debe modelar pozo económico oficial del evento. | Objetivo |
 | ECO-002 | El sistema debe gestionar aportaciones directas y contribuciones a participantes. | Objetivo |
 | ECO-003 | El sistema debe calcular premios de eficiencia y terminación. | Objetivo |
-| ECO-004 | El sistema debe gestionar pagos, retenciones, devoluciones y comisiones con rastro verificable. | Objetivo |
+| ECO-004 | El sistema debe gestionar pagos, retenciones, devoluciones, no devoluciones por descalificación o incumplimiento y comisiones con rastro verificable. | Objetivo |
 | ECO-005 | Las cantidades de terceros deben publicarse sin identidad cuando la regla lo exija. | Objetivo |
 | ECO-006 | PayPal Seller Onboarding es el proveedor vigente para activar cuenta de pagos utilizable; PayPal sigue como candidato preferente para autorizaciones, capturas, liberaciones, devoluciones y webhooks de subastas y economía real, sin quedar cerrado como proveedor único hasta decisión operativa. | Parcial |
 

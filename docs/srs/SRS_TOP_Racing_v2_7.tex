@@ -310,6 +310,7 @@ Las siguientes BR conservan las reglas de alto nivel de la SRS heredada. Las BR 
 \noindent\textbf{BR-BUS-002.} El comprador o adjudicatario de un vehículo está sujeto a la comisión de vehículo calculada sobre el precio oficial de subasta, incluso cuando el adjudicatario sea el dueño previo. El vendedor no soporta esa comisión en su condición de vendedor.\par
 \noindent\textbf{BR-BUS-003.} Las aportaciones directas de patrocinio están exentas de comisión para el patrocinador.\par
 \noindent\textbf{BR-BUS-004.} Las comisiones y cuotas se cobran dentro del flujo económico real en el que se produce el beneficio u operación gravada, y el usuario debe conocer previamente la regla y el parámetro aplicables.\par
+\noindent\textbf{BR-BUS-005.} Las reglas económicas aceptadas por el usuario deben distinguir entre cancelación reembolsable y descalificación por incumplimiento. Una descalificación por incumplimiento, fraude, conducta insegura, no entrega del vehículo, modificación indebida o violación de reglas no genera devolución automática a favor del participante descalificado; cualquier excepción requiere revisión documentada y decisión explícita conforme a las reglas del evento y a la ley aplicable.\par
 \subsubsection{Seguridad}
 \noindent\textbf{BR-SAF-001.} Las objeciones y protestas de seguridad se tramitan dentro de las ventanas y reglas del evento; sus resultados públicos y reservas de identidad se rigen por las reglas de publicación.\par
 \subsubsection{Comunidad}
@@ -845,9 +846,9 @@ Cada requisito canónico contiene una obligación, prioridad, procedencia y refe
 \item[Verificación] \texttt{AC-RF-PAY-006}
 \end{description}
 \vspace{0.25em}\hrule\vspace{0.65em}
-\noindent\textbf{RF-PAY-007 --- Devolución inmediata por cancelación o descalificación previa a carrera}\par
+\noindent\textbf{RF-PAY-007 --- Devolución inmediata por cancelación reembolsable previa a carrera}\par
 \begin{description}[style=nextline,leftmargin=3.15cm,labelwidth=2.8cm,font=\normalfont\bfseries]
-\item[Obligación] El sistema debe devolver inmediatamente las cantidades cobradas que correspondan cuando el evento se cancele o cuando una inscripción quede cancelada o descalificada antes de \texttt{carrera}, incluidas las aportaciones de terceros asociadas a esa inscripción dentro del evento.
+\item[Obligación] El sistema debe devolver inmediatamente las cantidades cobradas que correspondan cuando el evento se cancele o cuando una inscripción quede cancelada antes de \texttt{carrera} por causa no atribuible al participante. Una descalificación por incumplimiento del participante no genera devolución automática a favor del participante descalificado; el sistema debe conservar el efecto económico aplicable y remitir los casos ambiguos a revisión documentada.
 \item[Prioridad] Alta
 \item[Procedencia] Secciones 2.6.4 y decisiones prioritarias del cliente sobre devolución inmediata.; ID heredado: \texttt{RF-040A}.
 \item[Verificación] \texttt{AC-RF-PAY-007}
@@ -1429,7 +1430,7 @@ Cada requisito canónico contiene una obligación, prioridad, procedencia y refe
 \vspace{0.25em}\hrule\vspace{0.65em}
 \noindent\textbf{RF-IAM-003 --- Aceptación versionada de términos y condiciones previa a la participación}\par
 \begin{description}[style=nextline,leftmargin=3.15cm,labelwidth=2.8cm,font=\normalfont\bfseries]
-\item[Obligación] El sistema debe exigir, antes de habilitar cualquier función de participación operativa, que el usuario tenga registrada la aceptación de la versión vigente de los términos y condiciones aplicables.
+\item[Obligación] El sistema debe exigir, antes de habilitar cualquier función de participación operativa, que el usuario tenga registrada la aceptación de la versión vigente de los términos y condiciones aplicables. Dicha versión debe informar de forma visible las reglas económicas materiales de inscripción, puja, entrega de vehículo, cancelación, devolución, no devolución por descalificación o incumplimiento, bloqueos, morosidad y exclusión aplicables a la operación que el usuario pretenda ejecutar.
 \item[Prioridad] Alta
 \item[Procedencia] Secciones 2.2, 2.5, REX-007 y decisiones prioritarias del cliente sobre aceptación legal versionada.; ID heredado: \texttt{RF-071B}.
 \item[Verificación] \texttt{AC-RF-IAM-003}
@@ -1804,9 +1805,9 @@ Cada requisito canónico contiene una obligación, prioridad, procedencia y refe
 \item[Verificación] \texttt{AC-RF-VEH-014}
 \end{description}
 \vspace{0.25em}\hrule\vspace{0.65em}
-\noindent\textbf{RF-VEH-015 --- Devolución inmediata por cancelación o descalificación previa a carrera}\par
+\noindent\textbf{RF-VEH-015 --- Devolución inmediata por cancelación reembolsable previa a carrera}\par
 \begin{description}[style=nextline,leftmargin=3.15cm,labelwidth=2.8cm,font=\normalfont\bfseries]
-\item[Obligación] Si una inscripción queda cancelada o descalificada antes de \texttt{carrera}, el sistema debe devolver de inmediato los importes cobrados por inscripción, aportación mínima y renta de pista asociados a esa inscripción, así como las aportaciones de terceros cobradas a favor de ese participante dentro del evento.
+\item[Obligación] Si una inscripción queda cancelada antes de \texttt{carrera} por causa no atribuible al participante, el sistema debe devolver de inmediato los importes cobrados por inscripción, aportación mínima y renta de pista asociados a esa inscripción, así como las aportaciones de terceros cobradas a favor de ese participante dentro del evento. Si la inscripción queda descalificada por incumplimiento, fraude, conducta insegura, no entrega del vehículo, modificación indebida o violación de reglas, el sistema no debe ejecutar devolución automática a favor del participante descalificado y debe conservar el efecto económico correspondiente con la nota de la descalificación.
 \item[Prioridad] Alta
 \item[Procedencia] Fuentes prioritarias confirmadas por el usuario sobre devoluciones inmediatas.; ID heredado: \texttt{RF-090A}.
 \item[Verificación] \texttt{AC-RF-VEH-015}
@@ -2489,11 +2490,11 @@ Cada requisito canónico contiene una obligación, prioridad, procedencia y refe
 \item[Verificación] \texttt{AC-RF-SPN-008}
 \end{description}
 \vspace{0.25em}\hrule\vspace{0.65em}
-\noindent\textbf{RF-SPN-009 --- Devolución inmediata de aportaciones a participante por cancelación o descalificación previa a carrera}\par
+\noindent\textbf{RF-SPN-009 --- Devolución inmediata de aportaciones a participante por cancelación reembolsable previa a carrera}\par
 \begin{description}[style=nextline,leftmargin=3.15cm,labelwidth=2.8cm,font=\normalfont\bfseries]
-\item[Obligación] Si un participante del evento queda cancelado o descalificado antes de \texttt{carrera}, el sistema debe devolver inmediatamente las aportaciones de terceros cobradas a favor de ese participante tanto para eficiencia como para terminación dentro del evento.
+\item[Obligación] Si una inscripción de participante queda cancelada antes de \texttt{carrera} por causa no atribuible al participante, el sistema debe devolver inmediatamente las aportaciones de terceros cobradas a favor de ese participante tanto para eficiencia como para terminación dentro del evento. Si la inscripción queda descalificada por incumplimiento del participante, las aportaciones de terceros no se devuelven automáticamente al participante descalificado; el sistema debe aplicar la regla económica aceptada y remitir los casos ambiguos a revisión documentada.
 \item[Prioridad] Alta
-\item[Procedencia] Secciones 2.6.4 y decisiones prioritarias del cliente sobre devolución inmediata al cancelarse o descalificarse un participante antes de \texttt{carrera}.; ID heredado: \texttt{RF-129B}.
+\item[Procedencia] Secciones 2.6.4 y decisión confirmada por el usuario sobre devolución inmediata por cancelación reembolsable y ausencia de devolución automática por descalificación atribuible al participante.; ID heredado: \texttt{RF-129B}.
 \item[Verificación] \texttt{AC-RF-SPN-009}
 \end{description}
 \vspace{0.25em}\hrule\vspace{0.65em}
@@ -3372,7 +3373,7 @@ Los requisitos UI especifican comportamiento observable de interacción. No pres
 \vspace{0.25em}\hrule\vspace{0.65em}
 \noindent\textbf{RC-EXT-008 --- Aceptación de la versión vigente de términos y condiciones antes de la participación}\par
 \begin{description}[style=nextline,leftmargin=3.15cm,labelwidth=2.8cm,font=\normalfont\bfseries]
-\item[Obligación] El sistema debe exigir la aceptación registrada de la versión vigente de términos y condiciones antes de permitir cualquier participación operativa en el ecosistema TOP Racing.
+\item[Obligación] El sistema debe exigir la aceptación registrada de la versión vigente de términos y condiciones antes de permitir cualquier participación operativa en el ecosistema TOP Racing. Esa versión debe informar de forma visible las consecuencias económicas materiales de cada operación sensible, incluidas devoluciones, casos no reembolsables por descalificación o incumplimiento, entrega de vehículo, bloqueos, morosidad y exclusión.
 \item[Prioridad] Alta
 \item[Procedencia] Sección 2.5, RF-071B y decisiones prioritarias del cliente sobre aceptación versionada.; ID heredado: \texttt{REX-007}.
 \item[Verificación] \texttt{AC-RC-EXT-008}
@@ -3658,9 +3659,9 @@ Un criterio AC define el oráculo de aceptación. La automatización del caso de
 \noindent\textbf{AC-RF-PAY-006 --- Liquidación económica oficial del evento}\par
 \textbf{Método:} Prueba funcional de caja negra.\par
 \textbf{Oráculo:} Una vez consolidados el pozo económico oficial, los resultados del dominio y las devoluciones aplicables, el sistema genera una liquidación oficial del evento con premios individuales, distribución posterior y devoluciones correspondientes.\par\vspace{0.45em}
-\noindent\textbf{AC-RF-PAY-007 --- Devolución inmediata por cancelación o descalificación previa a carrera}\par
+\noindent\textbf{AC-RF-PAY-007 --- Devolución inmediata por cancelación reembolsable previa a carrera}\par
 \textbf{Método:} Prueba funcional de caja negra.\par
-\textbf{Oráculo:} Si el evento se cancela o una inscripción queda fuera antes de \texttt{carrera}, el sistema ejecuta de inmediato la devolución de los cobros aplicables, incluidas las aportaciones de terceros asociadas a ese participante dentro del evento.\par\vspace{0.45em}
+\textbf{Oráculo:} Si el evento se cancela o una inscripción queda cancelada antes de \texttt{carrera} por causa no atribuible al participante, el sistema ejecuta de inmediato la devolución de los cobros aplicables, incluidas las aportaciones de terceros asociadas a ese participante dentro del evento. Si la inscripción queda descalificada por incumplimiento del participante, el sistema no ejecuta devolución automática a favor del participante descalificado y conserva la nota y el efecto económico aplicable.\par\vspace{0.45em}
 \noindent\textbf{AC-RF-PAY-008 --- Pago automático e inmediato a todos los beneficiarios del evento}\par
 \textbf{Método:} Prueba funcional de caja negra.\par
 \textbf{Oráculo:} Cuando la liquidación económica oficial del evento queda determinada, el sistema ejecuta de inmediato el pago a cada beneficiario según la distribución posterior aplicable.\par\vspace{0.45em}
@@ -3876,7 +3877,7 @@ Un criterio AC define el oráculo de aceptación. La automatización del caso de
 \textbf{Oráculo:} Si un usuario no tiene identidad verificada, correo confirmado o cuenta de pagos utilizable cuando esas condiciones apliquen a la implementación vigente, el sistema no le habilita operaciones de inscripción, puja, aportación, promoción, protesta ni otras funciones de participación operativa.\par\vspace{0.45em}
 \noindent\textbf{AC-RF-IAM-003 --- Aceptación versionada de términos y condiciones previa a la participación}\par
 \textbf{Método:} Prueba funcional de caja negra.\par
-\textbf{Oráculo:} Si un usuario no tiene registrada la aceptación de la versión vigente de los términos y condiciones, el sistema no le habilita funciones de inscripción, puja, aportación, promoción, protesta ni otras funciones de participación operativa.\par\vspace{0.45em}
+\textbf{Oráculo:} Si un usuario no tiene registrada la aceptación de la versión vigente de los términos y condiciones, el sistema no le habilita funciones de inscripción, puja, aportación, promoción, protesta ni otras funciones de participación operativa. La versión aceptada incluye las reglas económicas materiales de devolución, no devolución por descalificación o incumplimiento, entrega de vehículo, bloqueos, morosidad y exclusión aplicables a las operaciones sensibles.\par\vspace{0.45em}
 \noindent\textbf{AC-RF-IAM-004 --- Acceso a funciones según papeles funcionales y nivel visible de acceso del usuario}\par
 \textbf{Método:} Prueba funcional de caja negra.\par
 \textbf{Oráculo:} Para un usuario dado, el sistema habilita el acceso a las funciones asociadas a sus papeles funcionales y a su nivel visible de acceso disponible, y no presenta como disponibles funciones que requieran un papel o un nivel no cumplido; además, el nivel \texttt{extendido} conserva las capacidades de \texttt{habilitado}, y \texttt{habilitado} conserva las capacidades de \texttt{base}.\par\vspace{0.45em}
@@ -3970,9 +3971,9 @@ Un criterio AC define el oráculo de aceptación. La automatización del caso de
 \noindent\textbf{AC-RF-VEH-014 --- Efectos de la cancelación o descalificación de la inscripción}\par
 \textbf{Método:} Prueba funcional de caja negra.\par
 \textbf{Oráculo:} Si una inscripción queda cancelada o descalificada, el sistema conserva su registro visible con la nota correspondiente; además, esa inscripción no aporta resultados, no participa en clasificaciones, no influye en cálculos económicos y su vehículo no aparece en la subasta del evento.\par\vspace{0.45em}
-\noindent\textbf{AC-RF-VEH-015 --- Devolución inmediata por cancelación o descalificación previa a carrera}\par
+\noindent\textbf{AC-RF-VEH-015 --- Devolución inmediata por cancelación reembolsable previa a carrera}\par
 \textbf{Método:} Prueba funcional de caja negra.\par
-\textbf{Oráculo:} Cuando una inscripción queda cancelada o descalificada antes de \texttt{carrera}, el sistema ejecuta de inmediato la devolución de todos los importes cobrados asociados a esa inscripción y de las aportaciones de terceros cobradas a favor de ese participante en el evento.\par\vspace{0.45em}
+\textbf{Oráculo:} Cuando una inscripción queda cancelada antes de \texttt{carrera} por causa no atribuible al participante, el sistema ejecuta de inmediato la devolución de todos los importes cobrados asociados a esa inscripción y de las aportaciones de terceros cobradas a favor de ese participante en el evento. Cuando la inscripción queda descalificada por incumplimiento, el sistema no ejecuta devolución automática a favor del participante descalificado y conserva la nota y el efecto económico correspondiente.\par\vspace{0.45em}
 \noindent\textbf{AC-RF-VEH-016 --- Descalificación y morosidad del dueño por no entrega o modificación del vehículo}\par
 \textbf{Método:} Prueba funcional de caja negra.\par
 \textbf{Oráculo:} Si, antes de iniciar la subasta, el promotor registra la no entrega, modificación o daño deliberado previo a custodia, el sistema permite descalificar al competidor, declararlo moroso y excluirlo de los eventos del propio promotor, y permite al promotor solicitar a admin una exclusión global; una vez iniciada la subasta, esa descalificación no puede alterar la subasta.\par\vspace{0.45em}
@@ -4213,9 +4214,9 @@ Un criterio AC define el oráculo de aceptación. La automatización del caso de
 \noindent\textbf{AC-RF-SPN-008 --- Devolución inmediata de aportaciones del evento por cancelación del evento}\par
 \textbf{Método:} Prueba funcional de caja negra.\par
 \textbf{Oráculo:} Cuando el evento pasa a \texttt{cancelado}, el sistema devuelve de inmediato las aportaciones directas a la bolsa y las aportaciones de eficiencia y de terminación cobradas dentro de ese evento.\par\vspace{0.45em}
-\noindent\textbf{AC-RF-SPN-009 --- Devolución inmediata de aportaciones a participante por cancelación o descalificación previa a carrera}\par
+\noindent\textbf{AC-RF-SPN-009 --- Devolución inmediata de aportaciones a participante por cancelación reembolsable previa a carrera}\par
 \textbf{Método:} Prueba funcional de caja negra.\par
-\textbf{Oráculo:} Cuando un participante queda fuera antes de \texttt{carrera}, el sistema devuelve de inmediato las aportaciones de terceros cobradas a su favor dentro del evento para eficiencia y para terminación.\par\vspace{0.45em}
+\textbf{Oráculo:} Cuando una inscripción de participante queda cancelada antes de \texttt{carrera} por causa no atribuible al participante, el sistema devuelve de inmediato las aportaciones de terceros cobradas a su favor dentro del evento para eficiencia y para terminación. Cuando la inscripción queda descalificada por incumplimiento del participante, el sistema no devuelve automáticamente dichas aportaciones al participante descalificado y conserva el efecto económico aplicable.\par\vspace{0.45em}
 \noindent\textbf{AC-RF-PTS-001 --- Base de puntos de velocidad}\par
 \textbf{Método:} Prueba funcional con conjunto de datos de referencia y análisis de derivación.\par
 \textbf{Oráculo:} Con un orden oficial conocido, comprobar la asignación posición--base de puntos.\par\vspace{0.45em}
@@ -4629,7 +4630,7 @@ Un criterio AC define el oráculo de aceptación. La automatización del caso de
 \textbf{Oráculo:} Un usuario que no tenga verificación reforzada activa no puede inscribir vehículos, pujar en subastas de vehículos ni promover eventos, aunque tenga identidad verificada, no tenga exclusión global activa y haya aceptado la versión vigente de términos y condiciones.\par\vspace{0.45em}
 \noindent\textbf{AC-RC-EXT-008 --- Aceptación de la versión vigente de términos y condiciones antes de la participación}\par
 \textbf{Método:} Prueba negativa/positiva de restricción externa.\par
-\textbf{Oráculo:} Un usuario puede consultar la información pública disponible, pero no puede inscribirse, pujar, aportar, promover, presentar protestas ni ejecutar otras operaciones de participación dentro del sistema si no tiene aceptación registrada de la versión vigente de términos y condiciones.\par\vspace{0.45em}
+\textbf{Oráculo:} Un usuario puede consultar la información pública disponible, pero no puede inscribirse, pujar, aportar, promover, presentar protestas ni ejecutar otras operaciones de participación dentro del sistema si no tiene aceptación registrada de la versión vigente de términos y condiciones. Esa versión contiene las consecuencias económicas materiales de cada operación sensible, incluidas devoluciones, casos no reembolsables por descalificación o incumplimiento, bloqueos, morosidad y exclusión.\par\vspace{0.45em}
 \noindent\textbf{AC-RC-EXT-009 --- Sujeción del vehículo subastado a transferencia obligatoria y prohibición de retiro no autorizado}\par
 \textbf{Método:} Prueba negativa/positiva de restricción externa.\par
 \textbf{Oráculo:} En un evento con subasta de vehículos, las reglas visibles del dominio establecen que el vehículo subastado no puede retirarse del control del evento contra el resultado oficial vigente de la subasta y que el retiro no autorizado se conserva como incumplimiento grave.\par\vspace{0.45em}
@@ -5223,7 +5224,7 @@ La tabla sustituye las listas masivas de trazabilidad inversa del documento here
 \texttt{RF-SPN-006} & \texttt{RF-129} & Secciones 2.6.2, 2.6.4.2, RF-126, RF-127, RF-127A y RF-128.\\
 \texttt{RF-SPN-007} & \texttt{RF-129} & Secciones 2.6.2, 2.6.4.2, RF-126, RF-127, RF-127A y RF-128.\\
 \texttt{RF-SPN-008} & \texttt{RF-129A} & Secciones 2.6.4 y decisiones prioritarias del cliente sobre devolución inmediata en cancelación del evento.\\
-\texttt{RF-SPN-009} & \texttt{RF-129B} & Secciones 2.6.4 y decisiones prioritarias del cliente sobre devolución inmediata al cancelarse o descalificarse un participante antes de \texttt{carrera}.\\
+\texttt{RF-SPN-009} & \texttt{RF-129B} & Secciones 2.6.4 y decisión confirmada por el usuario sobre devolución inmediata por cancelación reembolsable y ausencia de devolución automática por descalificación atribuible al participante.\\
 \texttt{RF-PTS-001} & \texttt{RF-130} & Secciones 2.6.3.1, 3.1.7, 3.1.16, fuente documental TOP\_Racing\_Grok\_Clarified.tex (líneas 167 a 171) y decisiones prioritarias del cliente sobre desempate.\\
 \texttt{RF-PTS-002} & \texttt{RF-130} & Secciones 2.6.3.1, 3.1.7, 3.1.16, fuente documental TOP\_Racing\_Grok\_Clarified.tex (líneas 167 a 171) y decisiones prioritarias del cliente sobre desempate.\\
 \texttt{RF-PTS-003} & \texttt{RF-131} & Secciones 2.6.3.1, 3.1.7, 3.1.16, fuente documental TOP\_Racing\_Grok\_Clarified.tex (líneas 167 a 171) y decisiones prioritarias del cliente sobre desempate.\\
@@ -5762,7 +5763,7 @@ Mientras exista alguna inscripción no cancelada asociada a un usuario cuya iden
 \noindent\textbf{DEC-086 --- El promotor solo puede consultar los booleanos de usuarios vinculados a su evento y solo durante ese evento}\par
 El promotor puede consultar los estados de identidad verificada y exclusión únicamente respecto de usuarios vinculados operativamente a un evento que él promueve, y solo mientras ese evento permanezca dentro de su ciclo de vida.\par\vspace{0.45em}
 \noindent\textbf{DEC-087 --- La aceptación legal de términos y condiciones es obligatoria antes de participar}\par
-El sistema debe obtener, conservar y versionar la aceptación de términos y condiciones por parte de cada usuario antes de habilitarle cualquier participación operativa en el ecosistema, y debe exigir la aceptación de la versión vigente cuando esos términos cambien.\par\vspace{0.45em}
+El sistema debe obtener, conservar y versionar la aceptación de términos y condiciones por parte de cada usuario antes de habilitarle cualquier participación operativa en el ecosistema, y debe exigir la aceptación de la versión vigente cuando esos términos cambien. Las condiciones aceptadas deben informar de forma visible las consecuencias económicas materiales, incluidas devoluciones, casos no reembolsables por descalificación o incumplimiento, bloqueos, morosidad y exclusión aplicables.\par\vspace{0.45em}
 \noindent\textbf{DEC-088 --- El vehículo subastado queda sujeto a transferencia obligatoria según el resultado oficial}\par
 Cuando un vehículo participe en un evento y quede sometido a la subasta de vehículos correspondiente, su dueño acepta que la transferencia del vehículo queda determinada por el resultado oficial vigente de esa subasta.\par\vspace{0.45em}
 \noindent\textbf{DEC-089 --- El dueño no puede retirar del control del evento un vehículo subastado antes de resolver su adjudicación oficial}\par
@@ -5777,8 +5778,8 @@ En cada subasta de acceso de espectadores, cada usuario solo puede mantener una 
 Mientras la subasta de acceso permanezca abierta, el usuario puede aumentar el monto de su puja vigente, pero no puede reducirlo; cada aumento reemplaza la puja vigente anterior.\par\vspace{0.45em}
 \noindent\textbf{DEC-094 --- Las aportaciones y patrocinios se cobran de inmediato}\par
 Toda aportación a participante y todo patrocinio directo a bolsa de evento o campeonato deben cobrarse de inmediato al quedar registrados válidamente.\par\vspace{0.45em}
-\noindent\textbf{DEC-095 --- Las devoluciones por cancelación se ejecutan de inmediato}\par
-Si un evento se cancela o si una inscripción se cancela o descalifica antes de \texttt{carrera}, el sistema debe devolver de inmediato los importes cobrados que correspondan.\par\vspace{0.45em}
+\noindent\textbf{DEC-095 --- Las devoluciones por cancelación reembolsable se ejecutan de inmediato}\par
+Si un evento se cancela o si una inscripción se cancela antes de \texttt{carrera} por causa no atribuible al participante, el sistema debe devolver de inmediato los importes cobrados que correspondan. La descalificación por incumplimiento, fraude, conducta insegura, no entrega del vehículo, modificación indebida o violación de reglas no genera devolución automática a favor del participante descalificado; cualquier excepción requiere revisión documentada y decisión explícita conforme a las reglas aceptadas y a la ley aplicable.\par\vspace{0.45em}
 \noindent\textbf{DEC-096 --- El sistema paga de inmediato premios y distribuciones posteriores a todos los beneficiarios}\par
 Cuando el sistema determine una distribución económica posterior válida, debe pagar de inmediato a todos los beneficiarios la parte que les corresponda.\par\vspace{0.45em}
 \noindent\textbf{DEC-097 --- El promotor resuelve la entrega física al ganador y \texttt{admin} resuelve la disputa de entrega}\par

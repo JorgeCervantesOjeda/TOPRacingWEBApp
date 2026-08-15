@@ -24,6 +24,7 @@ Esta lista auxiliar contiene decisiones que siguen abiertas después de comparar
 3. Definir comisiones aplicables por participante, postor, comprador, patrocinador y aportante.
 4. Definir ventanas y evidencias para disputas de entrega.
 5. Definir política de reautorización o bloqueo cuando una autorización de pago expire antes del cierre de subasta.
+6. Validar la redacción legal final de términos aceptados por el usuario para devoluciones, casos no reembolsables por descalificación o incumplimiento, bloqueos, morosidad y exclusión antes de operar pagos reales.
 
 ## Comunidad
 
