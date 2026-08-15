@@ -51,7 +51,8 @@
 - La exclusión global activa bloquea login operativo.
 - La morosidad local y el bloqueo local se conservan por participante y promotor.
 - El bloqueo local impide operar solo en eventos del promotor aplicable.
-- La aceptación versionada de términos informa antes de participar las reglas económicas materiales, incluidas devoluciones y casos no reembolsables por descalificación o incumplimiento.
+- La aceptación versionada de términos permite consultar las reglas vigentes antes de aceptar y desde el perfil, muestra versión y fecha de vigencia, informa las reglas económicas materiales e incluye devoluciones y casos no reembolsables por descalificación o incumplimiento.
+- El registro de aceptación conserva participante, versión aceptada y fecha/hora; una nueva versión exige nueva aceptación antes de operaciones protegidas.
 - Cada creación o resolución de exclusión global, morosidad local o bloqueo local conserva historial verificable con actor, participante afectado, promotor cuando aplica, motivo, efecto y fecha.
 
 ### Subastas Y Economía
