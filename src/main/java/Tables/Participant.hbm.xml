@@ -50,6 +50,12 @@
         <property name="paypalVerifiedAt" type="timestamp">
             <column name="paypal_verified_at" length="19" />
         </property>
+        <property name="termsVersionAccepted" type="string">
+            <column name="terms_version_accepted" />
+        </property>
+        <property name="termsAcceptedAt" type="timestamp">
+            <column name="terms_accepted_at" length="19" />
+        </property>
         <property name="confirmed" type="boolean">
             <column name="confirmed" not-null="true" />
         </property>

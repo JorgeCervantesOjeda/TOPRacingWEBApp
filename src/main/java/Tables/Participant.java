@@ -19,6 +19,8 @@ public class Participant  implements java.io.Serializable {
      public static final String PAYPAL_STATUS_PERMISSION_DENIED = "PERMISSION_DENIED";
      public static final String PAYPAL_STATUS_REMOTE_PENDING = "REMOTE_PENDING";
      public static final String PAYPAL_STATUS_VERIFICATION_FAILED = "VERIFICATION_FAILED";
+     public static final String CURRENT_TERMS_VERSION = "SRS-2.7-2026-08-14";
+     public static final String CURRENT_TERMS_EFFECTIVE_DATE = "2026-08-14";
 
      private Long id;
      private Venue venue;
@@ -35,6 +37,8 @@ public class Participant  implements java.io.Serializable {
      private String paypalStatus;
      private Date confirmedAt;
      private Date paypalVerifiedAt;
+     private String termsVersionAccepted;
+     private Date termsAcceptedAt;
      private boolean confirmed;
      private int defaulter;
      private Set<Pointscount> pointscounts = new HashSet<Pointscount>(0);
@@ -201,6 +205,28 @@ public class Participant  implements java.io.Serializable {
     public void setPaypalVerifiedAt(Date paypalVerifiedAt) {
         this.paypalVerifiedAt = paypalVerifiedAt;
     }
+    public String getTermsVersionAccepted() {
+        return this.termsVersionAccepted;
+    }
+
+    public void setTermsVersionAccepted(String termsVersionAccepted) {
+        this.termsVersionAccepted = termsVersionAccepted;
+    }
+    public Date getTermsAcceptedAt() {
+        return this.termsAcceptedAt;
+    }
+
+    public void setTermsAcceptedAt(Date termsAcceptedAt) {
+        this.termsAcceptedAt = termsAcceptedAt;
+    }
+    public void acceptCurrentTerms() {
+        this.termsVersionAccepted = CURRENT_TERMS_VERSION;
+        this.termsAcceptedAt = new Date();
+    }
+    public boolean hasAcceptedCurrentTerms() {
+        return CURRENT_TERMS_VERSION.equals( this.termsVersionAccepted )
+               && this.termsAcceptedAt != null;
+    }
     public boolean isConfirmed() {
         return this.confirmed;
     }
@@ -210,6 +236,9 @@ public class Participant  implements java.io.Serializable {
         if( confirmed ) {
             this.emailConfirmed = true;
             this.setPaypalUsable( true );
+            if( !hasAcceptedCurrentTerms() ) {
+                acceptCurrentTerms();
+            }
             if( this.confirmedAt == null ) {
                 this.confirmedAt = new Date();
             }
@@ -218,7 +247,9 @@ public class Participant  implements java.io.Serializable {
         this.confirmedAt = null;
     }
     public void refreshOperationalConfirmation() {
-        this.confirmed = this.emailConfirmed && this.paypalUsable;
+        this.confirmed = this.emailConfirmed
+                         && this.paypalUsable
+                         && hasAcceptedCurrentTerms();
         if( this.confirmed && this.confirmedAt == null ) {
             this.confirmedAt = new Date();
         }
