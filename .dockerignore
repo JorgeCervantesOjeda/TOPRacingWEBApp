@@ -1,0 +1,10 @@
+.git
+.idea
+*.iml
+node_modules
+playwright-report
+target
+test-results
+tmp
+scripts/local-env.ps1
+data/venue-geocode-cache.json

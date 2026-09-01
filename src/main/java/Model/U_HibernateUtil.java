@@ -8,7 +8,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Properties;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;
@@ -46,26 +45,16 @@ public class U_HibernateUtil {
 
   private static final SessionFactory sessionFactory;
   private static ServiceRegistry serviceRegistry;
-  private static final String DEFAULT_DB_URL =
-    "jdbc:mysql://localhost:3306/topracing26?zeroDateTimeBehavior=convertToNull"
-      + "&useSSL=false&allowPublicKeyRetrieval=true"
-      + "&serverTimezone=America/Mexico_City";
-  private static final String DEFAULT_DB_CATALOG = "topracing26";
-  private static final String DEFAULT_DB_USERNAME = "admin";
-  private static final String DEFAULT_DB_PASSWORD = "admin";
-
   static {
     try {
       // Create the SessionFactory from standard (hibernate.cfg.xml) config file.
       Configuration configuration = new Configuration().configure();
-      applyEnvironmentOverrides( configuration );
+      HibernateDatabaseConfiguration.applyRuntimeOverrides( configuration,
+                                                            LOG );
 
-      // Set session to non-strict SQL mode so long strings are truncated
-      Properties props = configuration.getProperties();
-      String url = normalizeJdbcUrl( props.getProperty( "hibernate.connection.url" ) );
-      configuration.setProperty( "hibernate.connection.url",
-                                 url );
-      String catalog = resolveCatalog( url );
+      String url = configuration.getProperties()
+        .getProperty( "hibernate.connection.url" );
+      String catalog = HibernateDatabaseConfiguration.resolveCatalog( url );
 
       StandardServiceRegistryBuilder registryBuilder =
         new StandardServiceRegistryBuilder()
@@ -101,57 +90,12 @@ public class U_HibernateUtil {
     }
   }
 
-  private static void applyEnvironmentOverrides( Configuration configuration ) {
-    overrideSetting( configuration,
-                     "hibernate.connection.url",
-                     "TOPRACING_DB_URL",
-                     DEFAULT_DB_URL );
-    overrideSetting( configuration,
-                     "hibernate.connection.username",
-                     "TOPRACING_DB_USERNAME",
-                     DEFAULT_DB_USERNAME );
-    overrideSetting( configuration,
-                     "hibernate.connection.password",
-                     "TOPRACING_DB_PASSWORD",
-                     DEFAULT_DB_PASSWORD );
-  }
-
-  private static String resolveCatalog( String url ) {
-    String configured = System.getProperty( "topracing.db.catalog" );
-    if( configured == null || configured.isBlank() ) {
-      configured = System.getenv( "TOPRACING_DB_CATALOG" );
-    }
-    if( configured != null && !configured.isBlank() ) {
-      assertSafeCatalogName( configured );
-      return configured;
-    }
-
-    String normalized = normalizeJdbcUrl( url );
-    int questionMark = normalized.indexOf( '?' );
-    String connectionPath = questionMark < 0
-                            ? normalized
-                            : normalized.substring( 0,
-                                                    questionMark );
-    int slash = connectionPath.lastIndexOf( '/' );
-    if( slash < 0 || slash + 1 >= connectionPath.length() ) {
-      return DEFAULT_DB_CATALOG;
-    }
-
-    String catalog = connectionPath.substring( slash + 1 )
-      .trim();
-    if( catalog.isBlank() ) {
-      return DEFAULT_DB_CATALOG;
-    }
-    assertSafeCatalogName( catalog );
-    return catalog;
-  }
-
   private static void addMappingResource( MetadataSources metadataSources,
                                           String mapping,
                                           String catalog ) {
     if( catalog == null
         || catalog.isBlank()
-        || DEFAULT_DB_CATALOG.equals( catalog ) ) {
+        || HibernateDatabaseConfiguration.isDefaultCatalog( catalog ) ) {
       metadataSources.addResource( mapping );
       return;
     }
@@ -198,54 +142,6 @@ public class U_HibernateUtil {
                                     + mapping,
                                     e );
     }
-  }
-
-  private static void assertSafeCatalogName( String catalog ) {
-    if( !catalog.matches( "[A-Za-z0-9_]+" ) ) {
-      throw new HibernateException( "Unsafe database catalog name: " + catalog );
-    }
-  }
-
-  private static void overrideSetting( Configuration configuration,
-                                       String propertyName,
-                                       String envName,
-                                       String fallbackValue ) {
-    String value = System.getProperty( propertyName );
-    if( value == null || value.isBlank() ) {
-      value = System.getenv( envName );
-    }
-    if( value == null || value.isBlank() ) {
-      value = fallbackValue;
-    }
-    configuration.setProperty( propertyName,
-                               value );
-  }
-
-  private static String normalizeJdbcUrl( String url ) {
-    String normalized = ( url == null || url.isBlank()
-                          ? DEFAULT_DB_URL
-                          : url );
-    if( !normalized.contains( "useSSL=" ) ) {
-      normalized += normalized.contains( "?" )
-                    ? "&useSSL=false"
-                    : "?useSSL=false";
-    }
-    if( !normalized.contains( "allowPublicKeyRetrieval=" ) ) {
-      normalized += normalized.contains( "?" )
-                    ? "&allowPublicKeyRetrieval=true"
-                    : "?allowPublicKeyRetrieval=true";
-    }
-    if( !normalized.contains( "serverTimezone=" ) ) {
-      normalized += normalized.contains( "?" )
-                    ? "&serverTimezone=America/Mexico_City"
-                    : "?serverTimezone=America/Mexico_City";
-    }
-    if( !normalized.contains( "sessionVariables=" ) ) {
-      normalized += normalized.contains( "?" )
-                    ? "&sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'"
-                    : "?sessionVariables=sql_mode='NO_ENGINE_SUBSTITUTION'";
-    }
-    return normalized;
   }
 
 }

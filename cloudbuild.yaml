@@ -1,0 +1,48 @@
+# cloudbuild.yaml
+# Builds and deploys TOP Racing to Cloud Run from Google Cloud Build.
+substitutions:
+  _REGION: us-central1
+  _ARTIFACT_REPOSITORY: topracing
+  _IMAGE: topracingwebapp
+  _IMAGE_TAG: manual
+  _SERVICE: topracingwebapp
+  _DB_PASSWORD_SECRET: topracing-db-password
+  _TOPRACING_DB_URL: jdbc:mysql://mysql-service-for-top-racing-001-top-racing.c.aivencloud.com:10614/defaultdb?sslmode=require
+  _TOPRACING_APP_URL: https://CHANGE_ME_AFTER_FIRST_DEPLOY/topracingwebapp/
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPOSITORY}/${_IMAGE}:${_IMAGE_TAG}
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPOSITORY}/${_IMAGE}:${_IMAGE_TAG}
+
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPOSITORY}/${_IMAGE}:${_IMAGE_TAG}
+      - --region=${_REGION}
+      - --platform=managed
+      - --allow-unauthenticated
+      - --memory=1Gi
+      - --cpu=1
+      - --concurrency=20
+      - --max-instances=3
+      - --port=8080
+      - --set-env-vars=TOPRACING_DB_URL=${_TOPRACING_DB_URL},TOPRACING_DB_USERNAME=avnadmin,TOPRACING_DB_CATALOG=defaultdb,TOPRACING_DB_POOL_SIZE=5,MAIL_DELIVERY_MODE=log,TOPRACING_APP_URL=${_TOPRACING_APP_URL}
+      - --set-secrets=TOPRACING_DB_PASSWORD=${_DB_PASSWORD_SECRET}:latest
+
+images:
+  - ${_REGION}-docker.pkg.dev/$PROJECT_ID/${_ARTIFACT_REPOSITORY}/${_IMAGE}:${_IMAGE_TAG}
+
+options:
+  logging: CLOUD_LOGGING_ONLY
