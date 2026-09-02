@@ -12,7 +12,7 @@ La ruta recomendada es Google Cloud Run para la aplicación WAR en GlassFish y A
 - Puerto Aiven: `10614`.
 - Base de datos Aiven: `defaultdb`.
 - Usuario Aiven: `avnadmin`.
-- TLS de Aiven: requerido; usar `sslMode=REQUIRED` en JDBC.
+- TLS de Aiven: requerido; usar `sslMode=REQUIRED` en JDBC. En GlassFish agregar `fallbackToSystemKeyStore=false` para evitar que MySQL Connector/J reutilice el keystore interno del servidor de aplicaciones como certificado cliente.
 
 ## Preparación única en Google Cloud
 
@@ -69,7 +69,7 @@ Al terminar, Cloud Run mostrará una URL HTTPS `run.app`. Hacer un segundo despl
 
 ## Variables de entorno del servicio
 
-- `TOPRACING_DB_URL=jdbc:mysql://mysql-service-for-top-racing-001-top-racing.c.aivencloud.com:10614/defaultdb?sslMode=REQUIRED`
+- `TOPRACING_DB_URL=jdbc:mysql://mysql-service-for-top-racing-001-top-racing.c.aivencloud.com:10614/defaultdb?sslMode=REQUIRED&fallbackToSystemKeyStore=false`
 - `TOPRACING_DB_USERNAME=avnadmin`
 - `TOPRACING_DB_PASSWORD` desde Secret Manager.
 - `TOPRACING_DB_CATALOG=defaultdb`

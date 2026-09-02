@@ -7,7 +7,7 @@ substitutions:
   _IMAGE_TAG: manual
   _SERVICE: topracingwebapp
   _DB_PASSWORD_SECRET: topracing-db-password
-  _TOPRACING_DB_URL: jdbc:mysql://mysql-service-for-top-racing-001-top-racing.c.aivencloud.com:10614/defaultdb?sslMode=REQUIRED
+  _TOPRACING_DB_URL: jdbc:mysql://mysql-service-for-top-racing-001-top-racing.c.aivencloud.com:10614/defaultdb?sslMode=REQUIRED&fallbackToSystemKeyStore=false
   _TOPRACING_APP_URL: https://CHANGE_ME_AFTER_FIRST_DEPLOY/topracingwebapp/
 
 steps:

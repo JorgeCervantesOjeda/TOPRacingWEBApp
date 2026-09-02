@@ -24,9 +24,10 @@ class HibernateDatabaseConfigurationTest {
   @Test
   void externalMysqlUrlWithTlsRequiredDoesNotAddLocalOnlySslDefaults() {
     String normalized = HibernateDatabaseConfiguration.normalizeJdbcUrl(
-      "jdbc:mysql://mysql-service-for-top-racing-001-top-racing.c.aivencloud.com:10614/defaultdb?sslMode=REQUIRED" );
+      "jdbc:mysql://mysql-service-for-top-racing-001-top-racing.c.aivencloud.com:10614/defaultdb?sslMode=REQUIRED&fallbackToSystemKeyStore=false" );
 
     assertTrue( normalized.contains( "sslMode=REQUIRED" ) );
+    assertTrue( normalized.contains( "fallbackToSystemKeyStore=false" ) );
     assertFalse( normalized.contains( "useSSL=false" ) );
     assertFalse( normalized.contains( "allowPublicKeyRetrieval=true" ) );
     assertTrue( normalized.contains( "serverTimezone=America/Mexico_City" ) );
