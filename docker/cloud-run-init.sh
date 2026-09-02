@@ -15,9 +15,8 @@ setHttpListenerPort() {
   local port="$1"
 
   sed -i -E \
-    -e "s/(<network-listener[^>]*name=\"http-listener-1\"[^>]*port=\")[^\"]*(\")/\\1${port}\\2/g" \
-    -e "s/(<network-listener[^>]*port=\")[^\"]*(\"[^>]*name=\"http-listener-1\")/\\1${port}\\2/g" \
-    -e "s/(<system-property[^>]*name=\"HTTP_LISTENER_PORT\"[^>]*value=\")[^\"]*(\")/\\1${port}\\2/g" \
+    -e "/name=\"http-listener-1\"/s/port=\"[^\"]*\"/port=\"${port}\"/" \
+    -e "/name=\"HTTP_LISTENER_PORT\"/s/value=\"[^\"]*\"/value=\"${port}\"/" \
     "${DOMAIN_XML}"
 
   if ! grep -E "http-listener-1|HTTP_LISTENER_PORT" "${DOMAIN_XML}"; then
