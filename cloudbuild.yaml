@@ -38,6 +38,7 @@ steps:
       - --concurrency=20
       - --max-instances=3
       - --port=8080
+      - --startup-probe=initialDelaySeconds=0,timeoutSeconds=10,periodSeconds=10,failureThreshold=30,httpGet.port=8080,httpGet.path=/topracingwebapp/faces/welcome.xhtml
       - --set-env-vars=TOPRACING_DB_URL=${_TOPRACING_DB_URL},TOPRACING_DB_USERNAME=avnadmin,TOPRACING_DB_CATALOG=defaultdb,TOPRACING_DB_POOL_SIZE=5,MAIL_DELIVERY_MODE=log,TOPRACING_APP_URL=${_TOPRACING_APP_URL}
       - --set-secrets=TOPRACING_DB_PASSWORD=${_DB_PASSWORD_SECRET}:latest
 
