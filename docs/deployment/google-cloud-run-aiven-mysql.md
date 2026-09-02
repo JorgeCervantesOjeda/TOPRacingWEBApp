@@ -90,7 +90,7 @@ Cloud Run Domain Mappings también emite certificados gestionados, pero Google l
 - Aiven Free tiene límite de almacenamiento; la base local medida es pequeña, pero hay que monitorear crecimiento de `pointscount`.
 - Cloud Run escala a varias instancias; por eso el pool de Hibernate se baja a 5 conexiones por instancia.
 - El sistema de archivos de Cloud Run no es persistente. No guardar archivos subidos o generados dentro del contenedor.
-- La imagen despliega el WAR durante el arranque del contenedor con `PORT` temporal `18080` y luego restaura el puerto público de Cloud Run. Esto evita que Cloud Run dirija tráfico a GlassFish antes de que la aplicación quede registrada; agrega tiempo al arranque en frío, pero deja evidencia explícita en los registros.
+- La imagen despliega el WAR durante el arranque del contenedor y cambia temporalmente el listener HTTP de GlassFish a `18080`; después restaura el puerto público de Cloud Run. Esto evita que Cloud Run dirija tráfico a GlassFish antes de que la aplicación quede registrada; agrega tiempo al arranque en frío, pero deja evidencia explícita en los registros.
 - Antes de abrir tráfico real, importar la base MySQL local a `defaultdb` y ejecutar una prueba de humo contra la URL pública.
 
 ## Fuentes verificadas
