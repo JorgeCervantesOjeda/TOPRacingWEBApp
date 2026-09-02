@@ -19,4 +19,5 @@ RUN sed -i 's/\r$//' custom/init.sh \
     && chmod +x custom/init.sh
 
 EXPOSE 8080
-CMD ["startserv"]
+ENTRYPOINT []
+CMD ["/bin/bash", "-lc", "/bin/bash custom/init.sh && exec startserv"]
