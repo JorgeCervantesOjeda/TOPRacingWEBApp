@@ -92,7 +92,7 @@ Cloud Run Domain Mappings también emite certificados gestionados, pero Google l
 - El sistema de archivos de Cloud Run no es persistente. No guardar archivos subidos o generados dentro del contenedor.
 - La imagen despliega el WAR durante el arranque del contenedor y cambia temporalmente el listener HTTP de GlassFish a `18080`; después restaura el puerto público de Cloud Run. Esto evita que Cloud Run dirija tráfico a GlassFish antes de que la aplicación quede registrada; agrega tiempo al arranque en frío, pero deja evidencia explícita en los registros.
 - La imagen usa un comando de arranque propio en lugar del `docker-entrypoint.sh` de la imagen base para que el ciclo `init.sh` + `startserv` sea explícito y no imprima variables de entorno con secretos.
-- Cloud Run usa una sonda de arranque HTTP contra `/topracingwebapp/faces/welcome.xhtml`; así la revisión no queda lista solo por abrir el puerto TCP.
+- Cloud Run usa una sonda de arranque HTTP contra `/topracingwebapp/healthz.txt`; así la revisión no queda lista solo por abrir el puerto TCP ni depende de inicializar Hibernate durante el arranque.
 - Antes de abrir tráfico real, importar la base MySQL local a `defaultdb` y ejecutar una prueba de humo contra la URL pública.
 
 ## Fuentes verificadas
