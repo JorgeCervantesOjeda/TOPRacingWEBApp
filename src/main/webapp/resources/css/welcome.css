@@ -183,10 +183,25 @@
   gap: 20px;
 }
 
-.welcome-map-frame {
-  border: 0;
+.welcome-map-shell {
+  display: grid;
+  gap: 12px;
+}
+
+.welcome-leaflet-map {
   min-height: 420px;
   width: 100%;
+}
+
+.welcome-map-link {
+  color: #8f1215 !important;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.welcome-map-link:hover {
+  color: #6f0e11 !important;
+  font-size: inherit !important;
 }
 
 .welcome-faq-accordion {
@@ -244,7 +259,7 @@
     grid-template-columns: 1fr;
   }
 
-  .welcome-map-frame {
+  .welcome-leaflet-map {
     min-height: 320px;
   }
 }
