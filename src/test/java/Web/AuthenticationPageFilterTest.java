@@ -139,6 +139,27 @@ class AuthenticationPageFilterTest {
   }
 
   @Test
+  void allowsAnonymousAccessToHealthCheck() throws IOException,
+                                                   ServletException {
+    HttpServletRequest request = mock( HttpServletRequest.class );
+    HttpServletResponse response = mock( HttpServletResponse.class );
+    FilterChain chain = mock( FilterChain.class );
+
+    when( request.getRequestURI() ).thenReturn( "/topracingwebapp/healthz.txt" );
+    when( request.getContextPath() ).thenReturn( "/topracingwebapp" );
+    when( request.getSession( false ) ).thenReturn( null );
+
+    filter.doFilter( request,
+                     response,
+                     chain );
+
+    verify( chain ).doFilter( request,
+                              response );
+    verify( response,
+            never() ).sendRedirect( "/topracingwebapp/faces/login.xhtml" );
+  }
+
+  @Test
   void allowsAuthenticatedUsersIntoProtectedPages() throws IOException,
                                                            ServletException {
     HttpServletRequest request = mock( HttpServletRequest.class );

@@ -20,6 +20,7 @@ public class AuthenticationPageFilter
 
   private static final String LOGIN_PAGE = "/login.xhtml";
   private static final String LOGIN_FACES_PAGE = "/faces/login.xhtml";
+  private static final String HEALTH_CHECK_PAGE = "/healthz.txt";
   private static final String WELCOME_PAGE = "/welcome.xhtml";
   private static final String WELCOME_FACES_PAGE = "/faces/welcome.xhtml";
   private static final String EDIT_PARTICIPANT_PAGE = "/editparticipant.xhtml";
@@ -75,6 +76,7 @@ public class AuthenticationPageFilter
            || path.isBlank()
            || "/".equals( path )
            || "/favicon.ico".equals( path )
+           || HEALTH_CHECK_PAGE.equals( path )
            || path.startsWith( "/resources/" )
            || path.startsWith( "/jakarta.faces.resource/" )
            || path.startsWith( "/faces/jakarta.faces.resource/" );
