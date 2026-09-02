@@ -12,11 +12,11 @@ FROM ghcr.io/eclipse-ee4j/glassfish:7.0.25
 
 ENV PORT=8080
 
-COPY --from=build --chown=glassfish:glassfish /workspace/target/topracingwebapp.war /tmp/topracingwebapp.war
+COPY --from=build --chown=glassfish:glassfish /workspace/target/topracingwebapp.war custom/topracingwebapp.war
+COPY --chown=glassfish:glassfish docker/cloud-run-init.sh custom/init.sh
 
-RUN asadmin --interactive=false start-domain \
-    && asadmin --interactive=false deploy --force=true --contextroot topracingwebapp /tmp/topracingwebapp.war \
-    && asadmin --interactive=false stop-domain --kill
+RUN sed -i 's/\r$//' custom/init.sh \
+    && chmod +x custom/init.sh
 
 EXPOSE 8080
 CMD ["startserv"]

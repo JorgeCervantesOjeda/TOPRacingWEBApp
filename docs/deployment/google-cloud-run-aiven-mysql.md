@@ -12,7 +12,7 @@ La ruta recomendada es Google Cloud Run para la aplicación WAR en GlassFish y A
 - Puerto Aiven: `10614`.
 - Base de datos Aiven: `defaultdb`.
 - Usuario Aiven: `avnadmin`.
-- TLS de Aiven: requerido; usar `sslmode=require` en JDBC.
+- TLS de Aiven: requerido; usar `sslMode=REQUIRED` en JDBC.
 
 ## Preparación única en Google Cloud
 
@@ -69,7 +69,7 @@ Al terminar, Cloud Run mostrará una URL HTTPS `run.app`. Hacer un segundo despl
 
 ## Variables de entorno del servicio
 
-- `TOPRACING_DB_URL=jdbc:mysql://mysql-service-for-top-racing-001-top-racing.c.aivencloud.com:10614/defaultdb?sslmode=require`
+- `TOPRACING_DB_URL=jdbc:mysql://mysql-service-for-top-racing-001-top-racing.c.aivencloud.com:10614/defaultdb?sslMode=REQUIRED`
 - `TOPRACING_DB_USERNAME=avnadmin`
 - `TOPRACING_DB_PASSWORD` desde Secret Manager.
 - `TOPRACING_DB_CATALOG=defaultdb`
@@ -90,6 +90,7 @@ Cloud Run Domain Mappings también emite certificados gestionados, pero Google l
 - Aiven Free tiene límite de almacenamiento; la base local medida es pequeña, pero hay que monitorear crecimiento de `pointscount`.
 - Cloud Run escala a varias instancias; por eso el pool de Hibernate se baja a 5 conexiones por instancia.
 - El sistema de archivos de Cloud Run no es persistente. No guardar archivos subidos o generados dentro del contenedor.
+- La imagen despliega el WAR durante el arranque del contenedor para evitar que GlassFish arranque sin la aplicación registrada; esto agrega tiempo al arranque en frío, pero deja evidencia explícita en los registros de Cloud Run.
 - Antes de abrir tráfico real, importar la base MySQL local a `defaultdb` y ejecutar una prueba de humo contra la URL pública.
 
 ## Fuentes verificadas
