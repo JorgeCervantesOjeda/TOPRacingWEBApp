@@ -109,55 +109,10 @@
               point for nearby tracks, promoters and future event planning.
             </p>
           </div>
-          <div class="welcome-map-shell">
-            <div id="welcomeVenueMap"
-                 class="welcome-leaflet-map"
-                 aria-label="#{viewBean.getTOPRacingVenues()}">
-            </div>
-            <a class="welcome-map-link"
-               href="https://www.google.com/maps/d/viewer?mid=1judLBk90B6vMMje5k9fVu3QOVelX-HTn"
-               target="_blank"
-               rel="noopener">
-              Open full venue map
-            </a>
-          </div>
-          <script>
-            //<![CDATA[
-            ( function() {
-              function initWelcomeVenueMap() {
-                var mapElement = document.getElementById( 'welcomeVenueMap' );
-
-                if( !mapElement || typeof L === 'undefined' ) {
-                  return;
-                }
-
-                var map = L.map( mapElement,
-                                 { scrollWheelZoom: false } )
-                  .setView( [19.352301477794523, -99.28258674070315],
-                            5 );
-
-                L.tileLayer( 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                             {
-                               attribution: '&copy; OpenStreetMap contributors',
-                               maxZoom: 19
-                             } )
-                  .addTo( map );
-
-                L.marker( [19.352301477794523, -99.28258674070315] )
-                  .addTo( map )
-                  .bindPopup( 'TOP-Racing venues' );
-              }
-
-              if( document.readyState === 'loading' ) {
-                document.addEventListener( 'DOMContentLoaded',
-                                           initWelcomeVenueMap );
-                return;
-              }
-
-              initWelcomeVenueMap();
-            } )();
-            //]]>
-          </script>
+          <iframe class="welcome-map-frame"
+                  title="#{viewBean.getTOPRacingVenues()}"
+                  src="https://www.google.com/maps/d/embed?mid=1judLBk90B6vMMje5k9fVu3QOVelX-HTn&amp;ll=10%2C-00&amp;z=2">
+          </iframe>
         </section>
 
         <section class="welcome-copy-panel welcome-faq"
